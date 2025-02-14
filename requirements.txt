@@ -1,0 +1,27 @@
+certifi==2025.1.31
+charset-normalizer==3.4.1
+duckdb==1.2.0
+duckdb_engine==0.15.0
+greenlet==3.1.1
+idna==3.10
+# Editable install with no version control (music_explorer_api==0.1.2)
+-e /home/mark/Development/music_explorer_api2
+numpy==2.2.2
+oauthlib==3.2.2
+packaging==24.2
+pandas==2.2.3
+polars==1.22.0
+pyaml==25.1.0
+pyarrow==19.0.0
+python-dateutil==2.9.0.post0
+python-json-logger==3.2.1
+python3-discogs-client==2.7.1
+pytz==2025.1
+PyYAML==6.0.2
+requests==2.32.3
+six==1.17.0
+SQLAlchemy==2.0.38
+tqdm==4.67.1
+typing_extensions==4.12.2
+tzdata==2025.1
+urllib3==2.3.0

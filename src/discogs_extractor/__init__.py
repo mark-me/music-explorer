@@ -1,0 +1,1 @@
+from .discogs import Discogs

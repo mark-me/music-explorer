@@ -1,0 +1,19 @@
+{% extends 'layout.html' %}
+{% block content %}
+  <h2>Collection items</h2>
+  <div class="card">
+    <div class="card-header">
+      <button type="button" class="btn btn-secondary btn-sm" onClick="window.location.reload();">Random albums</button>
+    </div>
+    <div class="row row-cols-auto justify-content-md-center">
+      {% for item in collection_items %}
+      <div class="card">
+        <div class="card-body text-center">
+          <img src="{{item.url_cover}}" width="150" height="150" />
+        </div>
+        <div class="card-footer"><b>{{ item.title }}</b><br><i>{{ item.name_artist }}</i></div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+{% endblock %}

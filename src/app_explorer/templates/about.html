@@ -1,0 +1,30 @@
+{% extends "layout.html" %}
+{% block content %}
+<div style="display: flex; justify-content: space-between; align-items: top; padding: 20px;">
+    <div style="flex: 1;">
+        <h2>Over</h2>
+        <br>
+        <p>
+            Ontwikkeld door Mark Zwart<br>
+                <a href="https://www.linkedin.com/in/markzwart76" target="_blank"><i class="fab fa-linkedin"></i> LinkedIn </a>
+                <a href="https://github.com/mark-me" target="_blank"><i class="fab fa-github"></i> GitHub </a>
+                <a href="mailto:mark.zwart@pobox.com"><i class="far fa-envelope"></i> E-mail </a>
+        </p>
+        <p>
+            Wanneer u wenst verwijdert te worden uit dit archief kunt u mij een email sturen en ik zal ervoor zorgen dat u zo spoedig mogelijk zal worden verwijdert. De foto's waar u op getoont wordt zullen niet verwijdert worden, maar uw naam zal nergens worden getoont.
+        </p>
+        <br>
+        <h3>Gebruikte tools</h3>
+        <ul>
+            <li><a href="https://www.python.org/" target="_blank">Python</a> en <a href="https://flask.palletsprojects.com/en/3.0.x/" target="_blank">Flask</a> voor de gebruikersinterface.</li>
+            <li><a href="https://www.python.org/" target="_blank">Python</a>, <a href="https://pandas.pydata.org/" target="_blank">Pandas</a> en <a href="https://pandera.readthedocs.io/en/stable/index.html" target="_blank">Pandera</a> om de data te laden en valideren.</li>
+            <li><a href="https://mariadb.org/" target="_blank">MariaDB</a> als een cache database om bewerkte data op te slaan.</li>
+            <li><a href="https://jinja.palletsprojects.com/en/3.1.x/" target="_blank">Jinja</a>, HTML, <a href="https://getbootstrap.com" target="_blank">Bootstrap</a> en <a href="https://www.w3.org/Style/CSS/Overview.en.html" target="_blank">CSS</a> om webpaginas vorm te geven.</li>
+            <li><a href="https://www.docker.com/" target="_blank">Docker</a> om de totale stack snel en op elk platform uit te rollen.</li>
+        </ul>
+    </div>
+    <div style="margin-left: auto; display: flex; flex-direction: column; align-items: flex-end;">
+        <img src="/static/images/me.png" alt="Afbeelding van Mark Zwart" style="max-width: 200px; margin-top: 5px;">
+    </div>
+</div>
+{% endblock content %}
