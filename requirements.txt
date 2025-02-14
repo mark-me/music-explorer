@@ -4,8 +4,6 @@ duckdb==1.2.0
 duckdb_engine==0.15.0
 greenlet==3.1.1
 idna==3.10
-# Editable install with no version control (music_explorer_api==0.1.2)
--e /home/mark/Development/music_explorer_api2
 numpy==2.2.2
 oauthlib==3.2.2
 packaging==24.2
