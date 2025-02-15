@@ -524,10 +524,14 @@ class ETLArtist(DiscogsETL):
 
     def aliases(self, artist: models.Artist, target_table: str) -> None:
         lst_aliases = []
-        for alias in artist.aliases:
-            data = alias.data
-            data.update({"id_artist": artist.id, "dt_loaded": dt.datetime.now()})
-            lst_aliases.append(data)
+        try:
+            for alias in artist.aliases:
+                data = alias.data
+                data.update({"id_artist": artist.id, "dt_loaded": dt.datetime.now()})
+                lst_aliases.append(data)
+        except HTTPError:
+            logger.error(f"Could not find artist {artist.name} for aliases.")
+            return
         if len(lst_aliases) > 0:
             df = pl.DataFrame(lst_aliases)
             df = df.rename(
@@ -542,10 +546,14 @@ class ETLArtist(DiscogsETL):
 
     def members(self, artist: models.Artist, target_table: str) -> None:
         lst_members = []
-        for member in artist.members:
-            data = member.data
-            data.update({"id_artist": artist.id, "dt_loaded": dt.datetime.now()})
-            lst_members.append(data)
+        try:
+            for member in artist.members:
+                data = member.data
+                data.update({"id_artist": artist.id, "dt_loaded": dt.datetime.now()})
+                lst_members.append(data)
+        except HTTPError:
+            logger.error(f"Could not find artist {artist.name} for members.")
+            return
         if len(lst_members) > 0:
             df = pl.DataFrame(lst_members)
             dict_rename = {
@@ -561,8 +569,12 @@ class ETLArtist(DiscogsETL):
 
     def urls(self, artist: models.Artist, target_table: str) -> None:
         lst_urls = []
-        if artist.urls is None:
-            logger.warning(f"None URLs found for {artist.name}")
+        try:
+            if artist.urls is None:
+                logger.warning(f"None URLs found for {artist.name}")
+                return
+        except HTTPError:
+            logger.error(f"Could not find artist {artist.name} for urls.")
             return
         for url in artist.urls:
             lst_urls.append(
