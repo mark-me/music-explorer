@@ -44,3 +44,6 @@ indent-width = 4
 quote-style = "double"
 indent-style = "space"
 line-ending = "auto"
+
+[tool.setuptools]
+packages = []
