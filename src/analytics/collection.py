@@ -7,20 +7,33 @@ class Collection(DBStorage):
         super().__init__(file_db, schema)
         self.sql_all = """
             SELECT
-                c.id_release,
-                c.title,
-                m.name_artist,
-                c.url_thumbnail,
-                c.url_cover,
-                c.year_released,
-                c.id_master
-            FROM test.main.collection_items c
-            LEFT JOIN test.main.artist_masters	m
-            ON m.id_master = c.id_master
+                ci.id_release,
+                ci.title,
+                ra.id_artist,
+                a.name_artist,
+                ci.url_thumbnail,
+                ci.url_cover,
+                ci.year_released,
+                rf.name_format,
+                ci.id_master
+            FROM test.main.collection_items ci
+            LEFT JOIN test.main.release_formats rf
+            ON rf.id_release = ci.id_release
+            LEFT JOIN test.main.release_artists ra
+            ON ra.id_release = ci.id_release
+            LEFT JOIN test.main.artist a
+            ON a.id_artist = ra.id_artist
+            WHERE ( rf.name_format = 'Vinyl' or rf.name_format IS NULL )
         """
 
     def all(self) -> pl.DataFrame:
-        df = self.read_sql(sql=self.sql_all)
+        sql = self.sql_all + " ORDER BY ci.title"
+        df = self.read_sql(sql=sql)
+        return df
+
+    def all_top_10(self) -> pl.DataFrame:
+        sql = self.sql_all + " ORDER BY ci.title LIMIT 10"
+        df = self.read_sql(sql=sql)
         return df
 
     def random(self, qty_sample: int = 20) -> pl.DataFrame:

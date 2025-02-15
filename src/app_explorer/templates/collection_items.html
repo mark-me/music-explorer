@@ -2,16 +2,50 @@
 {% block content %}
   <h2>Collection items</h2>
   <div class="card">
-    <div class="card-header">
-      <button type="button" class="btn btn-secondary btn-sm" onClick="window.location.reload();">Random albums</button>
+    <div class="card-header container-fluid">
+      <div class="row">
+        <div class="col">
+          <b>Random 5 albums</b>
+        </div>
+        <div class="col-auto float-right">
+          <button type="button" class="btn btn-primary btn-sm" onClick="window.location.reload();">Refresh</button>
+        </div>
+      </div>
     </div>
     <div class="row row-cols-auto justify-content-md-center">
-      {% for item in collection_items %}
-      <div class="card">
-        <div class="card-body text-center">
-          <img src="{{item.url_cover}}" width="150" height="150" />
+      {% for item in random_items %}
+      <div class="card-group">
+        <div class="card">
+          <div class="card-body text-center">
+            <img src="{{item.url_cover}}" width="150" height="150" />
+          </div>
+          <div class="card-footer"><b>{{ item.title }}</b><br><i>{{ item.name_artist }}</i></div>
         </div>
-        <div class="card-footer"><b>{{ item.title }}</b><br><i>{{ item.name_artist }}</i></div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+  <br>
+  <div class="card">
+    <div class="card-header container-fluid">
+      <div class="row">
+        <div class="col">
+          <b>All albums</b>
+        </div>
+        <div class="col-auto float-right">
+          <button type="button" class="btn btn-primary btn-sm">All albums</button>
+        </div>
+      </div>
+    </div>
+    <div class="row row-cols-auto justify-content-md-center">
+      {% for item in all_items %}
+      <div class="card-group">
+        <div class="card">
+          <div class="card-body text-center">
+            <img src="{{item.url_cover}}" width="150" height="150" />
+          </div>
+          <div class="card-footer"><b>{{ item.title }}</b><br><i>{{ item.name_artist }}</i></div>
+        </div>
       </div>
       {% endfor %}
     </div>

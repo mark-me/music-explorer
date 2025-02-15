@@ -32,8 +32,12 @@ class Artists(DBStorage):
         """
 
     def all(self) -> pl.DataFrame:
-        conn = duckdb.connect(self.file_db)
-        df = conn.sql(self.sql_all).pl()
+        df = self.read_sql(self.sql_all)
+        return df
+
+    def all_top_10(self) -> pl.DataFrame:
+        sql = self.sql_all + " ORDER BY a.name_artist LIMIT 10"
+        df = self.read_sql(sql=sql)
         return df
 
     def top_collected(self) -> pl.DataFrame:
