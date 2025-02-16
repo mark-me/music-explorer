@@ -121,10 +121,14 @@ class ETLArtist(DiscogsETL):
 
     def groups(self, artist: models.Artist, target_table: str) -> None:
         lst_groups = []
-        for group in artist.groups:
-            data = group.data
-            data.update({"id_artist": artist.id, "dt_loaded": dt.datetime.now()})
-            lst_groups.append(data)
+        try:
+            for group in artist.groups:
+                data = group.data
+                data.update({"id_artist": artist.id, "dt_loaded": dt.datetime.now()})
+                lst_groups.append(data)
+        except HTTPError:
+            logger.warning(f"Group not found for '{artist.name}'")
+            return
         if len(lst_groups) > 0:
             df = pl.DataFrame(lst_groups)
             df = df.rename(
