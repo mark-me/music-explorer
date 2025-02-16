@@ -40,3 +40,10 @@ class Collection(DBStorage):
         df = self.all()
         df = df.sample(n=qty_sample)
         return df
+
+    def artist(self, id_artist: str) -> pl.DataFrame:
+        sql = self.sql_all + f" AND a.id_artist={id_artist} ORDER BY ci.year_released"
+        lst_items = self.read_sql(sql=sql).to_dicts()
+        for i, item in enumerate(lst_items):
+
+        return lst_items

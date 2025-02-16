@@ -24,7 +24,10 @@ def artists():
     db_artists = Artists(file_db=file_db)
     lst_random = db_artists.random(qty_sample=5).to_dicts()
     lst_all = db_artists.all_top_10().to_dicts()
-    return render_template("artists.html", random_artists=lst_random , all_artists=lst_all, title="Artists")
+    return render_template(
+        "artists.html", random_artists=lst_random, all_artists=lst_all, title="Artists"
+    )
+
 
 @app.route("/artists_all")
 def artists_all():
@@ -33,6 +36,7 @@ def artists_all():
     lst_all = db_artists.all().to_dicts()
     return render_template("artists_all.html", all_artists=lst_all, title="Artists")
 
+
 @app.route("/collection_items")
 def collection_items():
     """Collection"""
@@ -40,7 +44,21 @@ def collection_items():
     lst_random = collection.random(qty_sample=5).to_dicts()
     lst_all = collection.all_top_10().to_dicts()
     return render_template(
-        "collection_items.html", random_items=lst_random, all_items=lst_all, title="Collection items"
+        "collection_items.html",
+        random_items=lst_random,
+        all_items=lst_all,
+        title="Collection items",
+    )
+
+
+@app.route("/collection_artist/<int:id_artist>")
+def collection_artist(id_artist):
+    collection = Collection(file_db=file_db)
+    artists = Artists(file_db=file_db)
+    artist = artists.artist(id_artist=id_artist).to_dicts()[0]
+    lst_all = collection.artist(id_artist=id_artist).to_dicts()
+    return render_template(
+        "collection_items_artist.html", all_items=lst_all, artist=artist, title="Collection items"
     )
 
 

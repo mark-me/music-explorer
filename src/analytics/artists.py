@@ -31,9 +31,14 @@ class Artists(DBStorage):
                 img.width_image
         """
 
+    def artist(self, id_artist: int) -> pl.DataFrame:
+        df = self.read_sql(sql=self.sql_all)
+        df = df.filter(pl.col("id_artist") == id_artist)
+        return df
+
     def all(self) -> pl.DataFrame:
         sql = self.sql_all + " ORDER BY UPPER(a.name_artist)"
-        df = self.read_sql(sql)
+        df = self.read_sql(sql=sql)
         return df
 
     def all_top_10(self) -> pl.DataFrame:
