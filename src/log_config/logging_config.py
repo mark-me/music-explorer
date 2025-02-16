@@ -25,7 +25,7 @@ LOGGING = {
         }
 
     },
-    "loggers": {"": {"handlers": ["stdout", "file"], "level": "DEBUG"}},
+    "loggers": {"": {"handlers": ["file"], "level": "DEBUG"}},
 }
 
 
