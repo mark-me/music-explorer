@@ -1,6 +1,5 @@
 {% extends 'layout.html' %}
 {% block content %}
-  <h2>Artists</h2>
   <div class="card">
     <div class="card-header container-fluid">
       <div class="row">
@@ -17,9 +16,11 @@
         <div class="card-group">
           <div class="card">
             <div class="card-body text-center">
-              <span class="position-absolute bottom-0 end-0 translate-middle badge rounded-pill text-bg-secondary">{{ artist.qty_collection_items }}</span>
-              <span class="visually-hidden">Items collected</span>
-              <a href="/collection_artist/{{ artist. id_artist }}"><img src="{{ artist.url_image }}" height="150" /></a>
+              <a href="/collection_artist/{{ artist.id_artist }}">
+                <span class="position-absolute bottom-0 end-0 translate-middle badge rounded-pill text-bg-secondary">{{ artist.qty_collection_items }}</span>
+                <span class="visually-hidden">Items collected</span>
+              </a>
+              <a href="/collection_artist/{{ artist.id_artist }}"><img src="{{ artist.url_image }}" height="150" /></a>
             </div>
             <div class="card-footer text-center">{{ artist.name_artist }}</div>
           </div>
@@ -35,7 +36,7 @@
           <b>All artists</b>
         </div>
         <div class="col-auto float-right">
-          <a href="/artists_all" class="btn btn-primary btn-sm">All artists</a>
+          <a href="/artists_all" class="btn btn-primary btn-sm">All</a>
         </div>
       </div>
     </div>

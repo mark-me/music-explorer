@@ -16,12 +16,12 @@ class Collection(DBStorage):
                 ci.year_released,
                 rf.name_format,
                 ci.id_master
-            FROM test.main.collection_items ci
-            LEFT JOIN test.main.release_formats rf
+            FROM collection.main.collection_items ci
+            LEFT JOIN collection.main.release_formats rf
             ON rf.id_release = ci.id_release
-            LEFT JOIN test.main.release_artists ra
+            LEFT JOIN collection.main.release_artists ra
             ON ra.id_release = ci.id_release
-            LEFT JOIN test.main.artist a
+            LEFT JOIN collection.main.artist a
             ON a.id_artist = ra.id_artist
             WHERE ( rf.name_format = 'Vinyl' or rf.name_format IS NULL )
         """

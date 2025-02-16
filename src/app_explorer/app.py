@@ -50,6 +50,16 @@ def collection_items():
         title="Collection items",
     )
 
+@app.route("/collection_items_all")
+def collection_items_all():
+    """Collection"""
+    collection = Collection(file_db=file_db)
+    lst_all = collection.all().to_dicts()
+    return render_template(
+        "collection_items_all.html",
+        all_items=lst_all,
+        title="Collection items",
+    )
 
 @app.route("/collection_artist/<int:id_artist>")
 def collection_artist(id_artist):

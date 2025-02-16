@@ -15,12 +15,12 @@ class Artists(DBStorage):
                 img.url_image_150,
                 img.width_image,
                 COUNT(DISTINCT ci.id_instance) AS qty_collection_items
-            FROM test.main.artist a
-            LEFT JOIN test.main.artist_images as img
+            FROM collection.main.artist a
+            LEFT JOIN collection.main.artist_images as img
             ON img.id_artist = a.id_artist
-            LEFT JOIN test.main.release_artists ra
+            LEFT JOIN collection.main.release_artists ra
             ON ra.id_artist = a.id_artist
-            INNER JOIN test.main.collection_items ci
+            INNER JOIN collection.main.collection_items ci
             ON ci.id_release = ra.id_release
             WHERE ( img.type = 'primary' OR img.type IS NULL )
             GROUP BY

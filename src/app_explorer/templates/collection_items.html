@@ -1,11 +1,10 @@
 {% extends 'layout.html' %}
 {% block content %}
-  <h2>Collection items</h2>
   <div class="card">
     <div class="card-header container-fluid">
       <div class="row">
         <div class="col">
-          <b>Random 5 albums</b>
+          <b>Random 5 collection items</b>
         </div>
         <div class="col-auto float-right">
           <button type="button" class="btn btn-primary btn-sm" onClick="window.location.reload();">Refresh</button>
@@ -30,10 +29,10 @@
     <div class="card-header container-fluid">
       <div class="row">
         <div class="col">
-          <b>All albums</b>
+          <b>All collection items</b>
         </div>
         <div class="col-auto float-right">
-          <button type="button" class="btn btn-primary btn-sm">All albums</button>
+          <a href="/collection_items_all" class="btn btn-primary btn-sm">All</a>
         </div>
       </div>
     </div>
