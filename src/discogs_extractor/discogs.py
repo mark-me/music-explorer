@@ -5,7 +5,7 @@ from log_config import logging
 from utils import SecretsYAML
 
 from .derive import DiscogsDerive
-from .extractors import ETLCollection
+from .extractor_collection import ETLCollection
 
 logger = logging.getLogger(__name__)
 
@@ -86,9 +86,9 @@ class Discogs:
         return {"status_code": 200, "message": f"User {user.username} connected."}
 
     def start_ETL(self):
-        # collection = ETLCollection(
-        #     discogs_client=self.client_discogs, file_db=self.file_db
-        # )
-        # collection.process()
+        collection = ETLCollection(
+            discogs_client=self.client_discogs, file_db=self.file_db
+        )
+        collection.process()
         derive = DiscogsDerive(file_db=self.file_db)
         derive.start()
