@@ -55,10 +55,10 @@ def collection_items():
 def collection_artist(id_artist):
     collection = Collection(file_db=file_db)
     artists = Artists(file_db=file_db)
-    artist = artists.artist(id_artist=id_artist).to_dicts()[0]
+    dict_artist = artists.artist(id_artist=id_artist)
     lst_all = collection.artist(id_artist=id_artist).to_dicts()
     return render_template(
-        "collection_items_artist.html", all_items=lst_all, artist=artist, title="Collection items"
+        "collection_items_artist.html", all_items=lst_all, artist=dict_artist, title="Collection items"
     )
 
 

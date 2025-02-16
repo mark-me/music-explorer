@@ -1,28 +1,39 @@
 {% extends 'layout.html' %}
 {% block content %}
-  <h2>Albums of {{ artist.name_artist }}</h2>
-  <div class="container">
-    <div class="row-auto gx-10">
-      <img src="{{ artist.url_image }}" width="150" />
+  <div class="card">
+    <div class="card-header">
+      <b>Albums of {{ artist.name_artist }}</b>
     </div>
     <div class="row">
-      {% for item in all_items %}
-        <div class="card-group">
-          <div class="card">
-            <div class="card-header">
-              <b>{{ item.title }}</b>
-            </div>
-            <div class="container">
-              <div class="row">
-                <div class="col-auto">
-                  <img src="{{ item.url_cover }}" height="150" />
-                </div>
-                <div class="col">Tracklist</div>
+      <div class="col-auto">
+        <img src="{{ artist.url_image }}" width="150" />
+      </div>
+      <div class="col">
+        <ul>
+        {% for url in artist.urls %}
+          <li><a href="{{url.url}}">{{url.url}}</a></li>
+        {% endfor %}
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="row row-cols-auto justify-content-md-center">
+    {% for item in all_items %}
+      <div class="card-group">
+        <div class="card">
+          <div class="card-header">
+            <b>{{ item.title }}</b>
+          </div>
+          <div class="card-body">
+            <div class="row">
+              <div class="col-auto">
+                <img src="{{ item.url_cover }}" height="150" />
               </div>
+              <div class="col">Tracklist</div>
             </div>
           </div>
         </div>
-      {% endfor %}
-    </div>
+      </div>
+    {% endfor %}
   </div>
 {% endblock %}

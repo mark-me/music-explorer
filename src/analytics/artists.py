@@ -31,10 +31,13 @@ class Artists(DBStorage):
                 img.width_image
         """
 
-    def artist(self, id_artist: int) -> pl.DataFrame:
+    def artist(self, id_artist: int) -> dict:
         df = self.read_sql(sql=self.sql_all)
-        df = df.filter(pl.col("id_artist") == id_artist)
-        return df
+        artist = df.filter(pl.col("id_artist") == id_artist).to_dicts()[0]
+        sql_urls = f"SELECT url FROM artist_urls WHERE id_artist={id_artist}"
+        lst_urls = self.read_sql(sql=sql_urls).to_dicts()
+        artist.update({"urls": lst_urls})
+        return artist
 
     def all(self) -> pl.DataFrame:
         sql = self.sql_all + " ORDER BY UPPER(a.name_artist)"
@@ -55,4 +58,3 @@ class Artists(DBStorage):
         df = self.all()
         df = df.sample(n=qty_sample)
         return df
-
