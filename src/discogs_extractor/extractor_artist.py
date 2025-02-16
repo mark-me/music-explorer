@@ -131,15 +131,15 @@ class ETLArtist(DiscogsETL):
             return
         if len(lst_groups) > 0:
             df = pl.DataFrame(lst_groups)
-            df = df.rename(
-                {
+            dict_rename =                 {
                     "id": "id_group",
                     "name": "name_group",
                     "resource_url": "api_group",
                     "active": "is_active",
-                    "thumbnail_url": "url_thumbnail",
                 }
-            )
+            if "thumbnail_url" in df.columns:
+                dict_rename.update({"thumbnail_url": "url_thumbnail"})
+            df = df.rename(dict_rename)
             self.db.store_append(df=df, name_table=target_table)
 
     def aliases(self, artist: models.Artist, target_table: str) -> None:
