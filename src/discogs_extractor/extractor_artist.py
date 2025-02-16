@@ -40,7 +40,7 @@ class ETLArtist(DiscogsETL):
                 logger.info(f"Previously processed data for artist '{artist.name}', skipping")
 
     def artist(self, artist: models.Artist, target_table: str) -> pl.DataFrame:
-        df = pl.DataFrame([{"id_artist": artist.id, "name_artist": artist.name}])
+        df = pl.DataFrame([{"id_artist": artist.id, "name_artist": artist.name, "profile": artist.profile}])
         self.db.store_append(df=df, name_table=target_table)
 
     def masters(self, artist: models.Artist, target_table: str) -> None:
