@@ -98,7 +98,7 @@ class ETLRelease(ETLMaster):
             lst_labels.append(data)
         if len(lst_labels) > 0:
             df_labels = pl.DataFrame(lst_labels)
-            df_labels = df_labels[["id_release", "id", "name", "catno"]]
+            df_labels = df_labels[["id_release", "id", "name", "catno", "dt_loaded"]]
             df_labels = df_labels.rename(
                 {
                     "id": "id_label",
@@ -110,13 +110,11 @@ class ETLRelease(ETLMaster):
     def extract_formats(self, target_table: str) -> None:
         lst_formats = []
         for format in self.obj_discogs.formats:
-            format.update(
-                {"id_release": self.obj_discogs.id, "dt_loaded": dt.datetime.now()}
-            )
+            format.update({"id_release": self.obj_discogs.id, "dt_loaded": dt.datetime.now()})
             lst_formats.append(format)
         if len(lst_formats) > 0:
             df_formats = pl.DataFrame(lst_formats)
-            df_formats = df_formats[["id_release", "name", "qty"]]
+            df_formats = df_formats[["id_release", "name", "qty", "dt_loaded"]]
             df_formats = df_formats.rename({"name": "name_format", "qty": "qty_format"})
             self.db.store_append(df=df_formats, name_table=target_table)
 
@@ -124,13 +122,13 @@ class ETLRelease(ETLMaster):
         lst_artists = []
         for artist in self.obj_discogs.credits:
             data = artist.data
-            data.update(
-                {"id_release": self.obj_discogs.id, "dt_loaded": dt.datetime.now()}
-            )
+            data.update({"id_release": self.obj_discogs.id, "dt_loaded": dt.datetime.now()})
             lst_artists.append(data)
         if len(lst_artists) > 0:
             df_artists = pl.DataFrame(lst_artists)
-            df_artists = df_artists[["name", "role", "id", "resource_url"]]
+            df_artists = df_artists[
+                ["id_release", "name", "role", "id", "resource_url", "dt_loaded"]
+            ]
             df_artists = df_artists.rename(
                 {
                     "name": "name_artist",

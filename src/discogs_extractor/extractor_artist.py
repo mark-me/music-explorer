@@ -12,6 +12,7 @@ from .extractor import DiscogsETL
 
 logger = logging.getLogger(__name__)
 
+
 class ETLArtist(DiscogsETL):
     """A class that processes artist related data"""
 
@@ -21,9 +22,7 @@ class ETLArtist(DiscogsETL):
         self.process_masters = True
 
     def process(self) -> None:
-        for artist in tqdm(
-            self.obj_discogs, total=len(self.obj_discogs), desc="Artists"
-        ):
+        for artist in tqdm(self.obj_discogs, total=len(self.obj_discogs), desc="Artists"):
             exists = self.db.is_value_present(
                 name_table="artist", name_column="id_artist", value=artist.id
             )
@@ -38,9 +37,7 @@ class ETLArtist(DiscogsETL):
                 self.members(artist=artist, target_table="artist_members")
                 self.urls(artist=artist, target_table="artist_urls")
             else:
-                logger.info(
-                    f"Previously processed data for artist '{artist.name}', skipping"
-                )
+                logger.info(f"Previously processed data for artist '{artist.name}', skipping")
 
     def artist(self, artist: models.Artist, target_table: str) -> pl.DataFrame:
         df = pl.DataFrame([{"id_artist": artist.id, "name_artist": artist.name}])
@@ -82,6 +79,7 @@ class ETLArtist(DiscogsETL):
                     "role",
                     "year",
                     "thumb",
+                    "dt_loaded",
                 ]
             ]
             df = df.rename(
@@ -108,7 +106,7 @@ class ETLArtist(DiscogsETL):
             lst_images.append(image)
         if len(lst_images) > 0:
             df = pl.DataFrame(lst_images)
-            df = df[["id_artist", "type", "uri", "uri150", "width", "height"]]
+            df = df[["id_artist", "type", "uri", "uri150", "width", "height", "dt_loaded"]]
             df = df.rename(
                 {
                     "uri": "url_image",
@@ -131,12 +129,12 @@ class ETLArtist(DiscogsETL):
             return
         if len(lst_groups) > 0:
             df = pl.DataFrame(lst_groups)
-            dict_rename =                 {
-                    "id": "id_group",
-                    "name": "name_group",
-                    "resource_url": "api_group",
-                    "active": "is_active",
-                }
+            dict_rename = {
+                "id": "id_group",
+                "name": "name_group",
+                "resource_url": "api_group",
+                "active": "is_active",
+            }
             if "thumbnail_url" in df.columns:
                 dict_rename.update({"thumbnail_url": "url_thumbnail"})
             df = df.rename(dict_rename)
@@ -197,9 +195,7 @@ class ETLArtist(DiscogsETL):
             logger.error(f"Could not find artist {artist.name} for urls.")
             return
         for url in artist.urls:
-            lst_urls.append(
-                {"id_artist": artist.id, "url": url, "dt_loaded": dt.datetime.now()}
-            )
+            lst_urls.append({"id_artist": artist.id, "url": url, "dt_loaded": dt.datetime.now()})
         if len(lst_urls) > 0:
             df = pl.DataFrame(lst_urls)
             self.db.store_append(df=df, name_table=target_table)

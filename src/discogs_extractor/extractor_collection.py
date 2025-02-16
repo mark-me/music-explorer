@@ -31,7 +31,7 @@ class ETLCollection(DiscogsETL):
         df_stats = pl.DataFrame(
             [
                 {
-                    "time_value_retrieved": dt.datetime.now(),
+                    "dt_loaded": dt.datetime.now(),
                     "qty_collection_items": self.user.num_collection,
                     "amt_maximum": collection_value.maximum,
                     "amt_median": collection_value.median,
