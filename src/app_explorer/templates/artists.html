@@ -14,41 +14,41 @@
     </div>
     <div class="row row-cols-auto justify-content-md-center">
       {% for artist in random_artists %}
-      <div class="card-group">
-        <div class="card">
-          <div class="card-body text-center">
-            <span class="position-absolute bottom-0 end-0 translate-middle badge rounded-pill text-bg-secondary">{{artist.qty_collection_items}}</span>
-            <span class="visually-hidden">Items collected</span>
-            <img src="{{artist.url_image}}" width="150" height="150" />
+        <div class="card-group">
+          <div class="card">
+            <div class="card-body text-center">
+              <span class="position-absolute bottom-0 end-0 translate-middle badge rounded-pill text-bg-secondary">{{ artist.qty_collection_items }}</span>
+              <span class="visually-hidden">Items collected</span>
+              <img src="{{ artist.url_image }}" width="150" height="150" />
+            </div>
+            <div class="card-footer text-center">{{ artist.name_artist }}</div>
           </div>
-          <div class="card-footer text-center">{{ artist.name_artist }}</div>
         </div>
-      </div>
       {% endfor %}
     </div>
   </div>
-  <br>
+  <br />
   <div class="card">
     <div class="card-header container-fluid">
       <div class="row">
         <div class="col">
-          <b>All albums</b>
+          <b>All artists</b>
         </div>
         <div class="col-auto float-right">
-          <button type="button" class="btn btn-primary btn-sm">All albums</button>
+          <a href="/artists_all" class="btn btn-primary btn-sm">All artists</a>
         </div>
       </div>
     </div>
     <div class="row row-cols-auto justify-content-md-center">
       {% for artist in all_artists %}
-      <div class="card-group">
-        <div class="card">
-          <div class="card-body text-center">
-            <img src="{{artist.url_image}}" width="150" height="150" />
+        <div class="card-group">
+          <div class="card">
+            <div class="card-body text-center">
+              <img src="{{ artist.url_image }}" width="150" height="150" />
+            </div>
+            <div class="card-footer text-center">{{ artist.name_artist }}</div>
           </div>
-          <div class="card-footer text-center">{{ artist.name_artist }}</div>
         </div>
-      </div>
       {% endfor %}
     </div>
   </div>

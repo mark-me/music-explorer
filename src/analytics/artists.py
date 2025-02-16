@@ -32,11 +32,12 @@ class Artists(DBStorage):
         """
 
     def all(self) -> pl.DataFrame:
-        df = self.read_sql(self.sql_all)
+        sql = self.sql_all + " ORDER BY UPPER(a.name_artist)"
+        df = self.read_sql(sql)
         return df
 
     def all_top_10(self) -> pl.DataFrame:
-        sql = self.sql_all + " ORDER BY a.name_artist LIMIT 10"
+        sql = self.sql_all + " ORDER BY UPPER(a.name_artist) LIMIT 10"
         df = self.read_sql(sql=sql)
         return df
 

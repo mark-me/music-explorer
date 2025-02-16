@@ -26,6 +26,12 @@ def artists():
     lst_all = db_artists.all_top_10().to_dicts()
     return render_template("artists.html", random_artists=lst_random , all_artists=lst_all, title="Artists")
 
+@app.route("/artists_all")
+def artists_all():
+    """Artists"""
+    db_artists = Artists(file_db=file_db)
+    lst_all = db_artists.all().to_dicts()
+    return render_template("artists_all.html", all_artists=lst_all, title="Artists")
 
 @app.route("/collection_items")
 def collection_items():
