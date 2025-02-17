@@ -89,14 +89,14 @@ class ETLArtist(DiscogsETL):
                     "dt_loaded",
                 ]
             ]
-            df = df.rename(
-                {
-                    "id": "id_master",
-                    "main_release": "id_main_release",
-                    "artist": "name_artist",
-                    "thumb": "url_thumb",
-                }
-            )
+            dict_rename = {
+                "id": "id_master",
+                "main_release": "id_main_release",
+                "artist": "name_artist",
+            }
+            if "thumb" in df.columns:
+                dict_rename.update({"thumb": "url_thumb"})
+            df = df.rename(dict_rename)
             self.db.store_append(df=df, name_table=target_table)
 
     def images(self, artist: models.Artist, target_table: str) -> None:
@@ -159,14 +159,14 @@ class ETLArtist(DiscogsETL):
             return
         if len(lst_aliases) > 0:
             df = pl.DataFrame(lst_aliases)
-            df = df.rename(
-                {
-                    "id": "id_alias",
-                    "name": "name_alias",
-                    "resource_url": "api_alias",
-                    "thumbnail_url": "url_thumbnail",
-                }
-            )
+            dict_rename = {
+                "id": "id_alias",
+                "name": "name_alias",
+                "resource_url": "api_alias",
+            }
+            if "thumbnail_url" in df.columns:
+                dict_rename.update({"thumbnail_url": "url_thumbnail"})
+            df = df.rename(dict_rename)
             self.db.store_append(df=df, name_table=target_table)
 
     def members(self, artist: models.Artist, target_table: str) -> None:

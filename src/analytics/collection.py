@@ -23,6 +23,8 @@ class Collection(DBStorage):
             ON a.id_artist = ra.id_artist
             WHERE ( rf.name_format = 'Vinyl' or rf.name_format IS NULL )
         """
+        self.sql_tracks = """
+        """
 
     def all(self) -> list:
         sql = self.sql_all + " ORDER BY ci.title"

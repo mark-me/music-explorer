@@ -60,15 +60,15 @@ class ETLRelease(ETLMaster):
         ]
         cols = list(set(cols_release) & set(df_release.columns))
         df_release = df_release[cols]
-        df_release = df_release.rename(
-            {
-                "id": "id_release",
-                "master_id": "id_master",
-                "cover_image": "url_cover",
-                "thumb": "url_thumbnail",
-                "uri": "url_release",
-            }
-        )
+        dict_rename = {
+            "id": "id_release",
+            "master_id": "id_master",
+            "cover_image": "url_cover",
+            "uri": "url_release",
+        }
+        if "thumb" in df_release.columns:
+            dict_rename.update({"thumb": "url_thumbnail"})
+        df_release = df_release.rename(dict_rename)
         self.db.store_append(df=df_release, name_table=target_table)
 
     def extract_artists(self, target_table: str) -> None:
