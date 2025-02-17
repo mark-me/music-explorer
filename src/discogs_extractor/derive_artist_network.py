@@ -9,12 +9,12 @@ class DeriveArtistNetwork(DBStorage):
         super().__init__(db_file)
 
     def process(self) -> None:
-        self._artist_vertices()
-        self._artist_edges()
+        self._create_artist_vertices()
+        self._create_artist_edges()
         self._create_clusters()
-        self._community_dendrogram()
+        self._create_community_dendrogram()
 
-    def _artist_vertices(self) -> None:
+    def _create_artist_vertices(self) -> None:
         """Retrieve artists in order to determine where to stop discogs extraction"""
         self.drop_existing_table(name_table="artist_vertex")
         sql_statement = """
@@ -40,7 +40,7 @@ class DeriveArtistNetwork(DBStorage):
                 GROUP BY id_artist"""
         self.execute_sql(sql=sql_statement)
 
-    def _artist_edges(self) -> None:
+    def _create_artist_edges(self) -> None:
         """Retrieve artist cooperations in order to determine where to stop discogs extraction"""
         self.drop_existing_table(name_table="artist_edge")
         sql_statement = """
@@ -274,7 +274,7 @@ class DeriveArtistNetwork(DBStorage):
         df_hierarchy = pl.concat(lst_dendrogram, axis=0, ignore_index=True)
         self.store_replace(df=df_hierarchy, name_table="artist_community_hierarchy")
 
-    def _community_labels(self) -> None:
+    def _create_community_labels(self) -> None:
         self.drop_existing_table(name_table="artist_collection_ranked_eigenvalue")
         sql_statement = """
             CREATE TABLE artist_collection_ranked_eigenvalue AS
@@ -315,8 +315,8 @@ class DeriveArtistNetwork(DBStorage):
         """
         self.execute_sql(sql=sql_statement)
 
-    def _community_dendrogram(self) -> None:
-        self._community_labels()
+    def _create_community_dendrogram(self) -> None:
+        self._create_community_labels()
         self.drop_existing_table(name_table="community_dendrogram_vertices")
         sql_statement = """
             CREATE TABLE community_dendrogram_vertices AS
