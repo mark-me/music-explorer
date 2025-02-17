@@ -26,25 +26,25 @@ class Collection(DBStorage):
             WHERE ( rf.name_format = 'Vinyl' or rf.name_format IS NULL )
         """
 
-    def all(self) -> pl.DataFrame:
+    def all(self) -> list:
         sql = self.sql_all + " ORDER BY ci.title"
-        df = self.read_sql(sql=sql)
-        return df
+        lst_dicts = self.read_sql(sql=sql).to_dicts()
+        return lst_dicts
 
-    def all_top_10(self) -> pl.DataFrame:
+    def all_top_10(self) -> list:
         sql = self.sql_all + " ORDER BY ci.title LIMIT 10"
-        df = self.read_sql(sql=sql)
-        return df
+        lst_dicts = self.read_sql(sql=sql).to_dicts()
+        return lst_dicts
 
-    def random(self, qty_sample: int = 20) -> pl.DataFrame:
+    def random(self, qty_sample: int = 20) -> list:
         df = self.all()
-        df = df.sample(n=qty_sample)
-        return df
+        lst_dicts = df.sample(n=qty_sample).to_dicts()
+        return lst_dicts
 
-    def artist(self, id_artist: str) -> pl.DataFrame:
+    def artist(self, id_artist: str) -> list:
         sql = self.sql_all + f" AND a.id_artist={id_artist} ORDER BY ci.year_released"
-        df = self.read_sql(sql=sql)
+        lst_dicts = self.read_sql(sql=sql).to_dicts()
         #lst_items = self.read_sql(sql=sql).to_dicts()
         #for i, item in enumerate(lst_items):
 
-        return df
+        return lst_dicts

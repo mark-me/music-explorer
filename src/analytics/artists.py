@@ -39,22 +39,23 @@ class Artists(DBStorage):
         artist.update({"urls": lst_urls})
         return artist
 
-    def all(self) -> pl.DataFrame:
+    def all(self) -> list:
         sql = self.sql_all + " ORDER BY UPPER(a.name_artist)"
-        df = self.read_sql(sql=sql)
-        return df
+        lst_dicts = self.read_sql(sql=sql).to_dicts()
+        return lst_dicts
 
-    def all_top_10(self) -> pl.DataFrame:
+    def all_top_10(self) -> list:
         sql = self.sql_all + " ORDER BY UPPER(a.name_artist) LIMIT 10"
-        df = self.read_sql(sql=sql)
-        return df
+        lst_dicts = self.read_sql(sql=sql).to_dicts()
+        return lst_dicts
 
-    def top_collected(self) -> pl.DataFrame:
+    def top_collected(self) -> list:
         df = self.all()
         df.sort("qty_collection_items", descending=True)
-        return df
+        lst_dicts = df.to_dicts()
+        return lst_dicts
 
-    def random(self, qty_sample: int = 20) -> pl.DataFrame:
+    def random(self, qty_sample: int = 20) -> list:
         df = self.all()
-        df = df.sample(n=qty_sample)
-        return df
+        lst_dicts = df.sample(n=qty_sample).to_dicts()
+        return lst_dicts
