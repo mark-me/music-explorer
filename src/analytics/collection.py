@@ -1,5 +1,3 @@
-import polars as pl
-
 from db_operations import DBStorage
 
 class Collection(DBStorage):
@@ -37,7 +35,7 @@ class Collection(DBStorage):
         return lst_dicts
 
     def random(self, qty_sample: int = 20) -> list:
-        df = self.all()
+        df = self.read_sql(sql=self.sql_all)
         lst_dicts = df.sample(n=qty_sample).to_dicts()
         return lst_dicts
 

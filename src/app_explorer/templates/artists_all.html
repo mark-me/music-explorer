@@ -7,9 +7,11 @@
         <div class="card-group">
           <div class="card border-secondary mb-3">
             <div class="card-body text-center">
-              <span class="position-absolute top-10 end-0 translate-middle badge rounded-pill text-bg-secondary">{{ artist.qty_collection_items }}</span>
-              <span class="visually-hidden">Items collected</span>
-              <a href="/collection_artist/{{ artist. id_artist }}"><img src="{{ artist.url_image }}" height="150" /></a>
+              <a href="/collection_artist/{{ artist.id_artist }}">
+                <span class="position-absolute top-10 end-0 translate-middle badge rounded-pill text-bg-secondary">{{ artist.qty_collection_items }} LPs</span>
+                <span class="visually-hidden">Items collected</span>
+              </a>
+              <a href="/collection_artist/{{ artist.id_artist }}"><img src="{{ artist.url_image }}" height="150" /></a>
             </div>
             <div class="card-footer text-center">{{ artist.name_artist }}</div>
           </div>

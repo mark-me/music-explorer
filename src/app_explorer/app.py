@@ -41,8 +41,8 @@ def artists_all():
 def collection_items():
     """Collection"""
     collection = Collection(file_db=file_db)
-    lst_random = collection.random(qty_sample=5).to_dicts()
-    lst_all = collection.all_top_10().to_dicts()
+    lst_random = collection.random(qty_sample=5)
+    lst_all = collection.all_top_10()
     return render_template(
         "collection_items.html",
         random_items=lst_random,
@@ -55,7 +55,7 @@ def collection_items():
 def collection_items_all():
     """Collection"""
     collection = Collection(file_db=file_db)
-    lst_all = collection.all().to_dicts()
+    lst_all = collection.all()
     return render_template(
         "collection_items_all.html",
         all_items=lst_all,
@@ -68,7 +68,7 @@ def collection_artist(id_artist):
     collection = Collection(file_db=file_db)
     artists = Artists(file_db=file_db)
     dict_artist = artists.artist(id_artist=id_artist)
-    lst_all = collection.artist(id_artist=id_artist).to_dicts()
+    lst_all = collection.artist(id_artist=id_artist)
     return render_template(
         "collection_items_artist.html",
         all_items=lst_all,

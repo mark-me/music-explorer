@@ -14,7 +14,7 @@ class Artists(DBStorage):
                 img.url_image,
                 img.url_image_150,
                 img.width_image,
-                COUNT(DISTINCT ci.id_instance) AS qty_collection_items
+                COUNT(DISTINCT rf.id_release) AS qty_collection_items
             FROM collection.main.artist a
             LEFT JOIN collection.main.artist_images as img
             ON img.id_artist = a.id_artist
@@ -22,7 +22,10 @@ class Artists(DBStorage):
             ON ra.id_artist = a.id_artist
             INNER JOIN collection.main.collection_items ci
             ON ci.id_release = ra.id_release
+            LEFT JOIN collection.main.release_formats rf
+            ON rf.id_release = ci.id_release
             WHERE ( img.type = 'primary' OR img.type IS NULL )
+            AND (rf.name_format = 'Vinyl' or rf.name_format IS NULL)
             GROUP BY
                 a.id_artist,
                 a.name_artist,
@@ -56,6 +59,6 @@ class Artists(DBStorage):
         return lst_dicts
 
     def random(self, qty_sample: int = 20) -> list:
-        df = self.all()
+        df = self.read_sql(sql=self.sql_all)
         lst_dicts = df.sample(n=qty_sample).to_dicts()
         return lst_dicts
