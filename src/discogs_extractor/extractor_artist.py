@@ -46,7 +46,7 @@ class ETLArtist(DiscogsETL):
             logger.error(f"Could not find artist '{artist.name}' on Discogs")
             return
         df = pl.DataFrame(
-            [{"id_artist": artist.id, "name_artist": artist.name, "profile": artist.profile}]
+            [{"id_artist": artist.id, "name_artist": artist.name, "profile": profile}]
         )
         self.db.store_append(df=df, name_table=target_table)
 
