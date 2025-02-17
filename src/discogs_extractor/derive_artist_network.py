@@ -4,7 +4,7 @@ import polars as pl
 from db_operations import DBStorage
 
 
-class DeriveNetwork(DBStorage):
+class DeriveArtistNetwork(DBStorage):
     def __init__(self, db_file) -> None:
         super().__init__(db_file)
 
