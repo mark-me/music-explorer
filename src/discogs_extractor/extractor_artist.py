@@ -40,6 +40,11 @@ class ETLArtist(DiscogsETL):
                 logger.info(f"Previously processed data for artist '{artist.name}', skipping")
 
     def artist(self, artist: models.Artist, target_table: str) -> pl.DataFrame:
+        try:
+            profile = artist.profile
+        except HTTPError:
+            logger.error(f"Could not find artist '{artist.name}' on Discogs")
+            return
         df = pl.DataFrame(
             [{"id_artist": artist.id, "name_artist": artist.name, "profile": artist.profile}]
         )
