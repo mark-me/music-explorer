@@ -1,0 +1,20 @@
+---
+services:
+  music-explorer:
+    image: ghcr.io/mark-me/music_explorer:v0.0.1
+    container_name: music-explorer
+    restart: unless-stopped
+    environment:
+      - TZ=Europe/Amsterdam
+    volumes:
+      - resources:/data
+    ports:
+      - 5000:5000
+volumes:
+  resources:
+    driver: local
+    driver_opts:
+      type: none
+      device: /data
+      o: "bind,rw"
+

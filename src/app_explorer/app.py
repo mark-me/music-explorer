@@ -4,7 +4,7 @@ from flask import Flask, render_template
 
 from analytics import Artists, Collection
 
-app = Flask(__name__)
+app = Flask(__name__,template_folder='templates')
 
 with open(r"config/config.yml") as file:
     config = yaml.load(file, Loader=yaml.FullLoader)
