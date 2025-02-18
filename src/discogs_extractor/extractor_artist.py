@@ -45,6 +45,9 @@ class ETLArtist(DiscogsETL):
         except HTTPError:
             logger.error(f"Could not find artist '{artist.name}' on Discogs")
             return
+        except JSONDecodeError:
+            logger.error(f"Could not parse artist profile of '{artist.name}' on Discogs")
+            return
         df = pl.DataFrame(
             [{"id_artist": artist.id, "name_artist": artist.name, "profile": profile}]
         )
