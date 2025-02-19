@@ -2,9 +2,12 @@ import yaml
 
 from flask import Flask, render_template
 
+
 from analytics import Artists, Collection
+from app_explorer.auth.auth import bp_authentication
 
 app = Flask(__name__,template_folder='templates')
+app.register_blueprint(bp_authentication, url_prefix='/discogs_auth')
 
 with open(r"config/config.yml") as file:
     config = yaml.load(file, Loader=yaml.FullLoader)
@@ -84,4 +87,4 @@ def about():
 
 
 if __name__ == "__main__":
-    app.run(debug=True, port=88)
+    app.run(debug=True, port=5000)
