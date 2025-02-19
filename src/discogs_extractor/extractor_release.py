@@ -2,6 +2,7 @@ import datetime as dt
 
 import polars as pl
 from discogs_client import models
+from json.decoder import JSONDecodeError
 
 from log_config import logging
 
@@ -143,10 +144,15 @@ class ETLRelease(ETLMaster):
         dict_marketplace = marketplace.data
         community = self.obj_discogs.community
         dict_community = community.data
+        try:
+            num_for_sale = marketplace.num_for_sale
+        except JSONDecodeError:
+            logger.error(f"Can't extract market qty for sale from {self.obj_discogs.title}")
+            return
         dict_stats = {
             "id_release": dict_marketplace["id"],
             "dt_loaded": dt.datetime.now(),
-            "qty_for_sale": marketplace.num_for_sale,
+            "qty_for_sale": num_for_sale,
             "amt_price_lowest": dict_marketplace["lowest_price"]["value"]
             if dict_marketplace["lowest_price"] is not None
             else None,
