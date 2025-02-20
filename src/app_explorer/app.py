@@ -1,13 +1,16 @@
+import os
+
 import yaml
-
 from flask import Flask, render_template
-
 
 from analytics import Artists, Collection
 from app_explorer.auth.auth import bp_authentication
+from log_config import logging
 
-app = Flask(__name__,template_folder='templates')
-app.register_blueprint(bp_authentication, url_prefix='/discogs_auth')
+logger = logging.getLogger(__name__)
+
+app = Flask(__name__) #, template_folder=os.getcwd() + "/src/app_explorer/templates")
+app.register_blueprint(bp_authentication, url_prefix="/discogs_auth")
 
 with open(r"config/config.yml") as file:
     config = yaml.load(file, Loader=yaml.FullLoader)
