@@ -1,15 +1,17 @@
 import yaml
+import os
+from pathlib import Path
 from flask import Flask, render_template
 
-from analytics import Artists, Collection
-from app_explorer.route_auth.auth import bp_authentication
+from app_explorer.analytics import Artists, Collection
+#from app_explorer.route_auth.auth import bp_authentication
 from log_config import logging
 
 logger = logging.getLogger(__name__)
 
-app = Flask(__name__) #, template_folder=os.getcwd() + "/src/app_explorer/templates")
+app = Flask(__name__, template_folder="templates")
 EXPLAIN_TEMPLATE_LOADING = True
-app.register_blueprint(bp_authentication, url_prefix="/discogs_auth")
+#app.register_blueprint(bp_authentication, url_prefix="/discogs_auth")
 
 with open(r"config/config.yml") as file:
     config = yaml.load(file, Loader=yaml.FullLoader)
@@ -20,6 +22,10 @@ file_db = config["db_file"]
 @app.route("/home")
 def home():
     """Home page"""
+    path = Path(os.getcwd()+ "/src/app_explorer")
+    for file in path.rglob('*'):
+        if file.is_dir():
+            logger.info(f"Working dir: {file}")
     return render_template("home.html")
 
 
