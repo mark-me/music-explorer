@@ -1,4 +1,7 @@
+import polars as pl
+
 from db_operations import DBStorage
+
 
 class DeriveArtist(DBStorage):
     def __init__(self, file_db) -> None:
@@ -27,9 +30,7 @@ class DeriveArtist(DBStorage):
         self.execute_sql(sql=sql)
 
     def _artist_thumbnails(self) -> None:
-        self.column_add(
-            name_table="artist", name_column="url_thumbnail", type_data="VARCHAR"
-        )
+        self.column_add(name_table="artist", name_column="url_thumbnail", type_data="VARCHAR")
         self.drop_table(name_table="thumbnails")
         sql_statement = """
         CREATE TABLE thumbnails AS
@@ -47,9 +48,7 @@ class DeriveArtist(DBStorage):
         self.execute_sql(sql=sql_statement)
 
     def _artist_qty_collection_items(self) -> None:
-        self.column_add(
-            name_table="artist", name_column="qty_collection_items", type_data="INT"
-        )
+        self.column_add(name_table="artist", name_column="qty_collection_items", type_data="INT")
 
         self.drop_table(name_table="qty_collection_items")
         sql_statement = """
@@ -126,3 +125,33 @@ class DeriveArtist(DBStorage):
                 relation_type;
         """
         self.execute_sql(sql=sql_statement)
+
+    def _get_artists_not_added(self) -> pl.DataFrame:
+        df = pl.DataFrame()
+        sql = """
+            SELECT DISTINCT id_artist
+            FROM (
+                SELECT id_artist FROM artist_masters
+                WHERE role IN ('Main', 'Appearance', 'TrackAppearance')
+                    UNION
+                SELECT id_alias FROM artist_aliases
+                    UNION
+                SELECT id_member FROM artist_members
+                    UNION
+                SELECT id_group FROM artist_groups
+                    UNION
+                SELECT id_artist FROM release_artists )
+            WHERE id_artist NOT IN ( SELECT id_artist FROM artist )
+                AND id_artist NOT IN ( SELECT id_artist FROM artist_ignore)
+                AND id_artist NOT IN ( SELECT id_artist FROM artist_write_attempts WHERE qty_attempts > 1)
+        """
+        df = self.read_sql(sql=sql)
+        return df
+
+    def _get_qty_artists_not_added(self) -> int:
+        sql = "SELECT COUNT(*) AS qty_artists_not_added FROM vw_artists_not_added;"
+        qty = self.read_sql(sql=sql).item(0, 0)
+        return qty
+
+    def _get_artists_write_attempts(self) -> pl.DataFrame:
+        return self.read_table(name_table='artist_write_attempts')
