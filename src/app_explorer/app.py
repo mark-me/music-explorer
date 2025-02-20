@@ -9,7 +9,9 @@ from log_config import logging
 
 logger = logging.getLogger(__name__)
 
-app = Flask(__name__, template_folder="templates")
+app = Flask(__name__,
+            template_folder="/app/src/app_explorer/templates",
+            static_folder="/app/src/app_explorer/static")
 EXPLAIN_TEMPLATE_LOADING = True
 #app.register_blueprint(bp_authentication, url_prefix="/discogs_auth")
 
@@ -22,10 +24,7 @@ file_db = config["db_file"]
 @app.route("/home")
 def home():
     """Home page"""
-    path = Path(os.getcwd()+ "/src/app_explorer")
-    for file in path.rglob('*'):
-        if file.is_dir():
-            logger.info(f"Working dir: {file}")
+    logger.info(f"Working dir: {app.template_folder}")
     return render_template("home.html")
 
 
