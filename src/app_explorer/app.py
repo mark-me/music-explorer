@@ -8,6 +8,7 @@ from log_config import logging
 logger = logging.getLogger(__name__)
 
 app = Flask(__name__) #, template_folder=os.getcwd() + "/src/app_explorer/templates")
+EXPLAIN_TEMPLATE_LOADING = True
 app.register_blueprint(bp_authentication, url_prefix="/discogs_auth")
 
 with open(r"config/config.yml") as file:

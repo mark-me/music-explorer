@@ -1,7 +1,7 @@
 import yaml
 from flask import Blueprint, render_template, request
 
-from discogs_extractor import Discogs
+from app_loader.discogs_extractor import Discogs
 
 with open(r"config/config.yml") as file:
     config = yaml.load(file, Loader=yaml.FullLoader)
