@@ -3,7 +3,7 @@ import os
 import yaml
 from flask import Flask, render_template
 
-from app_explorer.analytics import Artists, Collection
+from app_explorer.analytics import Artists, Collection, Release
 
 # from app_explorer.route_auth.auth import bp_authentication
 from log_config import logging
@@ -87,6 +87,10 @@ def collection_artist(id_artist):
         title="Collection items",
     )
 
+@app.route("/collection_item/<int:id_release")
+def collection_item(id_release: int):
+    release = Release(id_release=id_release, file_db=file_db).data()
+    return render_template("collection_item.html", item=release)
 
 @app.route("/about")
 def about():
