@@ -170,8 +170,7 @@ cython_debug/
 # PyPI configuration file
 .pypirc
 log.json
-log.json.1
-log.json.2
+log.json.*
 test.db
 .gitignore
 config/secrets.yml
