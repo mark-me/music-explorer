@@ -87,7 +87,7 @@ def collection_artist(id_artist):
         title="Collection items",
     )
 
-@app.route("/collection_item/<int:id_release")
+@app.route("/collection_item/<int:id_release>")
 def collection_item(id_release: int):
     release = Release(id_release=id_release, file_db=file_db).data()
     return render_template("collection_item.html", item=release)

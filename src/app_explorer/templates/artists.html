@@ -11,18 +11,22 @@
         </div>
       </div>
     </div>
-    <div class="row row-cols-auto justify-content-md-center">
+    <div class="row">
       {% for artist in random_artists %}
-        <div class="card-group">
-          <div class="card">
-            <div class="card-body text-center">
-              <a href="/collection_artist/{{ artist.id_artist }}"><img src="{{ artist.url_image }}" height="150" /></a>
-              <a href="/collection_artist/{{ artist.id_artist }}">
-                <span class="position-absolute bottom-20 end-0 translate-middle badge rounded-pill text-bg-secondary">{{ artist.qty_collection_items }} LPs</span>
-                <span class="visually-hidden">Items collected</span>
-              </a>
+        <div class="col justify-content-md-center">
+          <div class="card-group">
+            <div class="card">
+              <div class="card-body text-center">
+                <a href="/collection_artist/{{ artist.id_artist }}"><img src="{{ artist.url_image }}" class="rounded" height="150" /></a>
+                <a href="/collection_artist/{{ artist.id_artist }}">
+                  <span class="position-absolute bottom-20 end-0 translate-middle badge rounded-pill text-bg-secondary">{{ artist.qty_collection_items }} LPs</span>
+                  <span class="visually-hidden">Items collected</span>
+                </a>
+              </div>
+              <div class="card-footer text-center">
+                <b>{{ artist.name_artist }}</b>
+              </div>
             </div>
-            <div class="card-footer text-center"><b>{{ artist.name_artist }}</b></div>
           </div>
         </div>
       {% endfor %}
@@ -40,18 +44,22 @@
         </div>
       </div>
     </div>
-    <div class="row row-cols-auto justify-content-md-center">
+    <div class="row">
       {% for artist in all_artists %}
-        <div class="card-group">
-          <div class="card">
-            <div class="card-body text-center">
-              <a href="/collection_artist/{{ artist.id_artist }}"><img src="{{ artist.url_image }}" height="150" /></a>
-              <a href="/collection_artist/{{ artist.id_artist }}">
-                <span class="position-absolute bottom-20 end-0 translate-middle badge rounded-pill text-bg-secondary">{{ artist.qty_collection_items }} LPs</span>
-                <span class="visually-hidden">Items collected</span>
-              </a>
+        <div class="col justify-content-md-center">
+          <div class="card-group">
+            <div class="card">
+              <div class="card-body text-center">
+                <a href="/collection_artist/{{ artist.id_artist }}"><img src="{{ artist.url_image }}" class="rounded" height="150" /></a>
+                <a href="/collection_artist/{{ artist.id_artist }}">
+                  <span class="position-absolute bottom-20 end-0 translate-middle badge rounded-pill text-bg-secondary">{{ artist.qty_collection_items }} LPs</span>
+                  <span class="visually-hidden">Items collected</span>
+                </a>
+              </div>
+              <div class="card-footer text-center">
+                <b>{{ artist.name_artist }}</b>
+              </div>
             </div>
-            <div class="card-footer text-center"><b>{{ artist.name_artist }}</b></div>
           </div>
         </div>
       {% endfor %}

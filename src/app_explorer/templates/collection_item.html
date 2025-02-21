@@ -1,0 +1,18 @@
+{% extends 'layout.html' %}
+{% block content %}
+  <div class="card">
+    <div class="card-header">
+      <b>{{ artist.name_artist }}</b>
+    </div>
+    <div class="row">
+      <div class="col-auto">
+        <img src="{{ item.url_image }}" class="rounded" width="150" />
+      </div>
+      <div class="col">
+        {% for track in item.tracks%}
+          {{track.position}} - {{track.title}}<br>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+{% endblock %}

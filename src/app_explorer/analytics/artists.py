@@ -11,6 +11,7 @@ class Artists(DBStorage):
             SELECT
                 a.id_artist,
                 a.name_artist,
+                a.profile,
                 img.url_image,
                 img.url_image_150,
                 img.width_image,
@@ -29,6 +30,7 @@ class Artists(DBStorage):
             GROUP BY
                 a.id_artist,
                 a.name_artist,
+                a.profile,
                 img.url_image,
                 img.url_image_150,
                 img.width_image
@@ -43,12 +45,36 @@ class Artists(DBStorage):
         return artist
 
     def all(self) -> list:
-        sql = self.sql_all + " ORDER BY UPPER(a.name_artist)"
+        sql = (
+            self.sql_all
+            + """
+        ORDER BY
+            LTRIM(
+                LTRIM(
+                    LTRIM(
+                    UPPER(a.name_artist),
+                    '.'),
+                    ''''
+                    ), '"'
+                    )"""
+        )
         lst_dicts = self.read_sql(sql=sql).to_dicts()
         return lst_dicts
 
     def all_top_10(self) -> list:
-        sql = self.sql_all + " ORDER BY UPPER(a.name_artist) LIMIT 10"
+        sql = (
+            self.sql_all
+            + """
+        ORDER BY
+            LTRIM(
+                LTRIM(
+                    LTRIM(
+                    UPPER(a.name_artist),
+                    '.'),
+                    ''''
+                    ), '"'
+                    ) LIMIT 10"""
+        )
         lst_dicts = self.read_sql(sql=sql).to_dicts()
         return lst_dicts
 

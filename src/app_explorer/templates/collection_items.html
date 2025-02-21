@@ -11,20 +11,24 @@
         </div>
       </div>
     </div>
-    <div class="row row-cols-auto justify-content-md-center">
-      {% for item in random_items %}
-      <div class="card-group">
-        <div class="card">
-          <div class="card-body text-center">
-            <img src="{{item.url_cover}}" height="150" />
+    <div class="container">
+      <div class="row g-3 justify-content-center">
+        {% for item in random_items %}
+          <div class="col-12 col-lg-2">
+            <div class="card w-100">
+              <div class="card-header text-center">
+                <img src="{{ item.url_cover }}" class="rounded" height="150" class="card-image-top" />
+              </div>
+              <div class="card-body text-center">
+                <b>{{ item.title }}</b><br /><i>{{ item.name_artist }}</i>
+              </div>
+            </div>
           </div>
-          <div class="card-footer"><b>{{ item.title }}</b><br><i>{{ item.name_artist }}</i></div>
-        </div>
+        {% endfor %}
       </div>
-      {% endfor %}
     </div>
   </div>
-  <br>
+  <br />
   <div class="card">
     <div class="card-header container-fluid">
       <div class="row">
@@ -36,16 +40,20 @@
         </div>
       </div>
     </div>
-    <div class="row row-cols-auto justify-content-md-center">
+    <div class="row align-items-center">
       {% for item in all_items %}
-      <div class="card-group">
-        <div class="card">
-          <div class="card-body text-center">
-            <img src="{{item.url_cover}}" height="150" />
+        <div class="col justify-content-md-center">
+          <div class="card-group">
+            <div class="card">
+              <div class="card-body text-center">
+                <img src="{{ item.url_cover }}" class="rounded" height="150" />
+              </div>
+              <div class="card-footer">
+                <b>{{ item.title }}</b><br /><i>{{ item.name_artist }}</i>
+              </div>
+            </div>
           </div>
-          <div class="card-footer"><b>{{ item.title }}</b><br><i>{{ item.name_artist }}</i></div>
         </div>
-      </div>
       {% endfor %}
     </div>
   </div>

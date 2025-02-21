@@ -2,24 +2,22 @@
 {% block content %}
   <div class="card">
     <div class="card-header">
-      <b>Collection items of {{ artist.name_artist }}</b>
+      <b>{{ artist.name_artist }}</b>
     </div>
     <div class="row">
       <div class="col-auto">
-        <img src="{{ artist.url_image }}" width="150" />
+        <img src="{{ artist.url_image }}" class="rounded" width="150" />
       </div>
       <div class="col">
-        <ul>
-        {% for url in artist.urls %}
-          <li><a href="{{url.url}}">{{url.url}}</a></li>
-        {% endfor %}
-        </ul>
+        {{artist.profile}}
       </div>
     </div>
   </div>
   <br>
-  <div class="row row-cols-auto justify-content-md-center">
+  <h5>Collection items for {{artist.name_artist}}</h5>
+  <div class="row">
     {% for item in all_items %}
+    <div class="col justify-content-md-center">
       <div class="card-group">
         <div class="card">
           <div class="card-header">
@@ -28,7 +26,7 @@
           <div class="card-body">
             <div class="row">
               <div class="col-auto">
-                <img src="{{ item.url_cover }}" height="150" />
+                <img src="{{ item.url_cover }}" class="rounded" height="150" />
               </div>
               <div class="col">
                 {% for track in item.tracks%}
@@ -40,6 +38,7 @@
         </div>
         <br>
       </div>
+    </div>
     {% endfor %}
   </div>
 {% endblock %}

@@ -1,7 +1,8 @@
 {% extends 'layout.html' %}
 {% block content %}
-  <div class="row row-cols-auto justify-content-md-center">
+  <div class="row">
     {% for item in all_items %}
+    <div class="col justify-content-md-center">
       <div class="card-group justify-content-md-center">
         <div class="card">
           <div class="card-header text-wrap text-center">
@@ -9,13 +10,14 @@
           </div>
 
           <div class="card-body text-center">
-            <img src="{{ item.url_cover }}" height="150" />
+            <img src="{{ item.url_cover }}" class="rounded" height="150" />
           </div>
           <div class="card-footer text-center">
             <i>{{ item.name_artist }}</i>
           </div>
         </div>
       </div>
+    </div>
     {% endfor %}
   </div>
 {% endblock %}

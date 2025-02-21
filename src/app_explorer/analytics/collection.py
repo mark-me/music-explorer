@@ -30,12 +30,30 @@ class Collection(DBStorage):
         """
 
     def all(self) -> list:
-        sql = self.sql_all + " ORDER BY ci.title"
+        sql = (
+            self.sql_all
+            + """
+        ORDER BY
+            LTRIM(
+                LTRIM(
+                    LTRIM(
+                    UPPER(ci.title),
+                    '.'),
+                    ''''
+                    ), '"'
+                    )"""
+        )
         lst_dicts = self.read_sql(sql=sql).to_dicts()
         return lst_dicts
 
     def all_top_10(self) -> list:
-        sql = self.sql_all + " ORDER BY ci.title LIMIT 10"
+        sql = (
+            self.sql_all
+            + """
+        ORDER BY
+            REGEXP_REPLACE(UPPER(ci.title), '([.''"])', '')
+        LIMIT 10"""
+        )
         lst_dicts = self.read_sql(sql=sql).to_dicts()
         return lst_dicts
 
