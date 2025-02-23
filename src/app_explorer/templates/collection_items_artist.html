@@ -19,7 +19,26 @@
   <div class="row">
     {% for item in all_items %}
     <div class="col-sm-12 col-md-6, col-lg-6 justify-content-md-center">
-      {{ card_macro.card_collection_item(item) }}
+      <div class="card-group">
+        <div class="card">
+          <div class="card-header">
+            <b>{{ item.title }}</b>
+          </div>
+          <div class="card-body">
+            <div class="row">
+              <div class="col-auto">
+                <img src="{{ item.url_cover }}" class="rounded" height="150" />
+              </div>
+              <div class="col">
+                {% for track in item.tracks%}
+                  {{track.position}} - {{track.title}}<br>
+                {% endfor %}
+              </div>
+            </div>
+          </div>
+        </div>
+        <br>
+      </div>
     </div>
     {% endfor %}
   </div>
