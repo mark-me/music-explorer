@@ -20,7 +20,10 @@
                 <img src="{{ item.url_cover }}" class="rounded" height="150" class="card-image-top" />
               </div>
               <div class="card-body text-center">
-                <b>{{ item.title }}</b><br /><i>{{ item.name_artist }}</i>
+                <b>{{ item.title }}</b><br />
+                {% for artist in item.artists %}
+                  <i><a href="/collection_artist/{{ artist.id_artist }}">{{ artist.name_artist }}</a></i><br />
+                {% endfor %}
               </div>
             </div>
           </div>
@@ -49,7 +52,10 @@
                 <img src="{{ item.url_cover }}" class="rounded" height="150" />
               </div>
               <div class="card-footer">
-                <b>{{ item.title }}</b><br /><i>{{ item.name_artist }}</i>
+                <b>{{ item.title }}</b><br />
+                {% for artist in item.artists %}
+                  <i><a href="/collection_artist/{{ artist.id_artist }}">{{ artist.name_artist }}</a></i><br />
+                {% endfor %}
               </div>
             </div>
           </div>
