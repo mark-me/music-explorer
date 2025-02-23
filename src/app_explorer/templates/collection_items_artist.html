@@ -5,41 +5,56 @@
     <div class="card-header">
       <b>{{ artist.name_artist }}</b>
     </div>
-    <div class="row">
-      <div class="col-auto">
-        <img src="{{ artist.url_image }}" class="rounded" width="150" />
-      </div>
-      <div class="col">
-        {{artist.profile}}
-      </div>
-    </div>
-  </div>
-  <br>
-  <h5>Collection items for {{artist.name_artist}}</h5>
-  <div class="row">
-    {% for item in all_items %}
-    <div class="col-sm-12 col-md-6, col-lg-6 justify-content-md-center">
-      <div class="card-group">
-        <div class="card">
-          <div class="card-header">
-            <b>{{ item.title }}</b>
-          </div>
-          <div class="card-body">
-            <div class="row">
-              <div class="col-auto">
-                <a href="/collection_item/{{ item.id_release }}"><img src="{{ item.url_cover }}" class="rounded" height="150" /></a>
-              </div>
-              <div class="col">
-                {% for track in item.tracks%}
-                  {{track.position}} - {{track.title}}<br>
-                {% endfor %}
-              </div>
+    <div class="card-body">
+      <div class="row">
+        <div class="col-auto">
+          <img src="{{ artist.url_image }}" class="rounded" width="150" />
+        </div>
+        <div class="col">
+          <div class="row">{{ artist.profile }}</div>
+          <hr />
+          <div class="row">
+            <div class="col-auto">
+              {% for genre in artist.genres_collection %}
+                <span class="badge bg-primary">{{ genre.name_genre }}</span>
+              {% endfor %}
+            </div>
+            <div class="col">
+              {% for style in artist.styles_collection %}
+                <span class="badge bg-success">{{ style.name_style }}</span>
+              {% endfor %}
             </div>
           </div>
         </div>
-        <br>
       </div>
     </div>
+  </div>
+  <br />
+  <h5>Collection items for {{ artist.name_artist }}</h5>
+  <div class="row">
+    {% for item in all_items %}
+      <div class="col-sm-12 col-md-6, col-lg-6 justify-content-md-center">
+        <div class="card-group">
+          <div class="card">
+            <div class="card-header">
+              <b>{{ item.title }}</b>
+            </div>
+            <div class="card-body">
+              <div class="row">
+                <div class="col-auto">
+                  <a href="/collection_item/{{ item.id_release }}"><img src="{{ item.url_cover }}" class="rounded" height="150" /></a>
+                </div>
+                <div class="col">
+                  {% for track in item.tracks %}
+                    {{ track.position }} - {{ track.title }}<br />
+                  {% endfor %}
+                </div>
+              </div>
+            </div>
+          </div>
+          <br />
+        </div>
+      </div>
     {% endfor %}
   </div>
 {% endblock %}

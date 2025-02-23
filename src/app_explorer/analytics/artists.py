@@ -37,11 +37,13 @@ class Artists(DBStorage):
 
     def artist(self, id_artist: int) -> dict:
         df = self.read_sql(sql=self.sql_all)
-        artist = df.filter(pl.col("id_artist") == id_artist).to_dicts()[0]
+        lst_artists = df.filter(pl.col("id_artist") == id_artist).to_dicts()
+        lst_artists = self._add_nested_information(lst_artists=lst_artists)
+        lst_artists = lst_artists[0]
         sql_urls = f"SELECT url FROM artist_urls WHERE id_artist={id_artist}"
         lst_urls = self.read_sql(sql=sql_urls).to_dicts()
-        artist.update({"urls": lst_urls})
-        return artist
+        lst_artists.update({"urls": lst_urls})
+        return lst_artists
 
     def all(self) -> list:
         sql = (
