@@ -1,5 +1,4 @@
 import polars as pl
-import duckdb
 
 from db_operations import DBStorage
 

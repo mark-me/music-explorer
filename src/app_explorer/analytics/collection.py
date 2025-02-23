@@ -96,7 +96,14 @@ class Collection(DBStorage):
         return lst_items
 
     def artist(self, id_artist: str) -> list:
-        sql = self.sql_all + f" AND a.id_artist={id_artist} ORDER BY ci.year_released"
+        sql = (
+            self.sql_all
+            + f"""
+                INNER JOIN collection.main.release_artists ra
+                ON ci.id_release = ra.id_release
+                WHERE ra.id_artist={id_artist} ORDER BY ci.year_released
+            """
+        )
         df_releases = self.read_sql(sql=sql)
         lst_release_id = pl.Series(df_releases.select("id_release")).to_list()
         lst_items = df_releases.to_dicts()
