@@ -57,8 +57,9 @@ class Artists(DBStorage):
                     ), '"'
                     )"""
         )
-        lst_dicts = self.read_sql(sql=sql).to_dicts()
-        return lst_dicts
+        lst_artists = self.read_sql(sql=sql).to_dicts()
+        lst_artists = self._add_nested_information(lst_artists=lst_artists)
+        return lst_artists
 
     def all_top_10(self) -> list:
         sql = (
@@ -74,16 +75,97 @@ class Artists(DBStorage):
                     ), '"'
                     ) LIMIT 10"""
         )
-        lst_dicts = self.read_sql(sql=sql).to_dicts()
-        return lst_dicts
+        lst_artists = self.read_sql(sql=sql).to_dicts()
+        lst_artists = self._add_nested_information(lst_artists=lst_artists)
+        return lst_artists
 
     def top_collected(self) -> list:
         df = self.all()
         df.sort("qty_collection_items", descending=True)
-        lst_dicts = df.to_dicts()
-        return lst_dicts
+        lst_artists = df.to_dicts()
+        lst_artists = self._add_nested_information(lst_artists=lst_artists)
+        return lst_artists
 
     def random(self, qty_sample: int = 20) -> list:
         df = self.read_sql(sql=self.sql_all)
-        lst_dicts = df.sample(n=qty_sample).to_dicts()
-        return lst_dicts
+        lst_artists = df.sample(n=qty_sample).to_dicts()
+        lst_artists = self._add_nested_information(lst_artists=lst_artists)
+        return lst_artists
+
+    def _add_nested_information(self, lst_artists: list) -> list:
+        str_artist_ids = ", ".join([str(i["id_artist"]) for i in lst_artists])
+        dict_formats = self._formats(str_artist_ids=str_artist_ids)
+        dict_genres = self._genres(str_artist_ids=str_artist_ids)
+        dict_styles = self._styles(str_artist_ids=str_artist_ids)
+
+        # Adding nested information
+        for i, artist in enumerate(lst_artists):
+            id_artist = artist["id_artist"]
+            if id_artist in dict_formats:
+                lst_artists[i].update({"formats_collection": dict_formats[id_artist]})
+            if id_artist in dict_genres:
+                lst_artists[i].update({"genres_collection": dict_genres[id_artist]})
+            if id_artist in dict_styles:
+                lst_artists[i].update({"styles_collection": dict_styles[id_artist]})
+        return lst_artists
+
+    def _formats(self, str_artist_ids: str) -> dict:
+        sql = f"""
+            SELECT
+                ra.id_artist,
+                rf.name_format,
+                COUNT(*) AS qty_collection_items
+            FROM collection_items ci
+            INNER JOIN release_artists ra
+            ON ra.id_release = ci.id_release
+            INNER JOIN release_formats rf
+            ON rf.id_release = ci.id_release
+            WHERE ra.id_artist IN ({str_artist_ids})
+            GROUP BY
+                ra.id_artist,
+                rf.name_format
+        """
+        lst_formats = self.read_sql(sql=sql).to_dicts()
+        dict_formats = self._dicts_to_dict(key_field="id_artist", lst_dicts=lst_formats)
+        return dict_formats
+
+    def _genres(self, str_artist_ids: str) -> dict:
+        sql = f"""
+            SELECT
+                ra.id_artist,
+                rg.name_genre,
+                COUNT(*) AS qty_collection_items
+            FROM collection_items ci
+            INNER JOIN release_artists ra
+            ON ra.id_release = ci.id_release
+            INNER JOIN release_genres rg
+            ON rg.id_release = ci.id_release
+            WHERE ra.id_artist IN ({str_artist_ids})
+            GROUP BY
+                ra.id_artist,
+                rg.name_genre
+        """
+        lst_genres = self.read_sql(sql=sql).to_dicts()
+        dict_genres = self._dicts_to_dict(key_field="id_artist", lst_dicts=lst_genres)
+        return dict_genres
+
+    def _styles(self, str_artist_ids: str) -> dict:
+        # Formats
+        sql = f"""
+            SELECT
+                ra.id_artist,
+                rs.name_style,
+                COUNT(*) AS qty_collection_items
+            FROM collection_items ci
+            INNER JOIN release_artists ra
+            ON ra.id_release = ci.id_release
+            INNER JOIN release_styles rs
+            ON rs.id_release = ci.id_release
+            WHERE ra.id_artist IN ({str_artist_ids})
+            GROUP BY
+                ra.id_artist,
+                rs.name_style
+        """
+        lst_styles = self.read_sql(sql=sql).to_dicts()
+        dict_styles = self._dicts_to_dict(key_field="id_artist", lst_dicts=lst_styles)
+        return dict_styles

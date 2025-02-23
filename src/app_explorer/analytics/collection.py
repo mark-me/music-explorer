@@ -1,4 +1,3 @@
-from collections import defaultdict
 import polars as pl
 
 from db_operations import DBStorage
@@ -17,47 +16,6 @@ class Collection(DBStorage):
                 ci.id_master
             FROM collection.main.collection_items ci
         """
-
-    def _dicts_to_dict(self, key_field: str, lst_dicts: list) -> dict:
-        dict_results = defaultdict(list)
-        for entry in lst_dicts:
-            key_value = entry[key_field]
-            del entry[key_field]
-            dict_results[key_value].append(entry)
-        # Convert defaultdict to a regular dict
-        dict_results = dict(dict_results)
-        return dict_results
-
-    def _add_nested_information(self, lst_items: list) -> list:
-        str_release_ids = ", ".join([str(i["id_release"]) for i in lst_items])
-        sql_artist = f"""
-            SELECT
-                ra.id_release,
-                ra.id_artist,
-                a.name_artist,
-            FROM collection.main.release_artists ra
-            LEFT JOIN collection.main.artist a
-            ON a.id_artist = ra.id_artist
-            WHERE ra.id_release IN ({str_release_ids})
-        """
-        lst_artists = self.read_sql(sql=sql_artist).to_dicts()
-        dict_artists = self._dicts_to_dict(key_field="id_release", lst_dicts=lst_artists)
-
-        sql_format = f"""
-            SELECT
-                id_release,
-                name_format
-            FROM collection.main.release_formats
-            WHERE id_release IN ({str_release_ids})
-        """
-        lst_formats = self.read_sql(sql=sql_format).to_dicts()
-        dict_formats = self._dicts_to_dict(key_field="id_release", lst_dicts=lst_formats)
-        # Adding nested information
-        for i, item in enumerate(lst_items):
-            id_release = item["id_release"]
-            lst_items[i].update({"artists": dict_artists[id_release]})
-            lst_items[i].update({"formats": dict_formats[id_release]})
-        return lst_items
 
     def all(self) -> list:
         sql = (
@@ -154,3 +112,79 @@ class Collection(DBStorage):
         """
         lst_formats = self.read_sql(sql=sql).to_dicts()
         return lst_formats
+
+
+    def _add_nested_information(self, lst_items: list) -> list:
+        str_release_ids = ", ".join([str(i["id_release"]) for i in lst_items])
+        dict_artists = self._artists(str_release_ids=str_release_ids)
+        dict_formats = self._formats(str_release_ids=str_release_ids)
+        dict_genres = self._genres(str_release_ids=str_release_ids)
+        dict_styles = self._styles(str_release_ids=str_release_ids)
+
+        # Adding nested information
+        for i, item in enumerate(lst_items):
+            id_release = item["id_release"]
+            if id_release in dict_artists:
+                lst_items[i].update({"artists": dict_artists[id_release]})
+            if id_release in dict_formats:
+                lst_items[i].update({"formats": dict_formats[id_release]})
+            if id_release in dict_genres:
+                lst_items[i].update({"genres": dict_genres[id_release]})
+            if id_release in dict_styles:
+                lst_items[i].update({"styles": dict_styles[id_release]})
+        return lst_items
+
+    def _artists(self, str_release_ids: str) -> dict:
+        sql = f"""
+            SELECT
+                ra.id_release,
+                ra.id_artist,
+                a.name_artist,
+            FROM collection.main.release_artists ra
+            LEFT JOIN collection.main.artist a
+            ON a.id_artist = ra.id_artist
+            WHERE ra.id_release IN ({str_release_ids})
+        """
+        lst_results = self.read_sql(sql=sql).to_dicts()
+        dict_results = self._dicts_to_dict(key_field="id_release", lst_dicts=lst_results)
+        return dict_results
+
+    def _formats(self, str_release_ids: str) -> dict:
+        sql = f"""
+            SELECT
+                id_release,
+                name_format
+            FROM collection.main.release_formats
+            WHERE id_release IN ({str_release_ids})
+        """
+        lst_results = self.read_sql(sql=sql).to_dicts()
+        dict_results = self._dicts_to_dict(key_field="id_release", lst_dicts=lst_results)
+        return dict_results
+
+    def _genres(self, str_release_ids: str) -> dict:
+        sql = f"""
+            SELECT
+                ci.id_release,
+                rg.name_genre
+            FROM collection_items ci
+            INNER JOIN release_genres rg
+            ON rg.id_release = ci.id_release
+            WHERE ci.id_release IN ({str_release_ids})
+        """
+        lst_results = self.read_sql(sql=sql).to_dicts()
+        dict_results = self._dicts_to_dict(key_field="id_release", lst_dicts=lst_results)
+        return dict_results
+
+    def _styles(self, str_release_ids: str) -> dict:
+        sql = f"""
+            SELECT
+                ci.id_release,
+                rs.name_style
+            FROM collection_items ci
+            INNER JOIN release_styles rs
+            ON rs.id_release = ci.id_release
+            WHERE ci.id_release IN ({str_release_ids})
+        """
+        lst_results = self.read_sql(sql=sql).to_dicts()
+        dict_results = self._dicts_to_dict(key_field="id_release", lst_dicts=lst_results)
+        return dict_results

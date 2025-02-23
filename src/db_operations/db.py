@@ -1,9 +1,10 @@
+from collections import defaultdict
 import polars as pl
 from sqlalchemy import create_engine, text
 
 
 class DBStorage:
-    def __init__(self, file_db, schema: str="main") -> None:
+    def __init__(self, file_db, schema: str = "main") -> None:
         self.file_db = file_db
         self.schema = schema
         self.engine = create_engine(f"duckdb:///{file_db}")
@@ -101,5 +102,15 @@ class DBStorage:
         if self.table_exists(name_table=name_table):
             sql = f"SELECT COUNT(*) AS qty_present FROM {name_table} WHERE {name_column}={value}"
             df = pl.read_database(sql, connection=self.engine.connect())
-            is_present = df.item(0,0) > 0
+            is_present = df.item(0, 0) > 0
         return is_present
+
+    def _dicts_to_dict(self, key_field: str, lst_dicts: list) -> dict:
+        dict_results = defaultdict(list)
+        for entry in lst_dicts:
+            key_value = entry[key_field]
+            del entry[key_field]
+            dict_results[key_value].append(entry)
+        # Convert defaultdict to a regular dict
+        dict_results = dict(dict_results)
+        return dict_results
