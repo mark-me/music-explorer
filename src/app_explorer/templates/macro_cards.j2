@@ -15,17 +15,19 @@
 {% macro card_artist(artist) -%}
   <div class="card w-100">
     <div class="card-body text-center">
-      <a href="/collection_artist/{{ artist.id_artist }}">
-        {% if artist.url_image == "None" %}
-          <img src="images/default_artist.png" class="rounded" height="150" />
-        {% else %}
-          <img src="{{ artist.url_image }}" class="rounded" height="150" />
-        {% endif %}
-      </a>
-      <a href="/collection_artist/{{ artist.id_artist }}">
-        <span class="position-absolute bottom-20 end-0 translate-middle badge rounded-pill text-bg-secondary">{{ artist.qty_collection_items }} LPs</span>
-        <span class="visually-hidden">Items collected</span>
-      </a>
+      <div class="position-relative d-inline-block">
+        <a href="/collection_artist/{{ artist.id_artist }}">
+          {% if artist.url_image %}
+            <img src="{{ artist.url_image }}" class="rounded" height="150" />
+          {% else %}
+            <img src="images/default_artist.png" class="rounded" height="150" />
+          {% endif %}
+        </a>
+        <a href="/collection_artist/{{ artist.id_artist }}">
+          <span class="position-absolute bottom-20 end-0 translate-middle badge rounded-pill text-bg-secondary">{{ artist.qty_collection_items }} LPs</span>
+          <span class="visually-hidden">Items collected</span>
+        </a>
+      </div>
     </div>
     <div class="card-footer text-center">
       <b>{{ artist.name_artist }}</b>

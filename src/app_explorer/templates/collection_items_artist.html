@@ -27,7 +27,7 @@
           <div class="card-body">
             <div class="row">
               <div class="col-auto">
-                <img src="{{ item.url_cover }}" class="rounded" height="150" />
+                <a href="/collection_item/{{ item.id_release }}"><img src="{{ item.url_cover }}" class="rounded" height="150" /></a>
               </div>
               <div class="col">
                 {% for track in item.tracks%}

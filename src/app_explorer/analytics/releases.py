@@ -37,6 +37,8 @@ class Release(DBStorage):
             SELECT
                 r.id_release
                 ,r.title
+                ,r.url_thumbnail
+                ,r.url_cover
                 ,r.year
                 ,r.country
             FROM collection.main.release r
@@ -59,7 +61,7 @@ class Release(DBStorage):
         LEFT JOIN collection.main.artist_images as ai
             ON ai.id_artist = a.id_artist
         WHERE
-            ( img.type = 'primary' OR img.type IS NULL )
+            ( ai.type = 'primary' OR ai.type IS NULL )
             AND ra.id_release = {self.id_release}
         """
         lst_artists = self.read_sql(sql=sql).to_dicts()
@@ -89,7 +91,7 @@ class Release(DBStorage):
     def formats(self) -> list:
         sql = f"""
             SELECT
-                rf.name_format,
+                rf.name_format
                 ,rf.qty_format
             FROM collection.main.release_formats rf
             WHERE id_release={self.id_release}"""
@@ -108,7 +110,7 @@ class Release(DBStorage):
     def styles(self) -> list:
         sql = f"""
             SELECT
-                rg.name_style
+                rs.name_style
             FROM collection.main.release_styles rs
             WHERE id_release={self.id_release}"""
         lst_styles = self.read_sql(sql=sql).to_dicts()

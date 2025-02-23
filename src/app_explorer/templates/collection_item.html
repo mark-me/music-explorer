@@ -2,17 +2,38 @@
 {% block content %}
   <div class="card">
     <div class="card-header">
-      <b>{{ artist.name_artist }}</b>
+      <b>{{ item.title }}</b> - <i>{{ item.year }}</i>
     </div>
     <div class="row">
       <div class="col-auto">
-        <img src="{{ item.url_image }}" class="rounded" width="150" />
+        <div class="position-relative d-inline-block">
+          <img src="{{ item.url_cover }}" class="rounded" width="250" /><br />
+          <span class="position-absolute bottom-0 end-0 badge rounded-pill text-bg-dark">
+            {% for format in item.formats %}
+              {% if format.name_format == 'Vinyl' %}
+                <i class="fa-solid fa-record-vinyl"></i>
+              {% endif %}
+            {% endfor %}
+          </span>
+        </div>
+        <br />
       </div>
       <div class="col">
-        {% for track in item.tracks%}
-          {{track.position}} - {{track.title}}<br>
+        {% for track in item.tracks %}
+          {{ track.position }} - {{ track.title }}<br />
         {% endfor %}
       </div>
+    </div>
+  </div>
+  <br />
+  <div class="card">
+    <div class="card-header">
+      <b>Videos</b>
+    </div>
+    <div class="card-body">
+      {% for video in item.videos %}
+        <a href="{{ video.url_video }}" target="_blank">{{ video.title }}</a><br />
+      {% endfor %}
     </div>
   </div>
 {% endblock %}
