@@ -1,0 +1,28 @@
+{% macro card_collection_item(item) -%}
+  <div class="card w-100">
+    <div class="card-header text-center">
+      <a href="/collection_item/{{ item.id_release }}"><img src="{{ item.url_cover }}" class="rounded" height="150" class="card-image-top" /></a>
+    </div>
+    <div class="card-body text-center">
+      <b><a href="/collection_item/{{ item.id_release }}">{{ item.title }}</a></b><br />
+      {% for artist in item.artists %}
+        <i><a href="/collection_artist/{{ artist.id_artist }}">{{ artist.name_artist }}</a></i><br />
+      {% endfor %}
+    </div>
+  </div>
+{%- endmacro -%}
+
+{% macro card_artist(artist) -%}
+  <div class="card w-100">
+    <div class="card-body text-center">
+      <a href="/collection_artist/{{ artist.id_artist }}"><img src="{{ artist.url_image }}" class="rounded" height="150" /></a>
+      <a href="/collection_artist/{{ artist.id_artist }}">
+        <span class="position-absolute bottom-20 end-0 translate-middle badge rounded-pill text-bg-secondary">{{ artist.qty_collection_items }} LPs</span>
+        <span class="visually-hidden">Items collected</span>
+      </a>
+    </div>
+    <div class="card-footer text-center">
+      <b>{{ artist.name_artist }}</b>
+    </div>
+  </div>
+{%- endmacro -%}

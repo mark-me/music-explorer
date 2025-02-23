@@ -1,22 +1,12 @@
 {% extends 'layout.html' %}
+{% import 'macro_cards.j2' as card_macro -%}
 {% block content %}
   <h2>All artists</h2>
   <div class="row">
     <div class="d-flex flex-wrap flex-row justify-content-center mb-3">
       {% for artist in all_artists %}
       <div class="col justify-content-md-center">
-        <div class="card-group">
-          <div class="card border-secondary mb-3">
-            <div class="card-body text-center">
-              <a href="/collection_artist/{{ artist.id_artist }}">
-                <span class="position-absolute top-10 end-0 translate-middle badge rounded-pill text-bg-secondary">{{ artist.qty_collection_items }} LPs</span>
-                <span class="visually-hidden">Items collected</span>
-              </a>
-              <a href="/collection_artist/{{ artist.id_artist }}"><img src="{{ artist.url_image }}" class="rounded" height="150" /></a>
-            </div>
-            <div class="card-footer text-center"><b><a href="/collection_artist/{{ artist.id_artist }}">{{ artist.name_artist }}</a></b></div>
-          </div>
-        </div>
+        {{ card_macro.card_artist(artist) }}
       </div>
       {% endfor %}
     </div>

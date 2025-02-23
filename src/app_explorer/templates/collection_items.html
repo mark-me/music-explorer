@@ -1,4 +1,5 @@
 {% extends 'layout.html' %}
+{% import 'macro_cards.j2' as card_macro -%}
 {% block content %}
   <div class="card">
     <div class="card-header container-fluid">
@@ -15,17 +16,7 @@
       <div class="row g-3 justify-content-center">
         {% for item in random_items %}
           <div class="col-12 col-lg-2">
-            <div class="card w-100">
-              <div class="card-header text-center">
-                <a href="/collection_item/{{ item.id_release }}"><img src="{{ item.url_cover }}" class="rounded" height="150" class="card-image-top" /></a>
-              </div>
-              <div class="card-body text-center">
-                <b><a href="/collection_item/{{ item.id_release }}">{{ item.title }}</a></b><br />
-                {% for artist in item.artists %}
-                  <i><a href="/collection_artist/{{ artist.id_artist }}">{{ artist.name_artist }}</a></i><br />
-                {% endfor %}
-              </div>
-            </div>
+            {{ card_macro.card_collection_item(item) }}
           </div>
         {% endfor %}
       </div>
@@ -46,19 +37,7 @@
     <div class="row align-items-center">
       {% for item in all_items %}
         <div class="col justify-content-md-center">
-          <div class="card-group">
-            <div class="card">
-              <div class="card-body text-center">
-                <a href="/collection_item/{{ item.id_release }}"><img src="{{ item.url_cover }}" class="rounded" height="150" /></a>
-              </div>
-              <div class="card-footer">
-                <b><a href="/collection_item/{{ item.id_release }}">{{ item.title }}</a></b><br />
-                {% for artist in item.artists %}
-                  <i><a href="/collection_artist/{{ artist.id_artist }}">{{ artist.name_artist }}</a></i><br />
-                {% endfor %}
-              </div>
-            </div>
-          </div>
+          {{ card_macro.card_collection_item(item) }}
         </div>
       {% endfor %}
     </div>
