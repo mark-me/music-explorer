@@ -110,7 +110,7 @@ class Collection(DBStorage):
                 rt.id_release,
                 rt.position,
                 rt.title
-            FROM release_tracks rt
+            FROM collection.main.release_tracks rt
             WHERE rt.id_release IN ({str_release_ids} )
         """
         lst_tracks = self.read_sql(sql=sql).to_dicts()
@@ -131,3 +131,19 @@ class Collection(DBStorage):
             lst_items[i].update({"tracks": dict_tracks[str(release["id_release"])]})
 
         return lst_items
+
+    def formats(self) -> list:
+        sql = """
+            SELECT
+                rf.name_format,
+                COUNT(*) as qty_collection_items
+            FROM collection.main.collection_items ci
+            INNER JOIN collection.main.release_formats rf
+            ON rf.id_release = ci.id_release
+            GROUP BY
+                rf.name_format
+            ORDER BY
+                qty_collection_items DESC
+        """
+        lst_formats = self.read_sql(sql=sql).to_dicts()
+        return lst_formats

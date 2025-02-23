@@ -17,10 +17,10 @@
           <div class="col-12 col-lg-2">
             <div class="card w-100">
               <div class="card-header text-center">
-                <img src="{{ item.url_cover }}" class="rounded" height="150" class="card-image-top" />
+                <a href="/collection_item/{{ item.id_release }}"><img src="{{ item.url_cover }}" class="rounded" height="150" class="card-image-top" /></a>
               </div>
               <div class="card-body text-center">
-                <b>{{ item.title }}</b><br />
+                <b><a href="/collection_item/{{ item.id_release }}">{{ item.title }}</a></b><br />
                 {% for artist in item.artists %}
                   <i><a href="/collection_artist/{{ artist.id_artist }}">{{ artist.name_artist }}</a></i><br />
                 {% endfor %}
@@ -49,10 +49,10 @@
           <div class="card-group">
             <div class="card">
               <div class="card-body text-center">
-                <img src="{{ item.url_cover }}" class="rounded" height="150" />
+                <a href="/collection_item/{{ item.id_release }}"><img src="{{ item.url_cover }}" class="rounded" height="150" /></a>
               </div>
               <div class="card-footer">
-                <b>{{ item.title }}</b><br />
+                <b><a href="/collection_item/{{ item.id_release }}">{{ item.title }}</a></b><br />
                 {% for artist in item.artists %}
                   <i><a href="/collection_artist/{{ artist.id_artist }}">{{ artist.name_artist }}</a></i><br />
                 {% endfor %}
