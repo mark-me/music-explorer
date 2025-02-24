@@ -170,6 +170,7 @@ class DeriveArtist(DBStorage):
         self.execute_sql(sql=sql_genres)
 
         sql_styles = """
+            CREATE TABLE artist_similarity_styles AS
             SELECT a.id_artist,
                 b.id_artist,
                 SUM(CAST(a.name_style = b.name_style AS INT)) AS qty_similar,

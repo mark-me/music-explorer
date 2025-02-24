@@ -95,24 +95,55 @@ class Artists(DBStorage):
         return lst_artists
 
     def similar_genre_style(self, id_artist: int) -> list:
-        sql_combine = f"""
+        sql_similarity_threshold = f"""
             SELECT
-                asg.id_artist,
-                asg.id_artist_1,
-                asg.qty_all as qty_all_genres,
-                asg.similarity_jaccard as perc_similarity_genres,
-                ass.qty_all as qty_all_styles,
-                ass.similarity_jaccard as perc_similarity_styles
+                AVG((asg.similarity_jaccard + ass.similarity_jaccard) / 2) as perc_similarity_genre_style
             FROM artist_similarity_genres asg
             INNER JOIN artist_similarity_styles ass
             ON ass.id_artist = asg.id_artist
             AND ass.id_artist_1 = asg.id_artist_1
             WHERE
                 asg.id_artist={id_artist}
-            ORDER BY
-                perc_similarity_genres + perc_similarity_styles DESC
         """
-        lst_results = self.read_sql(sql=sql_combine).to_dicts
+        similarity_threshold = self.read_sql(sql=sql_similarity_threshold).item(0, 0)
+        sql_similarity = f"""
+            SELECT
+                asg.id_artist,
+                asg.id_artist_1,
+                a.id_artist,
+                a.name_artist,
+                img.url_image,
+                img.url_image_150,
+                img.width_image,
+                asg.qty_all as qty_all_genres,
+                asg.similarity_jaccard as perc_similarity_genres,
+                ass.qty_all as qty_all_styles,
+                ass.similarity_jaccard as perc_similarity_styles,
+                (ass.similarity_jaccard + asg.similarity_jaccard)/2 as perc_similarity
+            FROM artist_similarity_genres asg
+            INNER JOIN artist_similarity_styles ass
+            ON ass.id_artist = asg.id_artist
+            AND ass.id_artist_1 = asg.id_artist_1
+            INNER JOIN artist a
+            ON a.id_artist = asg.id_artist_1
+            LEFT JOIN collection.main.artist_images as img
+            ON img.id_artist = a.id_artist
+            WHERE
+                ( img.type = 'primary' OR img.type IS NULL ) AND
+                asg.id_artist={id_artist} AND
+                (ass.similarity_jaccard + asg.similarity_jaccard)/2 > {similarity_threshold}
+                AND EXISTS (
+                    SELECT 1
+                    FROM collection.main.release_artists ra
+                    INNER JOIN collection.main.collection_items ci
+                    ON ci.id_release = ra.id_release
+                    WHERE ra.id_artist = asg.id_artist_1
+                )
+            ORDER BY
+                asg.qty_all * perc_similarity_genres + ass.qty_all * perc_similarity_styles DESC
+            LIMIT 25
+        """
+        lst_results = self.read_sql(sql=sql_similarity).to_dicts
         return lst_results
 
     def _add_nested_information(self, lst_artists: list) -> list:
