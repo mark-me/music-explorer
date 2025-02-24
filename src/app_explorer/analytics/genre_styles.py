@@ -1,5 +1,3 @@
-import polars as pl
-
 from db_operations import DBStorage
 
 class Genre_Styles(DBStorage):
