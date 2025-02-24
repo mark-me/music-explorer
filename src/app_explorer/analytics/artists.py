@@ -114,7 +114,6 @@ class Artists(DBStorage):
             SELECT
                 asg.id_artist,
                 asg.id_artist_1,
-                a.id_artist,
                 a.name_artist,
                 img.url_image,
                 img.url_image_150,
