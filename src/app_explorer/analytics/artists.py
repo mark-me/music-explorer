@@ -40,9 +40,13 @@ class Artists(DBStorage):
         lst_artists = df.filter(pl.col("id_artist") == id_artist).to_dicts()
         lst_artists = self._add_nested_information(lst_artists=lst_artists)
         lst_artists = lst_artists[0]
+        # Add urls
         sql_urls = f"SELECT url FROM artist_urls WHERE id_artist={id_artist}"
         lst_urls = self.read_sql(sql=sql_urls).to_dicts()
         lst_artists.update({"urls": lst_urls})
+        # Add similar artists based on genre and style
+        lst_artists_similar = self.similar_genre_style(id_artist=id_artist)
+        lst_artists.update({"artists_similar": lst_artists_similar})
         return lst_artists
 
     def all(self) -> list:
