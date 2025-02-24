@@ -11,7 +11,28 @@
           <img src="{{ artist.url_image }}" class="rounded" width="150" />
         </div>
         <div class="col">
-          <div class="row">{{ artist.profile }}</div>
+          <p>
+            <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#collapseProfile" aria-expanded="false" aria-controls="collapseExample">
+              Profile
+            </button>
+          </p>
+          <div class="collapse" id="collapseProfile">
+            <div class="card card-body">
+              {{ artist.profile }}
+            </div>
+          </div>
+          <p>
+            <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSimilar" aria-expanded="false" aria-controls="collapseExample">
+              Similar artists
+            </button>
+          </p>
+          <div class="collapse" id="collapseSimilar">
+            <div class="card card-body">
+              {% for similar in artist.artists_similar%}
+                {{ card_macro.card_artist(similar) }}
+              {% endfor %}
+            </div>
+          </div>
           <hr />
           <div class="row">
             <div class="col-auto">

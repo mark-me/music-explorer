@@ -146,7 +146,7 @@ class Artists(DBStorage):
                 asg.qty_all * perc_similarity_genres + ass.qty_all * perc_similarity_styles DESC
             LIMIT 25
         """
-        lst_results = self.read_sql(sql=sql_similarity).to_dicts
+        lst_results = self.read_sql(sql=sql_similarity).to_dicts()
         return lst_results
 
     def _add_nested_information(self, lst_artists: list) -> list:
