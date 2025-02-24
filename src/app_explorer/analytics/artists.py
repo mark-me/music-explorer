@@ -94,6 +94,27 @@ class Artists(DBStorage):
         lst_artists = self._add_nested_information(lst_artists=lst_artists)
         return lst_artists
 
+    def similar_genre_style(self, id_artist: int) -> list:
+        sql_combine = f"""
+            SELECT
+                asg.id_artist,
+                asg.id_artist_1,
+                asg.qty_all as qty_all_genres,
+                asg.similarity_jaccard as perc_similarity_genres,
+                ass.qty_all as qty_all_styles,
+                ass.similarity_jaccard as perc_similarity_styles
+            FROM artist_similarity_genres asg
+            INNER JOIN artist_similarity_styles ass
+            ON ass.id_artist = asg.id_artist
+            AND ass.id_artist_1 = asg.id_artist_1
+            WHERE
+                asg.id_artist={id_artist}
+            ORDER BY
+                perc_similarity_genres + perc_similarity_styles DESC
+        """
+        lst_results = self.read_sql(sql=sql_combine).to_dicts
+        return lst_results
+
     def _add_nested_information(self, lst_artists: list) -> list:
         str_artist_ids = ", ".join([str(i["id_artist"]) for i in lst_artists])
         dict_formats = self._formats(str_artist_ids=str_artist_ids)
