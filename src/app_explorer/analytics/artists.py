@@ -101,7 +101,7 @@ class Artists(DBStorage):
     def similar_genre_style(self, id_artist: int) -> list:
         sql_similarity_threshold = f"""
             SELECT
-                AVG((asg.similarity_jaccard + ass.similarity_jaccard) / 2) as perc_similarity_genre_style
+                AVG((asg.similarity_jaccard + IFNULL(ass.similarity_jaccard, 0)) / 2) as perc_similarity_genre_style
             FROM artist_similarity_genres asg
             INNER JOIN artist_similarity_styles ass
             ON ass.id_artist = asg.id_artist
@@ -112,17 +112,16 @@ class Artists(DBStorage):
         similarity_threshold = self.read_sql(sql=sql_similarity_threshold).item(0, 0)
         sql_similarity = f"""
             SELECT
-                asg.id_artist,
-                asg.id_artist_1,
+                asg.id_artist_1 as id_artist,
                 a.name_artist,
                 img.url_image,
                 img.url_image_150,
                 img.width_image,
                 asg.qty_all as qty_all_genres,
                 asg.similarity_jaccard as perc_similarity_genres,
-                ass.qty_all as qty_all_styles,
-                ass.similarity_jaccard as perc_similarity_styles,
-                (ass.similarity_jaccard + asg.similarity_jaccard)/2 as perc_similarity
+                IFNULL(ass.qty_all, 0) as qty_all_styles,
+                IFNULL(ass.similarity_jaccard, 0) as perc_similarity_styles,
+                (IFNULL(ass.similarity_jaccard, 0) + asg.similarity_jaccard)/2 as perc_similarity
             FROM artist_similarity_genres asg
             INNER JOIN artist_similarity_styles ass
             ON ass.id_artist = asg.id_artist
@@ -134,7 +133,7 @@ class Artists(DBStorage):
             WHERE
                 ( img.type = 'primary' OR img.type IS NULL ) AND
                 asg.id_artist={id_artist} AND
-                (ass.similarity_jaccard + asg.similarity_jaccard)/2 > {similarity_threshold}
+                (IFNULL(ass.similarity_jaccard, 0) + asg.similarity_jaccard)/2 > {similarity_threshold}
                 AND EXISTS (
                     SELECT 1
                     FROM collection.main.release_artists ra
@@ -143,7 +142,7 @@ class Artists(DBStorage):
                     WHERE ra.id_artist = asg.id_artist_1
                 )
             ORDER BY
-                asg.qty_all * perc_similarity_genres + ass.qty_all * perc_similarity_styles DESC
+                asg.qty_all * perc_similarity_genres + IFNULL(ass.qty_all, 0) * IFNULL(perc_similarity_styles, 0) DESC
             LIMIT 25
         """
         lst_results = self.read_sql(sql=sql_similarity).to_dicts()

@@ -15,7 +15,7 @@ v<!DOCTYPE html>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
 
     <!-- Favicon -->
-    <link rel="icon" type="image/png" href="{{ url_for('static', filename='images/music-collection.svg') }}">
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='images/music.png') }}">
 
     {% if title %}
         <title>Music Collection Explorer - {{ title }}</title>
@@ -27,7 +27,7 @@ v<!DOCTYPE html>
     <header class="site-header">
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
         <div class="container">
-          <a href="/"><img src="/static/images/music-collection.svg" style="float: left; padding: 0px 5px 0px 0px;" width="80" heigh="80"></a>
+          <a href="/"><img src="/static/images/music.png" style="float: left; padding: 0px 5px 0px 0px;" width="64" heigh="64"></a>
           <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarToggle" aria-controls="navbarToggle" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
           </button>
@@ -44,7 +44,7 @@ v<!DOCTYPE html>
         </div>
       </nav>
     </header>
-    <main role="main" class="container" style="margin-top: 80px;">
+    <main role="main" class="container" style="margin-top: 55px;">
       <div class="row">
         <div class="col-md-12">
           {% with messages = get_flashed_messages(with_categories=true) %}
