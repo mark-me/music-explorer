@@ -1,8 +1,10 @@
 {% extends 'layout.html' %}
+{% import 'macro_cards.j2' as card_macro -%}
 {% block content %}
   <div class="card">
     <div class="card-header">
-      <b>{{ item.title }}</b> - <i>{{ item.year }}</i>
+      <b>{{ item.title }}</b>
+      <div class="float-end">{{ item.year }}</div>
     </div>
     <div class="row">
       <div class="col-auto">
@@ -34,21 +36,60 @@
         </div>
       </div>
       <div class="col">
-        {% for track in item.tracks %}
-          {{ track.position }} - {{ track.title }}<br />
-        {% endfor %}
+        <div class="accordion" id="accordionExample">
+          <div class="accordion-item">
+            <h2 class="accordion-header" id="headingArtists">
+              <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseArtists" aria-expanded="true" aria-controls="collapseArtists">
+                <b>Artist</b>
+              </button>
+            </h2>
+            <div id="collapseArtists" class="accordion-collapse collapse show" aria-labelledby="headingArtists" data-bs-parent="#accordionExample">
+              <div class="accordion-body">
+                <div class="row">
+                  {% for artist in item.artists %}
+                    <div class="col justify-content-md-center">
+                      <div class="card-group">{{ card_macro.card_artist(artist=artist) }}</div>
+                    </div>
+                  {% endfor %}
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="accordion-item">
+            <h2 class="accordion-header" id="headingTracks">
+              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTracks" aria-expanded="false" aria-controls="collapseTracks">
+                <b>Tracks</b>
+              </button>
+            </h2>
+            <div id="collapseTracks" class="accordion-collapse collapse" aria-labelledby="headingTracks" data-bs-parent="#accordionExample">
+              <div class="accordion-body">
+                <table class="table table-striped table-hover">
+                  {% for track in item.tracks %}
+                  <tr>
+                    <td>{{ track.position }}</td>
+                    <td>{{ track.title }}</td>
+                  </tr>
+                  {% endfor %}
+                </table>
+              </div>
+            </div>
+          </div>
+          <div class="accordion-item">
+            <h2 class="accordion-header" id="headingVideos">
+              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseVideos" aria-expanded="false" aria-controls="collapseVideos">
+                <b>Videos</b>
+              </button>
+            </h2>
+            <div id="collapseVideos" class="accordion-collapse collapse" aria-labelledby="headingVideos" data-bs-parent="#accordionExample">
+              <div class="accordion-body">
+                {% for video in item.videos %}
+                  <a href="{{ video.url_video }}" target="_blank">{{ video.title }}</a><br />
+                {% endfor %}
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
-    </div>
-  </div>
-  <br />
-  <div class="card">
-    <div class="card-header">
-      <b>Videos</b>
-    </div>
-    <div class="card-body">
-      {% for video in item.videos %}
-        <a href="{{ video.url_video }}" target="_blank">{{ video.title }}</a><br />
-      {% endfor %}
     </div>
   </div>
 {% endblock %}

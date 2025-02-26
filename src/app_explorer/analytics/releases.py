@@ -50,7 +50,8 @@ class Release(DBStorage):
     def artists(self) -> list:
         sql = f"""
         SELECT
-            a.name_artist
+            ra.id_artist
+            ,a.name_artist
             ,a.profile
             ,ai.url_image
             ,ai.url_image_150
