@@ -5,62 +5,76 @@
     <div class="card-header">
       <b>{{ artist.name_artist }}</b>
     </div>
-    <div class="card-body">
-      <div class="row">
-        <div class="col-auto">
+    <div class="row">
+      <div class="col-auto">
+        <div class="row">
           <div class="position-relative d-inline-block">
-            <img src="{{ artist.url_image }}" class="rounded" width="400" />
+            <img src="{{ artist.url_image }}" class="rounded" width="400" /><br />
           </div>
         </div>
-        <div class="col">
-          <div class="accordion" id="accordionArtist">
-            <div class="accordion-item">
-              <h2 class="accordion-header" id="headingProfile"><button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseProfile" aria-expanded="true" aria-controls="collapseProfile"><b>Profile</b></button></h2>
-              <div id="collapseProfile" class="accordion-collapse collapse show" aria-labelledby="headingProfile" data-bs-parent="#accordionArtist">
-                <div class="accordion-body">{{ artist.profile }}</div>
-              </div>
+        <div class="row">
+          <div class="row">
+            <div class="col-auto">
+              {% for genre in artist.collection_genres %}
+                <span class="badge bg-primary">{{ genre.name_genre }}</span>
+              {% endfor %}
             </div>
-            <div class="accordion-item">
-              <h2 class="accordion-header" id="headingSimilar"><button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSimilar" aria-expanded="false" aria-controls="collapseSimilar"><b>Similar artists</b></button></h2>
-              <div id="collapseSimilar" class="accordion-collapse collapse" aria-labelledby="headingSimilar" data-bs-parent="#accordionArtist">
-                <div class="accordion-body">
-                  <div class="row">
-                    {% for similar in artist.artists_similar %}
-                      <div class="col justify-content-md-center">
-                        <div class="card-group">{{ card_macro.card_artist(artist=similar) }}</div>
-                      </div>
-                    {% endfor %}
-                  </div>
-                </div>
-              </div>
+            <div class="col">
+              {% for style in artist.collection_styles %}
+                <span class="badge bg-success">{{ style.name_style }}</span>
+              {% endfor %}
             </div>
-            <div class="accordion-item">
-              <h2 class="accordion-header" id="headingCollectionItems"><button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseCollectionItems" aria-expanded="false" aria-controls="collapseProfile"><b>Collection items</b></button></h2>
-              <div id="collapseCollectionItems" class="accordion-collapse collapse" aria-labelledby="headingCollectionItems" data-bs-parent="#accordionArtist">
-                <div class="accordion-body">
-                  {% for item in all_items %}
+          </div>
+        </div>
+      </div>
+      <div class="col">
+        <div class="accordion" id="accordionArtist">
+          <div class="accordion-item">
+            <h2 class="accordion-header" id="headingProfile"><button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseProfile" aria-expanded="true" aria-controls="collapseProfile"><b>Profile</b></button></h2>
+            <div id="collapseProfile" class="accordion-collapse collapse show" aria-labelledby="headingProfile" data-bs-parent="#accordionArtist">
+              <div class="accordion-body">{{ artist.profile }}</div>
+            </div>
+          </div>
+          <div class="accordion-item">
+            <h2 class="accordion-header" id="headingSimilar"><button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSimilar" aria-expanded="false" aria-controls="collapseSimilar"><b>Similar artists</b></button></h2>
+            <div id="collapseSimilar" class="accordion-collapse collapse" aria-labelledby="headingSimilar" data-bs-parent="#accordionArtist">
+              <div class="accordion-body">
+                <div class="row">
+                  {% for similar in artist.artists_similar %}
                     <div class="col justify-content-md-center">
-                      <div class="card">
-                        <div class="card-header">
-                          <b>{{ item.title }}</b>
-                        </div>
-                        <div class="card-body">
-                          <div class="row">
-                            <div class="col-auto">
-                              <a href="/collection_item/{{ item.id_release }}"><img src="{{ item.url_cover }}" class="rounded" height="150" /></a>
-                            </div>
-                            <div class="col">
-                              {% for track in item.tracks %}
-                                {{ track.position }} - {{ track.title }}<br />
-                              {% endfor %}
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                      <br />
+                      <div class="card-group">{{ card_macro.card_artist(artist=similar) }}</div>
                     </div>
                   {% endfor %}
                 </div>
+              </div>
+            </div>
+          </div>
+          <div class="accordion-item">
+            <h2 class="accordion-header" id="headingCollectionItems"><button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseCollectionItems" aria-expanded="false" aria-controls="collapseProfile"><b>Collection items</b></button></h2>
+            <div id="collapseCollectionItems" class="accordion-collapse collapse" aria-labelledby="headingCollectionItems" data-bs-parent="#accordionArtist">
+              <div class="accordion-body">
+                {% for item in all_items %}
+                  <div class="col justify-content-md-center">
+                    <div class="card">
+                      <div class="card-header">
+                        <b>{{ item.title }}</b>
+                      </div>
+                      <div class="card-body">
+                        <div class="row">
+                          <div class="col-auto">
+                            <a href="/collection_item/{{ item.id_release }}"><img src="{{ item.url_cover }}" class="rounded" height="150" /></a>
+                          </div>
+                          <div class="col">
+                            {% for track in item.tracks %}
+                              {{ track.position }} - {{ track.title }}<br />
+                            {% endfor %}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <br />
+                  </div>
+                {% endfor %}
               </div>
             </div>
           </div>
