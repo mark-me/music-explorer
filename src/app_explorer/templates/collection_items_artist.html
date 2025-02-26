@@ -65,9 +65,14 @@
                             <a href="/collection_item/{{ item.id_release }}"><img src="{{ item.url_cover }}" class="rounded" height="150" /></a>
                           </div>
                           <div class="col">
-                            {% for track in item.tracks %}
-                              {{ track.position }} - {{ track.title }}<br />
-                            {% endfor %}
+                            <table class="table table-striped table-hover">
+                              {% for track in item.tracks %}
+                              <tr>
+                                <td>{{ track.position }}</td>
+                                <td>{{ track.title }}</td>
+                              </tr>
+                              {% endfor %}
+                            </table>
                           </div>
                         </div>
                       </div>
