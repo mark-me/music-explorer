@@ -71,9 +71,16 @@
                           <b>{{ item.title }}</b>
                         </div>
                         <div class="card-body text-center">
-                          <a href="/collection_item/{{ item.id_release }}">
-                            <img src="{{ item.url_cover }}" class="rounded" height="200" />
-                          </a>
+                          <div class="position-relative d-inline-block">
+                            <a href="/collection_item/{{ item.id_release }}">
+                              <img src="{{ item.url_cover }}" class="rounded" height="200" />
+                            </a>
+                            <span class="position-absolute bottom-0 end-0 badge rounded-pill text-bg-dark">
+                              {% for format in item.formats %}
+                                {{format.name_format}}
+                              {% endfor %}
+                            </span>
+                          </div>
                           <div class="accordion mt-2" id="accordionTracks{{ loop.index }}">
                             <div class="accordion-item">
                               <h2 class="accordion-header" id="headingTracks{{ loop.index }}">
