@@ -98,6 +98,48 @@ class Artists(DBStorage):
         lst_artists = self._add_nested_information(lst_artists=lst_artists)
         return lst_artists
 
+    def search(self, text_search: str) -> list:
+        sql_search = f"""
+            SELECT
+                a.id_artist,
+                a.name_artist,
+                a.profile,
+                img.url_image,
+                img.url_image_150,
+                img.width_image,
+                COUNT(DISTINCT rf.id_release) AS qty_collection_items
+            FROM collection.main.artist a
+            LEFT JOIN collection.main.artist_images as img
+            ON img.id_artist = a.id_artist
+            LEFT JOIN collection.main.release_artists ra
+            ON ra.id_artist = a.id_artist
+            INNER JOIN collection.main.collection_items ci
+            ON ci.id_release = ra.id_release
+            LEFT JOIN collection.main.release_formats rf
+            ON rf.id_release = ci.id_release
+            WHERE ( img.type = 'primary' OR img.type IS NULL )
+            AND a.name_artist ILIKE '%{text_search}%'
+            GROUP BY
+                a.id_artist,
+                a.name_artist,
+                a.profile,
+                img.url_image,
+                img.url_image_150,
+                img.width_image
+            ORDER BY
+                LTRIM(
+                    LTRIM(
+                        LTRIM(
+                        UPPER(a.name_artist),
+                        '.'),
+                        ''''
+                        ), '"'
+                        )
+        """
+        lst_artists = self.read_sql(sql=sql_search).to_dicts()
+        lst_artists = self._add_nested_information(lst_artists=lst_artists)
+        return lst_artists
+
     def similar_genre_style(self, id_artist: int) -> list:
         sql_similarity_threshold = f"""
             SELECT

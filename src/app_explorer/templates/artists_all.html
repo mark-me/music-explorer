@@ -2,13 +2,21 @@
 {% import 'macro_cards.j2' as card_macro -%}
 {% block content %}
   <h2>All artists</h2>
-  <div class="row">
-    <div class="d-flex flex-wrap flex-row justify-content-center mb-3">
-      {% for artist in all_artists %}
-      <div class="col justify-content-md-center">
-        {{ card_macro.card_artist(artist) }}
+  <div class="container">
+    <div class="row">
+      <div class="d-flex flex-wrap flex-row justify-content-center mb-3">
+        <!-- HTMX-enabled search input -->
+        <input type="text" class="input flex-fill" placeholder="Search" name="query" hx-get="/artists_search" hx-trigger="keyup changed delay:500ms" hx-target="#results" />
       </div>
-      {% endfor %}
+    </div>
+  </div>
+  <div id="results">
+    <div class="row">
+      <div class="d-flex flex-wrap flex-row justify-content-center mb-3">
+        {% for artist in all_artists %}
+          <div class="col justify-content-md-center">{{ card_macro.card_artist(artist) }}</div>
+        {% endfor %}
+      </div>
     </div>
   </div>
 {% endblock %}
