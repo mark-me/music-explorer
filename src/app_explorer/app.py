@@ -1,7 +1,7 @@
 import os
 
 import yaml
-from flask import Flask, render_template
+from flask import Flask, render_template, request
 
 from app_explorer.analytics import Artists, Collection, Release
 
@@ -44,8 +44,19 @@ def artists():
 def artists_all():
     """Artists"""
     db_artists = Artists(file_db=file_db)
-    lst_all = db_artists.all()
-    return render_template("artists_all.html", all_artists=lst_all, title="Artists")
+    lst_artists = db_artists.all()
+    return render_template("artists_all.html", all_artists=lst_artists, title="Artists")
+
+
+@app.route('/artists_search')
+def artists_search():
+    query = request.args.get("query")
+    db_artists = Artists(file_db=file_db)
+    if query:
+        lst_artists = db_artists.search(query)
+    else:
+        lst_artists = db_artists.all()
+    return render_template("artists_search_results.html", artists=lst_artists)
 
 
 @app.route("/collection_items")
@@ -74,12 +85,23 @@ def collection_items_all():
     )
 
 
+@app.route('/collection_items_search')
+def collection_items_search():
+    query = request.args.get("query")
+    db_collection = Collection(file_db=file_db)
+    if query:
+        lst_all = db_collection.search(query)
+    else:
+        lst_all = db_collection.all()
+    return render_template("collection_items_search_results.html", all_items=lst_all)
+
+
 @app.route("/collection_artist/<int:id_artist>")
 def collection_artist(id_artist):
-    collection = Collection(file_db=file_db)
+    db_collection = Collection(file_db=file_db)
     artists = Artists(file_db=file_db)
     dict_artist = artists.artist(id_artist=id_artist)
-    lst_all = collection.artist(id_artist=id_artist)
+    lst_all = db_collection.artist(id_artist=id_artist)
     return render_template(
         "collection_items_artist.html",
         all_items=lst_all,

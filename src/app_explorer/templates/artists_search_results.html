@@ -1,0 +1,8 @@
+{% import 'macro_cards.j2' as card_macro -%}
+<div class="row">
+  <div class="d-flex flex-wrap flex-row justify-content-center mb-3">
+    {% for artist in artists %}
+      <div class="col justify-content-md-center">{{ card_macro.card_artist(artist) }}</div>
+    {% endfor %}
+  </div>
+</div>

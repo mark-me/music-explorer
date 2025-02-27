@@ -53,6 +53,24 @@ class Collection(DBStorage):
         lst_items = self._add_nested_information(lst_items=lst_items)
         return lst_items
 
+    def search(self, text_search: str) -> list:
+        sql = f"""
+            SELECT
+                ci.id_release,
+                ci.title,
+                ci.url_thumbnail,
+                ci.url_cover,
+                ci.year_released,
+                ci.id_master
+            FROM collection.main.collection_items ci
+            WHERE ci.title ILIKE '%{text_search}%'
+            ORDER BY
+                REGEXP_REPLACE(UPPER(ci.title), '([.''"])', '')
+        """
+        lst_items = self.read_sql(sql=sql).to_dicts()
+        lst_items = self._add_nested_information(lst_items=lst_items)
+        return lst_items
+
     def artist(self, id_artist: str) -> list:
         sql = (
             self.sql_all
@@ -76,7 +94,7 @@ class Collection(DBStorage):
                 rt.position,
                 rt.title
             FROM collection.main.release_tracks rt
-            WHERE rt.id_release IN ({str_release_ids} )
+            WHERE rt.id_release IN ({str_release_ids})
         """
         lst_tracks = self.read_sql(sql=sql).to_dicts()
         dict_tracks = {}
