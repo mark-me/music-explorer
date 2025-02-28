@@ -1,15 +1,18 @@
-{% extends "layout.html" %}
-{% block content%}
-<div class="bg-image">
-    <div class="mask text-light d-flex justify-content-center flex-column text-center rounded" >
-        <h2>Exploring your music collection</h2>
+{% extends 'layout.html' %}
+{% block content %}
+<div class="position-relative text-center">
+    <img src="static/images/vinyl_record.jpg" class="img-fluid rounded" alt="Vinyl Record" />
+    <!-- Overlay for heading -->
+    <div class="position-absolute top-0 start-50 translate-middle-x text-light mt-3">
+      <h2 class="text-shadow">Exploring your music collection</h2>
     </div>
-    <div class="d-flex justify-content-center flex-column text-center">
-        <div class="btn-group" role="group">
-            <a href="/artists" class="btn btn-outline-light btn-lg btn-block">Artists</a>
-            <a href="/collection_items" class="btn btn-outline-light btn-lg btn-block">Collection items</a>
-        </div>
+    <!-- Overlay for buttons -->
+    <div class="position-absolute bottom-0 end-0 p-3">
+      <div class="btn-group">
+        <a href="/artists" class="btn text-decoration-none link-hover">Artists</a>
+        <a href="/collection_items" class="btn text-decoration-none link-hover">Collection items</a>
+      </div>
     </div>
-    <img src="static/images/vinyl_record.jpg" class="rounded" style="width:100%;">
-</div>
-{% endblock content %}
+  </div>
+
+{% endblock %}
