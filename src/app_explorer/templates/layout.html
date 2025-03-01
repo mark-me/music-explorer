@@ -28,6 +28,39 @@ v<!DOCTYPE html>
 
       .link-hover:hover {
         font-weight: bold;
+        transition: all ease 0.5s;
+        background: bg-primary;
+      }
+      .navbar-nav .nav-link {
+        padding-left: .5rem;
+      }
+      .navbar-nav a {
+        color: #E5E5E5;
+        transition: all ease 0.5s;
+      }
+      .navbar-nav a:hover,
+      .navbar-nav a:focus,
+      .navbar-nav a:active,
+      .navbar-nav a.hilite {
+        font-weight: bold;
+        color: #BFBFBF;
+        background: bg-primary;
+        border-bottom: 1px #7F7F7F solid;
+      }
+      /* ===== == = === 48em (768px) === = == ===== */
+      @media only screen and (min-width : 48em) {
+        .navbar-nav a:hover,
+        .navbar-nav a:focus,
+        .navbar-nav a:active,
+        .navbar-nav a.hilite {
+          transform: translateY(0.2rem) scaleY(1.2);
+        }
+        .navbar-nav .nav-link {
+          padding-left: 0;
+        }
+        .link-hover:hover {
+          transform: translateY(0.2rem) scaleY(1.2);
+        }
       }
     </style>
 
