@@ -24,12 +24,19 @@ file_db = config["db_file"]
 
 @app.route("/manifest.json")
 def serve_manifest():
-    return send_file(os.getcwd() + "/src/app_explorer/static/manifest.json", mimetype="application/manifest+json")
+    return app.send_static_file(
+        "manifest.json", mimetype="application/manifest+json"
+    )
 
 
 @app.route("/service-worker.js")
 def serve_sw():
-    return send_file(os.getcwd() + "/src/app_explorer/sw.js", mimetype="application/javascript")
+    return app.send_static_file('service-worker.js')
+
+
+@app.route("/offline.html")
+def offline():
+    return app.send_static_file("offline.html")
 
 
 @app.route("/")
