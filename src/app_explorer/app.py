@@ -1,7 +1,7 @@
 import os
 
 import yaml
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, send_file
 
 from app_explorer.analytics import Artists, Collection, Release
 
@@ -20,6 +20,16 @@ app = Flask(
 with open(r"config/config.yml") as file:
     config = yaml.load(file, Loader=yaml.FullLoader)
 file_db = config["db_file"]
+
+
+@app.route("/manifest.json")
+def serve_manifest():
+    return send_file("manifest.json", mimetype="application/manifest+json")
+
+
+@app.route("/sw.js")
+def serve_sw():
+    return send_file("sw.js", mimetype="application/javascript")
 
 
 @app.route("/")
@@ -48,7 +58,7 @@ def artists_all():
     return render_template("artists_all.html", all_artists=lst_artists, title="Artists")
 
 
-@app.route('/artists_search')
+@app.route("/artists_search")
 def artists_search():
     query = request.args.get("query")
     db_artists = Artists(file_db=file_db)
@@ -85,7 +95,7 @@ def collection_items_all():
     )
 
 
-@app.route('/collection_items_search')
+@app.route("/collection_items_search")
 def collection_items_search():
     query = request.args.get("query")
     db_collection = Collection(file_db=file_db)
@@ -109,10 +119,12 @@ def collection_artist(id_artist):
         title="Collection items",
     )
 
+
 @app.route("/collection_item/<int:id_release>")
 def collection_item(id_release: int):
     release = Release(id_release=id_release, file_db=file_db).data()
     return render_template("collection_item.html", item=release)
+
 
 @app.route("/about")
 def about():

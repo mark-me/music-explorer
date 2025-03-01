@@ -6,7 +6,7 @@ v<!DOCTYPE html>
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="Music collection exploration">
     <meta name="author" content="Mart Zwart">
-    <link rel="icon" type="image/png" href="{{ url_for('static', filename='images/music.png') }}">
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='icons/music.png') }}">
 
     <!-- Manifest -->
     <link rel="manifest" href="manifest.json" />
@@ -18,6 +18,18 @@ v<!DOCTYPE html>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
     <!-- Include HTMX library -->
     <script src="https://cdn.jsdelivr.net/npm/htmx.org/dist/htmx.min.js"></script>
+    <!-- Worker -->
+    <script>
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', function() {
+          navigator.serviceWorker.register("sw.js").then(function(registration) {
+            console.log('ServiceWorker registration successful with scope: ', registration.scope);
+          }, function(err) {
+            console.log('ServiceWorker registration failed: ', err);
+          });
+        });
+      }
+    </script>
 
     <!-- Custom styles for the home screen -->
     <style type="text/css">
@@ -82,7 +94,7 @@ v<!DOCTYPE html>
     <header class="site-header">
       <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
         <div class="container">
-          <a href="/"><img src="/static/images/music.png" style="float: left; padding: 0px 5px 0px 0px;" width="64" heigh="64"></a>
+          <a href="/"><img src="/static/icons/music.png" style="float: left; padding: 0px 5px 0px 0px;" width="64" heigh="64"></a>
           <button class="navbar-toggler" style="margin-right:5px !important;" type="button" data-bs-toggle="collapse" data-bs-target="#navbarToggle">
             <span class="navbar-toggler-icon"></span>
           </button>

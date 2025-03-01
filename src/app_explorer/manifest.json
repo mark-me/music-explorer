@@ -1,11 +1,17 @@
 {
   "short_name": "Music Collection Explorer",
   "name": "Music Collection Explorer",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "theme_color": "#317EFB",
+  "background_color": "#317EFB",
   "icons": [
     {
       "src": "static/images/music.png",
-      "sizes": "192x192",
-      "type": "image/png"
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
     }
   ],
   "start_url": ".",
