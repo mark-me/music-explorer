@@ -30,8 +30,9 @@
 .navbar-nav a.hilite {
     font-weight: bold;
     color: #BFBFBF;
-    background: bg-primary;
-    border-bottom: 1px #7F7F7F solid;
+    border-bottom: 1px rgba(3,22,51,1);
+    background: rgb(2,0,36);
+    background: linear-gradient(0deg, rgba(2,0,36,1) 0%, rgba(3,22,51,1) 0%, rgba(13,110,253,0) 100%);
 }
 
 /* ===== == = === 48em (768px) === = == ===== */
@@ -41,7 +42,7 @@
     .navbar-nav a:focus,
     .navbar-nav a:active,
     .navbar-nav a.hilite {
-        transform: translateY(0.2rem) scaleY(1.2);
+        transform: translateY(0.2rem) scaleY(1.2)scaleX(1.2) ;
     }
 
     .navbar-nav .nav-link {

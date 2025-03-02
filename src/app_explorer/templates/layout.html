@@ -39,7 +39,9 @@ v<!DOCTYPE html>
     <header class="site-header">
       <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
         <div class="container">
-          <a href="/"><img src="/static/icons/vinyl-record.svg" style="float: left; padding: 0px 5px 0px 0px;" width="64" heigh="64"></a>
+          <a class="navbar-brand" href="/">
+          <img src="/static/icons/vinyl-record.svg" style="float: left; padding: 0px 5px 0px 0px;" width="64" heigh="64">
+          </a>
           <button class="navbar-toggler" style="margin-right:5px !important;" type="button" data-bs-toggle="collapse" data-bs-target="#navbarToggle">
             <span class="navbar-toggler-icon"></span>
           </button>
@@ -47,11 +49,11 @@ v<!DOCTYPE html>
             <div class="navbar-nav mr-auto">
               <a class="nav-item nav-link" href="/artists">Artists</a>
               <a class="nav-item nav-link" href="/collection_items">Collection items</a>
+              <a class="nav-item nav-link" href="/about">About</a>
             </div>
             <!-- Navbar Right Side -->
-            <div class="navbar-nav">
-              <a class="nav-item nav-link" href="/config">About</a>
-              <a class="nav-item nav-link" href="/about">About</a>
+            <div class="navbar-nav ms-auto">
+              <a class="nav-item nav-link" href="/config"><i class="fa-solid fa-gear"></i></a>
             </div>
           </div>
         </div>

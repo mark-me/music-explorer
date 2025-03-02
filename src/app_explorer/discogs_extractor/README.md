@@ -138,3 +138,25 @@ erDiagram
     artist ||--o{ artist_vertex : "as"
     master ||--o{ artist_masters : ""
 ```
+
+## Discogs authentication flow
+
+```mermaid
+sequenceDiagram
+    participant User
+    participant App
+    participant Discogs
+
+    User->>App: Navigates to /config
+    App->>App: Renders config.html (credentials_ok=false)
+    User->>App: Clicks "Allow Discogs access" (/get-user-access)
+    App->>Discogs: request_user_access(callback_url)
+    Discogs-->>App: Returns authorization URL
+    App->>User: Redirects to Discogs authorization URL
+    User->>Discogs: Authorizes App
+    Discogs-->>User: Redirects to App's /receive-token with oauth_verifier
+    User->>App: Navigates to /receive-token?oauth_verifier=...
+    App->>Discogs: save_user_token(oauth_verifier)
+    Discogs-->>App: Returns confirmation
+    App->>User: Redirects to /config (credentials_ok=true)
+```
