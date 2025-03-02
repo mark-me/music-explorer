@@ -35,6 +35,26 @@
               <div class="accordion-body">{{ artist.profile }}</div>
             </div>
           </div>
+          {% if artist.qty_artists_related > 0 %}
+          <div class="accordion-item">
+            <h2 class="accordion-header" id="headingRelated">
+              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseRelated" aria-expanded="false" aria-controls="collapseSimilar">
+                <b>Collaborations</b>
+              </button>
+            </h2>
+            <div id="collapseRelated" class="accordion-collapse collapse" aria-labelledby="headingRelated" data-bs-parent="#accordionArtist">
+              <div class="accordion-body">
+                <div class="row">
+                  {% for related in artist.artists_related %}
+                    <div class="col-md-4 d-flex justify-content-center">
+                      <div class="card-group">{{ card_macro.card_artist(artist=related) }}</div>
+                    </div>
+                  {% endfor %}
+                </div>
+              </div>
+            </div>
+          </div>
+          {% endif %}
           <div class="accordion-item">
             <h2 class="accordion-header" id="headingSimilar">
               <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSimilar" aria-expanded="false" aria-controls="collapseSimilar">
