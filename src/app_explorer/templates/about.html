@@ -1,30 +1,52 @@
-{% extends "layout.html" %}
+{% extends 'layout.html' %}
 {% block content %}
-<div style="display: flex; justify-content: space-between; align-items: top; padding: 20px;">
+  <div style="display: flex; justify-content: space-between; align-items: top; padding: 20px;">
     <div style="flex: 1;">
-        <h2>About</h2>
-        <br>
-        <p>
-            Developed by Mark Zwart<br>
-                <a href="https://www.linkedin.com/in/markzwart76" target="_blank"><i class="fab fa-linkedin"></i> LinkedIn </a> &emsp;
-                <a href="https://github.com/mark-me" target="_blank"><i class="fab fa-github"></i> GitHub </a> &emsp;
-                <a href="mailto:mark.zwart@pobox.com"><i class="far fa-envelope"></i> E-mail </a>
-        </p>
-        <p>
-            This is a project intended to rediscover items from my own music collection for my own amusement. You can find the repository on <a href="https://github.com/mark-me/music-explorer" target="_blank">Github</a>
-        </p>
-        <h3>Used tools</h3>
-        <ul>
-            <li><a href="https://www.python.org/" target="_blank">Python</a> as development language.</li>
-            <li><a href="https://flask.palletsprojects.com/en/3.0.x/" target="_blank">Flask</a> as the web application famework.</li>
-            <li><a href="https://jinja.palletsprojects.com/en/3.1.x/" target="_blank">Jinja</a>, HTML, <a href="https://getbootstrap.com" target="_blank">Bootstrap</a> and <a href="https://www.w3.org/Style/CSS/Overview.en.html" target="_blank">CSS</a> to design the webpages.</li>
-            <li><a href="https://pola.rs/" target="_blank">Polars</a> to load and query and analyze the data.</li>
-            <li><a href="https://duckdb.org/" target="_blank">DuckDB</a> as a database backend.</li>
-            <li><a href="https://www.docker.com/" target="_blank">Docker</a> to deploy the stack.</li>
-        </ul>
+      <h3>About</h3>
+      <div class="container">
+        <div class="row">
+          <div class="col-6 align-self-center">
+            Developed by Mark Zwart<br />
+            <a href="https://www.linkedin.com/in/markzwart76" target="_blank"><i class="fab fa-linkedin"></i> LinkedIn</a><br />
+            <a href="https://github.com/mark-me" target="_blank"><i class="fab fa-github"></i> GitHub</a><br />
+            <a href="mailto:mark.zwart@pobox.com"><i class="far fa-envelope"></i> E-mail</a>
+          </div>
+          <div class="col-3">
+            <img src="/static/images/me.png" alt="Afbeelding van Mark Zwart" width="120" style="margin-top: 5px;" />
+          </div>
+        </div>
+        <br />
+        <div class="row">
+          <p>
+            This project scratches an itch; records should never be scratched. You can find the repository on <a href="https://github.com/mark-me/music-explorer" target="_blank">Github</a>
+          </p>
+        </div>
+        <div class="row">
+          <b>Used tools:</b>
+
+          <ul>
+            <li>
+              <a href="https://www.python.org/" target="_blank">Python</a> as development language.
+            </li>
+            <li>
+              <a href="https://flask.palletsprojects.com/en/3.0.x/" target="_blank">Flask</a> as the web application famework.
+            </li>
+            <li>
+              <a href="https://jinja.palletsprojects.com/en/3.1.x/" target="_blank">Jinja</a>, HTML, <a href="https://getbootstrap.com" target="_blank">Bootstrap</a> and <a href="https://www.w3.org/Style/CSS/Overview.en.html" target="_blank">CSS</a> to design the webpages.
+            </li>
+            <li>
+              <a href="https://pola.rs/" target="_blank">Polars</a> to load and query and analyze the data.
+            </li>
+            <li>
+              <a href="https://duckdb.org/" target="_blank">DuckDB</a> as a database backend.
+            </li>
+            <li>
+              <a href="https://www.docker.com/" target="_blank">Docker</a> to deploy the stack.
+            </li>
+          </ul>
+        </div>
+      </div>
     </div>
-    <div style="margin-left: auto; display: flex; flex-direction: column; align-items: flex-end;">
-        <img src="/static/images/me.png" alt="Afbeelding van Mark Zwart" style="max-width: 200px; margin-top: 5px;">
-    </div>
-</div>
-{% endblock content %}
+    <div style="margin-left: auto; display: flex; flex-direction: column; align-items: flex-end;"></div>
+  </div>
+{% endblock %}
