@@ -216,6 +216,9 @@ class Artists(DBStorage):
                 lst_artists[i].update({"styles_collection": dict_styles[id_artist]})
             if id_artist in dict_relations:
                 lst_artists[i].update({"artists_related": dict_relations[id_artist]})
+                lst_artists[i].update({"qty_artists_related": len(dict_relations[id_artist])})
+            else:
+                lst_artists[i].update({"qty_artists_related": 0})
         return lst_artists
 
     def _formats(self, str_artist_ids: str) -> dict:
