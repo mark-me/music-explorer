@@ -294,10 +294,17 @@ class Artists(DBStorage):
             ON ar.id_artist_from = a_from.id_artist
             INNER JOIN artist a_to
             ON a_to.id_artist = ar.id_artist_to
-            INNER JOIN artist_images ai
+            LEFT JOIN artist_images ai
             ON ai.id_artist = a_to.id_artist
             WHERE a_from.id_artist IN ({str_artist_ids})
+            AND ( ai.type = 'primary' OR ai.type IS NULL )
         """
         lst_relations = self.read_sql(sql=sql).to_dicts()
-        dict_styles = self._dicts_to_dict(key_field="id_artist", lst_dicts=lst_relations)
-        return dict_styles
+        dict_relations = self._dicts_to_dict(key_field="id_artist", lst_dicts=lst_relations)
+        for key, artists in dict_relations.items():
+            new_list = []
+            for artist in artists:
+                artist['id_artist'] = artist.pop('id_artist_to')
+                new_list.append(artist)
+            dict_relations.update({key: new_list})
+        return dict_relations
