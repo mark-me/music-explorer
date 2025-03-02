@@ -283,7 +283,7 @@ class Artists(DBStorage):
         sql = f"""
             SELECT
                 a_from.id_artist,
-                a_to.id_artist_to,
+                a_to.id_artist AS id_artist_to,
                 a_to.name_artist,
                 ar.relation_type,
                 ai.url_image,

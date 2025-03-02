@@ -4,6 +4,7 @@ import yaml
 from flask import Flask, render_template, request, send_file
 
 from app_explorer.analytics import Artists, Collection, Release
+from app_explorer.discogs_extractor import Discogs
 
 # from app_explorer.route_auth.auth import bp_authentication
 from log_config import logging
@@ -21,6 +22,7 @@ with open(r"config/config.yml") as file:
     config = yaml.load(file, Loader=yaml.FullLoader)
 file_db = config["db_file"]
 
+discogs = Discogs(file_secrets="config/secrets.yml", file_db=file_db)
 
 @app.route("/manifest.json")
 def serve_manifest():
@@ -131,6 +133,12 @@ def collection_artist(id_artist):
 def collection_item(id_release: int):
     release = Release(id_release=id_release, file_db=file_db).data()
     return render_template("collection_item.html", item=release)
+
+
+@app.route("/config")
+def config_page():
+    credentials_ok = discogs.check_user_tokens()
+    return render_template("config.html", credentials_ok=credentials_ok)
 
 
 @app.route("/about")
