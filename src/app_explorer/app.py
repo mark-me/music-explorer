@@ -26,14 +26,12 @@ discogs = Discogs(file_secrets="config/secrets.yml", file_db=file_db)
 
 @app.route("/manifest.json")
 def serve_manifest():
-    return app.send_static_file(
-        "manifest.json", mimetype="application/manifest+json"
-    )
+    return app.send_static_file("manifest.json", mimetype="application/manifest+json")
 
 
 @app.route("/service-worker.js")
 def serve_sw():
-    return app.send_static_file('service-worker.js')
+    return app.send_static_file("service-worker.js")
 
 
 @app.route("/offline.html")
@@ -139,6 +137,21 @@ def collection_item(id_release: int):
 def config_page():
     credentials_ok = discogs.check_user_tokens()
     return render_template("config.html", credentials_ok=credentials_ok)
+
+
+@app.route("/get-user-access")
+def open_discogs_permissions_page():
+    """Asks user to give app access to Discogs account, with a callback url to handle validation"""
+    callback_url = f"{config["url"]}/receive-token/"
+    result = discogs.request_user_access(callback_url=callback_url)
+    return result
+
+
+@app.route("/receive-token", methods=["GET"])
+def accept_user_token():
+    """Callback function to process the user authentication result"""
+    result = discogs.save_user_token(request.args['oauth_verifier'])
+    return result
 
 
 @app.route("/about")
