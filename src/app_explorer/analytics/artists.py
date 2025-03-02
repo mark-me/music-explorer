@@ -191,10 +191,19 @@ class Artists(DBStorage):
         return lst_results
 
     def _add_nested_information(self, lst_artists: list) -> list:
+        """Adds artist information with a 1 to n relationship to the artist: formats, genres, styles and artist relationships.
+
+        Args:
+            lst_artists (list): Artist dicts to which you want to added information
+
+        Returns:
+            list: Artist dicts with added information
+        """
         str_artist_ids = ", ".join([str(i["id_artist"]) for i in lst_artists])
         dict_formats = self._formats(str_artist_ids=str_artist_ids)
         dict_genres = self._genres(str_artist_ids=str_artist_ids)
         dict_styles = self._styles(str_artist_ids=str_artist_ids)
+        dict_relations = self._related(str_artist_ids=str_artist_ids)
 
         # Adding nested information
         for i, artist in enumerate(lst_artists):
@@ -205,6 +214,8 @@ class Artists(DBStorage):
                 lst_artists[i].update({"genres_collection": dict_genres[id_artist]})
             if id_artist in dict_styles:
                 lst_artists[i].update({"styles_collection": dict_styles[id_artist]})
+            if id_artist in dict_relations:
+                lst_artists[i].update({"artists_related": dict_relations[id_artist]})
         return lst_artists
 
     def _formats(self, str_artist_ids: str) -> dict:
@@ -266,4 +277,27 @@ class Artists(DBStorage):
         """
         lst_styles = self.read_sql(sql=sql).to_dicts()
         dict_styles = self._dicts_to_dict(key_field="id_artist", lst_dicts=lst_styles)
+        return dict_styles
+
+    def _related(self, str_artist_ids: str) -> dict:
+        sql = f"""
+            SELECT
+                a_from.id_artist,
+                a_to.id_artist_to,
+                a_to.name_artist,
+                ar.relation_type,
+                ai.url_image,
+                ai.url_image_150,
+                ai.width_image,
+            FROM artist a_from
+            INNER JOIN artist_relations ar
+            ON ar.id_artist_from = a_from.id_artist
+            INNER JOIN artist a_to
+            ON a_to.id_artist = ar.id_artist_to
+            INNER JOIN artist_images ai
+            ON ai.id_artist = a_to.id_artist
+            WHERE a_from.id_artist IN ({str_artist_ids})
+        """
+        lst_relations = self.read_sql(sql=sql).to_dicts()
+        dict_styles = self._dicts_to_dict(key_field="id_artist", lst_dicts=lst_relations)
         return dict_styles
