@@ -1,0 +1,19 @@
+{% extends 'layout.html' %}
+{% block content %}
+  <div class="card">
+    <div class="card-header">
+      <b>Discogs settings</b>
+    </div>
+    <div class="card-body">
+      <p>
+        Discogs authentication &nbsp;
+        {% if credentials_ok %}
+          <i class="fa-solid fa-square-check text-success"></i>
+        {% else %}
+          <i class="fa-solid fa-triangle-exclamation text-warning"></i><br>
+          <a href="/get-user-access" class="btn btn-primary btn-sm">Allow Discogs access</a>
+        {% endif %}
+      </p>
+    </div>
+  </div>
+{% endblock %}

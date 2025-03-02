@@ -8,6 +8,8 @@ v<!DOCTYPE html>
     <meta name="author" content="Mart Zwart">
     <link rel="icon" type="image/png" href="{{ url_for('static', filename='icons/vinyl-record.svg') }}">
 
+    <!-- Stylesheet -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" />
     <!-- Manifest -->
     <link rel="manifest" href="{{ url_for('static', filename='manifest.json') }}" />
     <!-- Bootstrap CSS -->
@@ -23,54 +25,7 @@ v<!DOCTYPE html>
 
     <!-- Custom styles for the home screen -->
     <style type="text/css">
-      .custom-btn {
-        color: #fff;
-      }
 
-      .text-shadow {
-        text-shadow: 2px 2px 2px rgba(0, 0, 0, 0.99);
-      }
-
-      .link-hover {
-      }
-
-      .link-hover:hover {
-        font-weight: bold;
-        color: #fff;
-        transition: all ease 0.5s;
-        background: bg-primary;
-      }
-      .navbar-nav .nav-link {
-        padding-left: .5rem;
-      }
-      .navbar-nav a {
-        color: #E5E5E5;
-        transition: all ease 0.5s;
-      }
-      .navbar-nav a:hover,
-      .navbar-nav a:focus,
-      .navbar-nav a:active,
-      .navbar-nav a.hilite {
-        font-weight: bold;
-        color: #BFBFBF;
-        background: bg-primary;
-        border-bottom: 1px #7F7F7F solid;
-      }
-      /* ===== == = === 48em (768px) === = == ===== */
-      @media only screen and (min-width : 48em) {
-        .navbar-nav a:hover,
-        .navbar-nav a:focus,
-        .navbar-nav a:active,
-        .navbar-nav a.hilite {
-          transform: translateY(0.2rem) scaleY(1.2);
-        }
-        .navbar-nav .nav-link {
-          padding-left: 0;
-        }
-        .link-hover:hover {
-          transform: translateY(0.2rem) scaleY(1.2);
-        }
-      }
     </style>
 
     {% if title %}
@@ -95,6 +50,7 @@ v<!DOCTYPE html>
             </div>
             <!-- Navbar Right Side -->
             <div class="navbar-nav">
+              <a class="nav-item nav-link" href="/config">About</a>
               <a class="nav-item nav-link" href="/about">About</a>
             </div>
           </div>
