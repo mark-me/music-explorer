@@ -299,7 +299,8 @@ class Artists(DBStorage):
             ON a_to.id_artist = ar.id_artist_to
             LEFT JOIN artist_images ai
             ON ai.id_artist = a_to.id_artist
-            WHERE a_from.id_artist IN ({str_artist_ids})
+            WHERE ( a_from.id_artist IN ({str_artist_ids}) OR
+            a_to.id_artist IN ({str_artist_ids}))
             AND ( ai.type = 'primary' OR ai.type IS NULL )
         """
         lst_relations = self.read_sql(sql=sql).to_dicts()

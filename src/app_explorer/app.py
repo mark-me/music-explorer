@@ -142,7 +142,7 @@ def config_page():
 @app.route("/get-user-access")
 def open_discogs_permissions_page():
     """Asks user to give app access to Discogs account, with a callback url to handle validation"""
-    callback_url = f"{config["url"]}/receive-token/"
+    callback_url = f"{config["url"]}/receive-token"
     result = discogs.request_user_access(callback_url=callback_url)
     return result
 
