@@ -1,7 +1,7 @@
 import os
 
 import yaml
-from flask import Flask, render_template, request, send_file
+from flask import Flask, render_template, request, redirect, url_for
 
 from app_explorer.analytics import Artists, Collection, Release
 from app_explorer.discogs_extractor import Discogs
@@ -147,7 +147,7 @@ def config_page():
 def accept_user_token():
     """Callback function to process the user authentication result"""
     result = discogs.save_user_token(request.args['oauth_verifier'])
-    return result
+    return redirect(url_for('config'))
 
 
 @app.route("/about")
