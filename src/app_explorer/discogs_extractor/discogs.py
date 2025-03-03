@@ -43,14 +43,14 @@ class Discogs:
             )
             return False
 
-    def request_user_access(self, callback_url: str = None) -> str:
+    def request_user_access(self, url_callback: str = None) -> str:
         """Prompt your user to "accept" the terms of your application. The application
         will act on behalf of their discogs.com account."""
         logger.info(
-            f"Requesting user access to Discogs account with callback {callback_url}"
+            f"Requesting user access to Discogs account with callback {url_callback}"
         )
         self._user_token, self._user_secret, url = (
-            self.client_discogs.get_authorize_url(callback_url=callback_url)
+            self.client_discogs.get_authorize_url(callback_url=url_callback)
         )
         return url
 

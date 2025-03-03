@@ -7,11 +7,11 @@
     <div class="card-body">
       <p>
         Discogs authentication &nbsp;
-        {% if credentials_ok %}
+        {% if config.credentials_ok %}
           <i class="fa-solid fa-square-check text-success"></i>
         {% else %}
           <i class="fa-solid fa-triangle-exclamation text-warning"></i><br>
-          <a href="/get-user-access" class="btn btn-primary btn-sm">Allow Discogs access</a>
+          <a href="{{ config.url_discogs }}" target="_blank" class="btn btn-primary btn-sm">Allow Discogs access</a>
         {% endif %}
       </p>
     </div>

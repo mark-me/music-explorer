@@ -135,16 +135,12 @@ def collection_item(id_release: int):
 
 @app.route("/config")
 def config_page():
-    credentials_ok = discogs.check_user_tokens()
-    return render_template("config.html", credentials_ok=credentials_ok)
-
-
-@app.route("/get-user-access")
-def open_discogs_permissions_page():
-    """Asks user to give app access to Discogs account, with a callback url to handle validation"""
-    callback_url = f"{config["url"]}/receive-token"
-    result = discogs.request_user_access(callback_url=callback_url)
-    return result
+    url_callback = f"{config["url"]}/receive-token"
+    dict_config = {
+        "credentials_ok": discogs.check_user_tokens(),
+        "url_discogs": discogs.request_user_access(url_callback=url_callback)
+    }
+    return render_template("config.html", config=dict_config)
 
 
 @app.route("/receive-token", methods=["GET"])
