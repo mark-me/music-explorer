@@ -16,7 +16,6 @@ app = Flask(
     template_folder=os.getcwd() + "/src/app_explorer/templates",
     static_folder=os.getcwd() + "/src/app_explorer/static",
 )
-# app.register_blueprint(bp_authentication, url_prefix="/discogs_auth")
 
 with open(r"config/config.yml") as file:
     config = yaml.load(file, Loader=yaml.FullLoader)
