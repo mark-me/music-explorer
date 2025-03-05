@@ -19,6 +19,13 @@ def make_celery(app: Flask) -> Celery:
         broker=app.config["CELERY_BROKER_URL"],
     )
     celery.conf.update(app.config)
+
+    class ContextTask(celery.Task):
+        def __call__(self, *args, **kwargs):
+            with app.app_context():
+              return self.run(*args, **kwargs)
+
+    celery.Task = ContextTask
     return celery
 
 
@@ -168,6 +175,12 @@ def accept_user_token():
     """Callback function to process the user authentication result"""
     discogs.save_user_token(request.args["oauth_verifier"])
     return redirect(url_for("config"))
+
+
+@celery.task()
+def start_ETL():
+    """Starting Discogs ETL"""
+    discogs.start_ETL()
 
 
 @app.route("/about")
