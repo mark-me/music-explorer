@@ -10,23 +10,28 @@ from log_config import logging
 
 logger = logging.getLogger(__name__)
 
-app = Flask(
-    __name__,
-    template_folder=os.getcwd() + "/src/app_explorer/templates",
-    static_folder=os.getcwd() + "/src/app_explorer/static",
-)
-app.config['CELERY_BROKER_URL'] = 'redis://localhost:6379/0'
-app.config['CELERY_RESULT_BACKEND'] = 'redis://localhost:6379/0'
 
 # Setup celery and redis broker
 def make_celery(app: Flask) -> Celery:
     celery = Celery(
         app.import_name,
-        backend=app.config['CELERY_RESULT_BACKEND'],
-        broker=app.config['CELERY_BROKER_URL']
+        backend=app.config["CELERY_RESULT_BACKEND"],
+        broker=app.config["CELERY_BROKER_URL"],
     )
     celery.conf.update(app.config)
     return celery
+
+
+app = Flask(
+    __name__,
+    template_folder=os.getcwd() + "/src/app_explorer/templates",
+    static_folder=os.getcwd() + "/src/app_explorer/static",
+)
+app.config.update(
+    CELERY_BROKER_URL="redis://localhost:6379", CELERY_RESULT_BACKEND="redis://localhost:6379"
+)
+
+celery = make_celery(app)
 
 # Read configuration
 with open(r"config/config.yml") as file:
