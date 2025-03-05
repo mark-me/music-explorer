@@ -1,11 +1,11 @@
 import os
 
 import yaml
-from flask import Flask, render_template, request, redirect, url_for
+from celery import Celery
+from flask import Flask, redirect, render_template, request, url_for
 
 from app_explorer.analytics import Artists, Collection, Release
 from app_explorer.discogs_extractor import Discogs
-
 from log_config import logging
 
 logger = logging.getLogger(__name__)
@@ -15,11 +15,25 @@ app = Flask(
     template_folder=os.getcwd() + "/src/app_explorer/templates",
     static_folder=os.getcwd() + "/src/app_explorer/static",
 )
+app.config['CELERY_BROKER_URL'] = 'redis://localhost:6379/0'
+app.config['CELERY_RESULT_BACKEND'] = 'redis://localhost:6379/0'
 
+# Setup celery and redis broker
+def make_celery(app: Flask) -> Celery:
+    celery = Celery(
+        app.import_name,
+        backend=app.config['CELERY_RESULT_BACKEND'],
+        broker=app.config['CELERY_BROKER_URL']
+    )
+    celery.conf.update(app.config)
+    return celery
+
+# Read configuration
 with open(r"config/config.yml") as file:
     config = yaml.load(file, Loader=yaml.FullLoader)
 file_db = config["db_file"]
 
+# Setup for discogs extraction
 discogs = Discogs(file_secrets="config/secrets.yml", file_db=file_db)
 
 
@@ -123,7 +137,9 @@ def collection_items_search():
         lst_all = db_collection.search(query)
     else:
         lst_all = db_collection.all()
-    return render_template("collection_items/collection_items_search_results.html", all_items=lst_all)
+    return render_template(
+        "collection_items/collection_items_search_results.html", all_items=lst_all
+    )
 
 
 @app.route("/collection_item/<int:id_release>")
