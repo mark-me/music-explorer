@@ -5,12 +5,18 @@ requires-python = ">=3.12.0"
 authors = [{ name = "Mark Zwart", email = "mark.zwart@pobox.com" }]
 readme = "README.md"
 dependencies = [
+    "amqp==5.3.1",
     "aniso8601==10.0.0",
     "attrs==25.1.0",
+    "billiard==4.2.1",
     "blinker==1.9.0",
+    "celery==5.4.0",
     "certifi==2025.1.31",
     "charset-normalizer==3.4.1",
     "click==8.1.8",
+    "click-didyoumean==0.3.1",
+    "click-plugins==1.1.1",
+    "click-repl==0.3.0",
     "duckdb==1.2.0",
     "duckdb_engine==0.15.0",
     "Flask==3.1.0",
@@ -23,12 +29,14 @@ dependencies = [
     "Jinja2==3.1.5",
     "jsonschema==4.23.0",
     "jsonschema-specifications==2024.10.1",
+    "kombu==5.4.2",
     "MarkupSafe==3.0.2",
     "numpy==2.2.2",
     "oauthlib==3.2.2",
     "packaging==24.2",
     "pandas==2.2.3",
     "polars==1.22.0",
+    "prompt_toolkit==3.0.50",
     "pyaml==25.1.0",
     "pyarrow==19.0.0",
     "python-dateutil==2.9.0.post0",
@@ -46,6 +54,8 @@ dependencies = [
     "typing_extensions==4.12.2",
     "tzdata==2025.1",
     "urllib3==2.3.0",
+    "vine==5.1.0",
+    "wcwidth==0.2.13",
     "Werkzeug==3.1.3",
 ]
 
