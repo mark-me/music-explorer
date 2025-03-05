@@ -23,7 +23,7 @@ docker pull ghcr.io/mark-me/music_explorer:$VERSION_ID
 docker pull ghcr.io/mark-me/music_explorer:latest
 
 # App
-docker buildx -t ghcr.io/mark-me/music_explorer:$VERSION_ID -t ghcr.io/mark-me/music_explorer:latest .
+docker build -t ghcr.io/mark-me/music_explorer:$VERSION_ID -t ghcr.io/mark-me/music_explorer:latest .
 
 # Optionally push Docker images
 if [ "$PUSH_IMAGES" = true ]; then
