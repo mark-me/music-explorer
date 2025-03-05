@@ -6,7 +6,7 @@
     <div class="card-body text-center">
       <b><a href="/collection_item/{{ item.id_release }}">{{ item.title }}</a></b><br />
       {% for artist in item.artists %}
-        <i><a href="/collection_artist/{{ artist.id_artist }}">{{ artist.name_artist }}</a></i><br />
+        <i><a href="/artist/{{ artist.id_artist }}">{{ artist.name_artist }}</a></i><br />
       {% endfor %}
     </div>
   </div>
@@ -16,21 +16,21 @@
   <div class="card w-100">
     <div class="card-body text-center">
       <div class="position-relative d-inline-block">
-        <a href="/collection_artist/{{ artist.id_artist }}">
+        <a href="/artist/{{ artist.id_artist }}">
           {% if artist.url_image %}
             <img src="{{ artist.url_image }}" class="rounded" height="150" />
           {% else %}
             <img src="images/default_artist.png" class="rounded" height="150" />
           {% endif %}
         </a>
-        <a href="/collection_artist/{{ artist.id_artist }}">
+        <a href="/artist/{{ artist.id_artist }}">
           <span class="position-absolute bottom-20 end-0 translate-middle badge rounded-pill text-bg-secondary">{{ artist.qty_collection_items }}</span>
           <span class="visually-hidden">Items collected</span>
         </a>
       </div>
     </div>
     <div class="card-footer text-center">
-      <a href="/collection_artist/{{ artist.id_artist }}"><b>{{ artist.name_artist }}</b></a>
+      <a href="/artist/{{ artist.id_artist }}"><b>{{ artist.name_artist }}</b></a>
     </div>
   </div>
 {%- endmacro -%}
