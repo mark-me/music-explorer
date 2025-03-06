@@ -185,7 +185,7 @@ def accept_user_token():
 def start_ETL():
     global status_task_ETL
     status_task_ETL = task_ETL.delay()
-
+    return redirect(url_for("config_page"))
 
 @celery.task(bind=True)
 def task_ETL(self):
