@@ -44,7 +44,7 @@ celery = make_celery(app)
 status_task_ETL = 0
 
 # Read configuration
-with open(r"/data/config.yml") as file:
+with open(r"config/config.yml") as file:
     config = yaml.load(file, Loader=yaml.FullLoader)
 file_db = config["db_file"]
 
