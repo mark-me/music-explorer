@@ -1,4 +1,5 @@
 import os
+import time
 
 import yaml
 from celery import Celery
@@ -23,7 +24,7 @@ def make_celery(app: Flask) -> Celery:
     class ContextTask(celery.Task):
         def __call__(self, *args, **kwargs):
             with app.app_context():
-              return self.run(*args, **kwargs)
+                return self.run(*args, **kwargs)
 
     celery.Task = ContextTask
     return celery
@@ -40,13 +41,15 @@ app.config.update(
 
 celery = make_celery(app)
 
+status_task_ETL = 0
+
 # Read configuration
-with open(r"config/config.yml") as file:
+with open(r"/data/config.yml") as file:
     config = yaml.load(file, Loader=yaml.FullLoader)
 file_db = config["db_file"]
 
 # Setup for discogs extraction
-discogs = Discogs(file_secrets="config/secrets.yml", file_db=file_db)
+discogs = Discogs(file_secrets="/data/secrets.yml", file_db=file_db)
 
 
 @app.route("/manifest.json")
@@ -166,6 +169,7 @@ def config_page():
     dict_config = {
         "credentials_ok": discogs.check_user_tokens(),
         "url_discogs": discogs.request_user_access(url_callback=url_callback),
+        "id_task_etl": status_task_ETL,
     }
     return render_template("config.html", config=dict_config)
 
@@ -174,13 +178,24 @@ def config_page():
 def accept_user_token():
     """Callback function to process the user authentication result"""
     discogs.save_user_token(request.args["oauth_verifier"])
-    return redirect(url_for("config"))
+    return redirect(url_for("config_page"))
 
 
-@celery.task()
+@app.route("/start_etl")
 def start_ETL():
+    global status_task_ETL
+    status_task_ETL = task_ETL.delay()
+
+
+@celery.task(bind=True)
+def task_ETL(self):
     """Starting Discogs ETL"""
-    discogs.start_ETL()
+    i = 0
+    while i < 100:
+        time.sleep(10)
+        logger.info(f"Running background task, iteration {i}")
+        i = i + 1
+    #discogs.start_ETL()
 
 
 @app.route("/about")

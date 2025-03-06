@@ -6,14 +6,19 @@
     </div>
     <div class="card-body">
       <p>
-        Discogs authentication &nbsp;
-        {% if config.credentials_ok %}
+        Discogs authentication &nbsp;{% if config.credentials_ok %}
           <i class="fa-solid fa-square-check text-success"></i>
         {% else %}
-          <i class="fa-solid fa-triangle-exclamation text-warning"></i><br>
+          <i class="fa-solid fa-triangle-exclamation text-warning"></i><br />
           <a href="{{ config.url_discogs }}" target="_blank" class="btn btn-primary btn-sm">Allow Discogs access</a>
         {% endif %}
       </p>
+      {% if config.credentials_ok %}
+        <p>
+          Retrieve Discogs data &nbsp;
+          <a href="/start_etl" class="btn btn-primary btn-sm">Start</a>
+        </p>
+      {% endif %}
     </div>
   </div>
 {% endblock %}
