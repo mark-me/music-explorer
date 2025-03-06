@@ -7,14 +7,17 @@ services:
     environment:
       - TZ=Europe/Amsterdam
     volumes:
-      - resources:/data
+      - /data/music-explorer:/data
     ports:
       - 5000:5000
-volumes:
-  resources:
-    driver: local
-    driver_opts:
-      type: none
-      device: /data/music-explorer
-      o: "bind,rw"
+  redis:
+    image: redis:8.0-M03-alpine3.21
+    container_name: redis
+    restart: unless-stopped
+    environment:
+      - TZ=Europe/Amsterdam
+    ports:
+      - 6379:6379
+    volumes:
+      - /data/music-explorer/redis:/data
 
