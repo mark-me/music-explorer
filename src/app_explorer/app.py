@@ -184,6 +184,7 @@ def accept_user_token():
 @app.route("/start_etl")
 def start_ETL():
     global status_task_ETL
+    logger.info("Started ETL process for Discogs data")
     status_task_ETL = task_ETL.delay()
     return redirect(url_for("config_page"))
 
