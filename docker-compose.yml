@@ -15,6 +15,6 @@ volumes:
     driver: local
     driver_opts:
       type: none
-      device: /data
+      device: /data/music-explorer
       o: "bind,rw"
 
