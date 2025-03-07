@@ -1,47 +1,28 @@
 import os
-import time
 
+import redis
+import socketio
 import yaml
-from celery import Celery
 from flask import Flask, redirect, render_template, request, url_for
 
 from app_explorer.analytics import Artists, Collection, Release
 from app_explorer.discogs_extractor import Discogs
 from log_config import logging
+from app_explorer.worker import task
 
 logger = logging.getLogger(__name__)
-
-
-# Setup celery and redis broker
-def make_celery(app: Flask) -> Celery:
-    celery = Celery(
-        app.import_name,
-        backend=app.config["CELERY_RESULT_BACKEND"],
-        broker=app.config["CELERY_BROKER_URL"],
-    )
-    celery.conf.update(app.config)
-
-    class ContextTask(celery.Task):
-        def __call__(self, *args, **kwargs):
-            with app.app_context():
-                return self.run(*args, **kwargs)
-
-    celery.Task = ContextTask
-    return celery
-
 
 app = Flask(
     __name__,
     template_folder=os.getcwd() + "/src/app_explorer/templates",
     static_folder=os.getcwd() + "/src/app_explorer/static",
 )
-app.config.update(
-    CELERY_BROKER_URL="redis://redis:6379", CELERY_RESULT_BACKEND="redis://redis:6379"
-)
 
-celery = make_celery(app)
-
-status_task_ETL = 0
+# Communication about redis worker progress
+redis_manager = socketio.AsyncRedisManager("redis://localhost:6379")
+socketio_server = socketio.AsyncServer(async_mode="asgi", client_manager=redis_manager)
+socketio_app = socketio.ASGIApp(socketio_server=socketio_server, other_asgi_app=app)
+db = redis.from_url("redis://localhost:6379/1", decode_responses=True)
 
 # Read configuration
 with open(r"config/config.yml") as file:
@@ -168,8 +149,7 @@ def config_page():
     url_callback = f"{config['url']}/receive-token"
     dict_config = {
         "credentials_ok": discogs.check_user_tokens(),
-        "url_discogs": discogs.request_user_access(url_callback=url_callback),
-        "id_task_etl": status_task_ETL,
+        "url_discogs": discogs.request_user_access(url_callback=url_callback)
     }
     return render_template("config.html", config=dict_config)
 
@@ -183,21 +163,17 @@ def accept_user_token():
 
 @app.route("/start_etl")
 def start_ETL():
-    global status_task_ETL
-    logger.info("Started ETL process for Discogs data")
-    status_task_ETL = task_ETL.delay()
+    db.set("progress", 0)
+    task.s().apply_async()
     return redirect(url_for("config_page"))
 
-@celery.task(bind=True)
-def task_ETL(self):
-    """Starting Discogs ETL"""
-    i = 0
-    while i < 100:
-        time.sleep(10)
-        logger.info(f"Running background task, iteration {i}")
-        i = i + 1
-    #discogs.start_ETL()
 
+@app.get("/progress")
+def progress(request: request):
+    progress = 100 * float(db.get("progress") or 0)
+    return render_template(
+        "progressbar.html", {"request": request, "progress": progress}
+    )
 
 @app.route("/about")
 def about():
