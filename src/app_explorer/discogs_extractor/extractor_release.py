@@ -1,13 +1,14 @@
 import datetime as dt
+from json.decoder import JSONDecodeError
 
 import polars as pl
+from celery import Celery
 from discogs_client import models
-from json.decoder import JSONDecodeError
 
 from log_config import logging
 
-from .extractor_master import ETLMaster
 from .extractor_artist import ETLArtist
+from .extractor_master import ETLMaster
 
 logger = logging.getLogger(__name__)
 
@@ -15,10 +16,10 @@ logger = logging.getLogger(__name__)
 class ETLRelease(ETLMaster):
     """A class that processes release related data"""
 
-    def __init__(self, release: models.Release, file_db: str) -> None:
-        super().__init__(release=release, file_db=file_db)
+    def __init__(self, release: models.Release, file_db: str, app_celery: Celery) -> None:
+        super().__init__(release=release, file_db=file_db, app_celery=app_celery)
         self.obj_discogs = release
-        self.artist_etl = ETLArtist(artists=release.artists, file_db=self.file_db)
+        self.artist_etl = ETLArtist(artists=release.artists, file_db=self.file_db, app_celery=app_celery)
 
     def process(self) -> None:
         logger.info(f"Extracting info from release {self.obj_discogs.title}")

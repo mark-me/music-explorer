@@ -10,9 +10,13 @@
         {% if config.credentials_ok %}
           <i class="fa-solid fa-square-check text-success"></i><br /><br />
           Retrieve Discogs data &nbsp;
-          <a href="/start_etl" class="btn btn-primary btn-sm">Start</a>
-          <div class="progress" role="progressbar" hx-get="/progress" hx-trigger="load, progress from:body" hx-target="this" hx-swap="innerHTML">
-          </div>
+          <a href="/start_etl" class="btn btn-primary btn-sm" id="btn_start_etl">Start</a>
+          <div id="statusDiv"></div>
+          <h2 class="text-center text-2xl font-bold text-blue-500">Collection items</h2>
+          <div id="progressCollection"></div>
+          <h2 id="artistDiv" class="text-center text-2xl font-bold text-blue-500">Artist progress</h2>
+          <div id="progressArtist"></div>
+          <div id="messageDiv"></div>
         {% else %}
           <i class="fa-solid fa-triangle-exclamation text-warning"></i><br />
           <a href="{{ config.url_discogs }}" target="_blank" class="btn btn-primary btn-sm">Allow Discogs access</a>
@@ -20,4 +24,5 @@
       </p>
     </div>
   </div>
+  <script src="{{ url_for('static', filename='progress_etl.js') }}"></script>
 {% endblock %}

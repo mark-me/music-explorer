@@ -2,3 +2,5 @@ db_file: '/data/collection.db'
 app_key: xGUFmZdyAEhCCXBrtish
 app_secret: iuQUEolWIWePiwOuRsmOMetyVcOwMxHu
 url: 'https://music-explorer.mr-black.net'
+celery_broker_url: 'redis://localhost:6379/0'
+celery_result_backend: 'redis://localhost:6379/0'

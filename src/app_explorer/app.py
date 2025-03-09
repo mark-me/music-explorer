@@ -1,16 +1,20 @@
 import os
 
-import redis
-import socketio
 import yaml
-from flask import Flask, redirect, render_template, request, url_for
+from flask import Flask, jsonify, redirect, render_template, request, url_for
 
 from app_explorer.analytics import Artists, Collection, Release
+from app_explorer.celery_config import celery_app
 from app_explorer.discogs_extractor import Discogs
+from app_explorer.tasks import discogs_etl
 from log_config import logging
-from app_explorer.worker import task
 
 logger = logging.getLogger(__name__)
+
+# Read configuration
+with open(r"config/config.yml") as file:
+    config = yaml.load(file, Loader=yaml.FullLoader)
+file_db = config["db_file"]
 
 app = Flask(
     __name__,
@@ -18,19 +22,8 @@ app = Flask(
     static_folder=os.getcwd() + "/src/app_explorer/static",
 )
 
-# Communication about redis worker progress
-redis_manager = socketio.AsyncRedisManager("redis://localhost:6379")
-socketio_server = socketio.AsyncServer(async_mode="asgi", client_manager=redis_manager)
-socketio_app = socketio.ASGIApp(socketio_server=socketio_server, other_asgi_app=app)
-db = redis.from_url("redis://localhost:6379/1", decode_responses=True)
-
-# Read configuration
-with open(r"config/config.yml") as file:
-    config = yaml.load(file, Loader=yaml.FullLoader)
-file_db = config["db_file"]
-
-# Setup for discogs extraction
-discogs = Discogs(file_secrets="/data/secrets.yml", file_db=file_db)
+celery_app.autodiscover_tasks(["tasks"], force=True)
+discogs = Discogs(file_secrets="/data/secrets.yml", file_db=file_db)# Setup for discogs extraction
 
 
 @app.route("/manifest.json")
@@ -149,7 +142,7 @@ def config_page():
     url_callback = f"{config['url']}/receive-token"
     dict_config = {
         "credentials_ok": discogs.check_user_tokens(),
-        "url_discogs": discogs.request_user_access(url_callback=url_callback)
+        "url_discogs": discogs.request_user_access(url_callback=url_callback),
     }
     return render_template("config.html", config=dict_config)
 
@@ -161,19 +154,27 @@ def accept_user_token():
     return redirect(url_for("config_page"))
 
 
-@app.route("/start_etl")
+@app.route("/discogs_etl")
 def start_ETL():
-    db.set("progress", 0)
-    task.s().apply_async()
-    return redirect(url_for("config_page"))
+    task = discogs_etl.delay()
+    return jsonify({"success": True, "task_id": task.id})
 
 
-@app.get("/progress")
-def progress(request: request):
-    progress = 100 * float(db.get("progress") or 0)
-    return render_template(
-        "progressbar.html", {"request": request, "progress": progress}
-    )
+@app.route("/check_task/<task_id>", methods=["GET"])
+def check_task(task_id):
+    task = celery_app.AsyncResult(task_id)
+    print(f"Task {task_id} is currently in state: {task.state}")  # Print the task state
+    response = jsonify(
+            {
+                "status": task.state,
+                "step": task.result["step"],
+                "iteration": task.result["current"],
+                "total": task.result["total"],
+                "item": task.result["item"],
+            }
+        )
+    return response
+
 
 @app.route("/about")
 def about():

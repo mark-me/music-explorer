@@ -2,9 +2,9 @@ import datetime as dt
 from json.decoder import JSONDecodeError
 
 import polars as pl
+from celery import Celery
 from discogs_client import models
 from discogs_client.exceptions import HTTPError
-from tqdm import tqdm
 
 from log_config import logging
 
@@ -16,8 +16,8 @@ logger = logging.getLogger(__name__)
 class ETLArtist(DiscogsETL):
     """A class that processes artist related data"""
 
-    def __init__(self, artists: models.Artist, file_db: str) -> None:
-        super().__init__(file_db)
+    def __init__(self, artists: models.Artist, file_db: str, app_celery: Celery) -> None:
+        super().__init__(file_db, app_celery=app_celery)
         self.obj_discogs = artists
         self.process_masters = True
 
@@ -63,16 +63,16 @@ class ETLArtist(DiscogsETL):
         except JSONDecodeError:
             logger.error(f"Couldn't process response for masters of artist '{artist.name}'")
             return
-        for page_no in tqdm(
-            range(1, qty_pages),
-            total=qty_pages - 1,
-            desc=artist.name + " - Masters",
-        ):
+        for page_no in range(1, qty_pages):
             try:
                 page = artist.releases.page(page_no)
             except JSONDecodeError:
                 logger.error(f"Couldn't process response for masters of artist '{artist.name}'")
                 return
+            self.celery.update_state(
+                state="PROGRESS",
+                meta={"step": "Collection artist", "current": page_no, "total": qty_pages - 1, "item": artist.name + " - Masters"},
+            )
             lst_masters = lst_masters + [master.data for master in page]
         lst_masters = [dict(item, id_artist=artist.id) for item in lst_masters]
         lst_masters = [dict(item, dt_loaded=dt.datetime.now()) for item in lst_masters]

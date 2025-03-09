@@ -1,3 +1,4 @@
+from celery import Celery
 from discogs_client import Client
 from discogs_client.exceptions import HTTPError
 
@@ -33,24 +34,18 @@ class Discogs:
         result = self.user_secrets_file.read_secrets()
         if result is not None:
             logger.info("Found user token in config file config/secrets.yml")
-            self.client_discogs.set_token(
-                token=result["token"], secret=result["secret"]
-            )
+            self.client_discogs.set_token(token=result["token"], secret=result["secret"])
             return True
         else:
-            logger.warning(
-                "No user token found, user needs to authenticate the app use on Discogs"
-            )
+            logger.warning("No user token found, user needs to authenticate the app use on Discogs")
             return False
 
     def request_user_access(self, url_callback: str = None) -> str:
         """Prompt your user to "accept" the terms of your application. The application
         will act on behalf of their discogs.com account."""
-        logger.info(
-            f"Requesting user access to Discogs account with callback {url_callback}"
-        )
-        self._user_token, self._user_secret, url = (
-            self.client_discogs.get_authorize_url(callback_url=url_callback)
+        logger.info(f"Requesting user access to Discogs account with callback {url_callback}")
+        self._user_token, self._user_secret, url = self.client_discogs.get_authorize_url(
+            callback_url=url_callback
         )
         return url
 
@@ -59,9 +54,7 @@ class Discogs:
         verification. The key is required in the 2nd phase of authentication."""
         oauth_verifier = verification_code
         try:
-            logger.info(
-                "Receiving confirmation of access to the user's Discogs account"
-            )
+            logger.info("Receiving confirmation of access to the user's Discogs account")
             self._user_token, self._user_secret = self.client_discogs.get_access_token(
                 oauth_verifier
             )
@@ -82,9 +75,9 @@ class Discogs:
         logger.info(f"Connected and written user credentials of {user.name}.")
         return {"status_code": 200, "message": f"User {user.username} connected."}
 
-    def start_ETL(self):
+    def start_ETL(self, app_celery: Celery):
         collection = ETLCollection(
-            discogs_client=self.client_discogs, file_db=self.file_db
+            discogs_client=self.client_discogs, file_db=self.file_db, app_celery=app_celery
         )
         collection.process()
         derive = DiscogsDerive(file_db=self.file_db)

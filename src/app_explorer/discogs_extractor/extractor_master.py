@@ -1,6 +1,7 @@
 import datetime as dt
 
 import polars as pl
+from celery import Celery
 from discogs_client import models
 
 from log_config import logging
@@ -11,8 +12,8 @@ logger = logging.getLogger(__name__)
 
 
 class ETLMaster(DiscogsETL):
-    def __init__(self, release: models.Release, file_db: str) -> None:
-        super().__init__(file_db)
+    def __init__(self, release: models.Release, file_db: str, app_celery: Celery) -> None:
+        super().__init__(file_db, app_celery=app_celery)
         self.obj_discogs = release
 
     def process(self) -> None:

@@ -1,0 +1,2 @@
+web: gunicorn --bind 0.0.0.0:5000 app_explorer:app
+worker: celery --app=worker.app worker --pool=solo --loglevel=info
