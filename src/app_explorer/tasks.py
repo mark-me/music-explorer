@@ -13,8 +13,10 @@ def discogs_etl(self):
     # Creating a copy of the DB for loading and create a backup
     db = ManageDB(file_db=config["file_db"])
     file_db_load = db.create_load_copy()
+    db.create_backup()
 
-    discogs = Discogs(file_secrets="/data/secrets.yml", file_db=config["db_file"])
+    discogs = Discogs(file_secrets="/data/secrets.yml", file_db=file_db_load)
     task = discogs.start_ETL(app_celery=self)
     task.start()
+    db.replace_db()
     return {"current": 100, "total": 100, "status": "Task completed!", "result": 42}
