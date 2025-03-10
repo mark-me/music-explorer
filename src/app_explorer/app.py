@@ -6,7 +6,7 @@ from flask import Flask, jsonify, redirect, render_template, request, url_for
 from app_explorer.analytics import Artists, Collection, Release
 from app_explorer.celery_config import celery_app
 from app_explorer.discogs_extractor import Discogs
-from app_explorer.tasks import discogs_etl
+from app_explorer.tasks import discogs_etl, simulate_etl
 from log_config import logging
 
 logger = logging.getLogger(__name__)
@@ -157,6 +157,12 @@ def accept_user_token():
 @app.route("/discogs_etl")
 def start_ETL():
     task = discogs_etl.delay()
+    return jsonify({"success": True, "task_id": task.id})
+
+
+@app.route("/simulate_etl")
+def start_simulate_ETL():
+    task = simulate_etl.delay()
     return jsonify({"success": True, "task_id": task.id})
 
 

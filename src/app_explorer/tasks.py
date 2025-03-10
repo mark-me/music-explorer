@@ -2,6 +2,7 @@ import yaml
 
 from app_explorer.celery_config import celery_app
 from app_explorer.discogs_extractor import Discogs
+from app_explorer.task_simulator import TaskSimulator
 from utils import ManageDB
 
 
@@ -19,4 +20,10 @@ def discogs_etl(self):
     task = discogs.start_ETL(app_celery=self)
     task.start()
     db.replace_db()
+    return {"current": 100, "total": 100, "status": "Task completed!", "result": 42}
+
+@celery_app.task(name="tasks.simulator", bind=True)
+def simulate_etl(self):
+    task = TaskSimulator(celery_app=self)
+    task.start()
     return {"current": 100, "total": 100, "status": "Task completed!", "result": 42}

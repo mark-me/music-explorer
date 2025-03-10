@@ -19,7 +19,7 @@ celery_app.conf.update(
 )
 
 
-import tasks  # Import tasks module to register tasks
+import app_explorer.tasks  # Import tasks module to register tasks
 
 # Check Redis connection
 with celery_app.connection() as connection:
