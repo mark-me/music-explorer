@@ -22,7 +22,6 @@ app = Flask(
     static_folder=os.getcwd() + "/src/app_explorer/static",
 )
 
-celery_app.autodiscover_tasks(["tasks"], force=True)
 discogs = Discogs(file_secrets="/data/secrets.yml", file_db=file_db)# Setup for discogs extraction
 
 

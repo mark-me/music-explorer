@@ -7,7 +7,7 @@ with open(r"config/config.yml") as file:
 celery_app = Celery(
     "main", broker=config["celery_broker_url"], backend=config["celery_result_backend"]
 )
-celery_app.autodiscover_tasks(["tasks"])
+celery_app.autodiscover_tasks(["app_explorer.tasks"])
 
 # Task routing
 celery_app.conf.task_routes = {
