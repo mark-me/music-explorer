@@ -17,7 +17,7 @@ btn_start_etl.addEventListener('click', () => {
                         .then(response => response.json())
                         .then(data => {
                             let currentTime = new Date();
-                            statusDiv.textContent = `${currentTime.toLocaleTimeString()}: ${data.status}`;  // Update the status DIV
+                            statusDiv.textContent = `${currentTime.toLocaleTimeString('nl-NL', { hour12: false })}: ${data.status}`;  // Update the status DIV
                             if (data.step === 'Collection items') {
                                 collectionItemDiv.textContent =  `Collection item: ${data.item}`
                                 progressCollectionDiv.innerHTML = `<progress id="collection_item" class="w-100" value="${data.iteration}" max="${data.total}"></progress>`;
@@ -34,7 +34,7 @@ btn_start_etl.addEventListener('click', () => {
                                     'success'
                                 );
                                 btn_start_etl.disabled = false;  // Re-enable the trigger button
-                                btn_start_etl.classList.remove('btn-secondary disabled');  // Remove the gray background
+                                btn_start_etl.classList.remove('btn-secondary');  // Remove the gray background
                                 btn_start_etl.classList.add('btn-primary');  // Add the blue background
                                 btn_start_etl.textContent = "Start";  // Change the button text
                             }

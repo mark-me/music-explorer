@@ -54,10 +54,10 @@ class TaskSimulator:
                     random.choice(verb), random.choice(adjective)
                 )
                 logger.info(f"Collection item {message}")
-            self.start_artist(artist=random.choice(noun))
             self.celery.update_state(
                 state="PROGRESS", meta={"step": "Collection items", "current": i, "total": total, "item": message}
             )
+            self.start_artist(artist=random.choice(noun))
             time.sleep(1)
 
     def start_artist(self, artist: str):
@@ -65,7 +65,7 @@ class TaskSimulator:
         total = random.randint(3, 7)
         for i in range(total):
             self.celery.update_state(
-                state="PROGRESS", meta={"step": "Collection artist", "current": i, "total": total, "item": message}
+                state="PROGRESS", meta={"step": "Collection artists", "current": i, "total": total, "item": message}
             )
             logger.info(f"Artist {message}")
             time.sleep(1)
