@@ -22,7 +22,7 @@ app = Flask(
     static_folder=os.getcwd() + "/src/app_explorer/static",
 )
 
-discogs = Discogs(file_secrets="/data/secrets.yml", file_db=file_db)# Setup for discogs extraction
+discogs = Discogs(file_secrets="/data/secrets.yml", file_db=file_db)  # Setup for discogs extraction
 
 
 @app.route("/manifest.json")
@@ -168,16 +168,14 @@ def start_simulate_ETL():
 @app.route("/check_task/<task_id>", methods=["GET"])
 def check_task(task_id):
     task = celery_app.AsyncResult(task_id)
-    print(f"Task {task_id} is currently in state: {task.state}")  # Print the task state
-    response = jsonify(
-            {
-                "status": task.state,
-                "step": task.result["step"],
-                "iteration": task.result["current"],
-                "total": task.result["total"],
-                "item": task.result["item"],
-            }
-        )
+    task_status = {
+        "status": task.state,
+        "step": task.result["step"],
+        "iteration": task.result["current"],
+        "total": task.result["total"],
+        "item": task.result["item"],
+    }
+    response = jsonify(task_status)
     return response
 
 

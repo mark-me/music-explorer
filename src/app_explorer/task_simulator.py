@@ -65,7 +65,7 @@ class TaskSimulator:
         total = random.randint(3, 7)
         for i in range(total):
             self.celery.update_state(
-                state="PROGRESS", meta={"step": "Collection artists", "current": i, "total": total, "item": message}
+                state="PROGRESS", meta={"step": "Collection artist", "current": i, "total": total, "item": message}
             )
             logger.info(f"Artist {message}")
             time.sleep(1)

@@ -5,24 +5,27 @@
       <b>Discogs settings</b>
     </div>
     <div class="card-body">
-      <p>
-        Discogs authentication &nbsp;
-        {% if config.credentials_ok %}
-          <i class="fa-solid fa-square-check text-success"></i><br /><br />
-          Retrieve Discogs data &nbsp;
-          <a href="/simulate_etl" class="btn btn-primary btn-sm" id="btn_start_etl">Start</a>
-          <div id="statusDiv"></div>
-          <h2 class="text-center text-2xl font-bold text-blue-500">Collection items</h2>
-          <div id="progressCollection"></div>
-          <h2 id="artistDiv" class="text-center text-2xl font-bold text-blue-500">Artist progress</h2>
-          <div id="progressArtist"></div>
-          <div id="messageDiv"></div>
-        {% else %}
-          <i class="fa-solid fa-triangle-exclamation text-warning"></i><br />
-          <a href="{{ config.url_discogs }}" target="_blank" class="btn btn-primary btn-sm">Allow Discogs access</a>
-        {% endif %}
-      </p>
+      Discogs authentication &nbsp;{% if config.credentials_ok %}
+        <i class="fa-solid fa-square-check text-success"></i><br /><br />
+        Retrieve Discogs data &nbsp;
+        <button class="btn btn-primary btn-sm" id="btn_start_etl">Start</button>
+        <br />
+        <br />
+        <div id="loadingCard" class="card" style="hidden">
+          <div id="statusDiv" class="card-header"></div>
+          <div class="card-body">
+            <div id="collectionItemDiv" class="p-3">Collection items</div>
+            <div id="progressCollectionDiv" class="progress-container w-100 p-3"></div>
+            <div id="collectionArtistDiv" class="p-3">Artist progress</div>
+            <div id="progressArtistDiv" class="w-100 p-3"></div>
+          </div>
+        </div>
+      {% else %}
+        <i class="fa-solid fa-triangle-exclamation text-warning"></i><br />
+        <a href="{{ config.url_discogs }}" target="_blank" class="btn btn-primary btn-sm">Allow Discogs access</a>
+      {% endif %}
     </div>
   </div>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <script src="{{ url_for('static', filename='progress_etl.js') }}"></script>
 {% endblock %}
