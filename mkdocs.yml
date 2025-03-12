@@ -1,0 +1,24 @@
+site_name: Music Explorer Docs
+
+theme:
+  name: "material"
+
+plugins:
+  - mkdocstrings
+  - search
+  - mermaid2
+
+nav:
+  - Music Explorer Docs: index.md
+  - tutorials.md
+  - How-To Guides: how-to-guides.md
+  - reference.md
+  - explanation.md
+
+markdown_extensions:
+  - pymdownx.superfences:
+        # make exceptions to highlighting of code:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:mermaid2.fence_mermaid_custom
