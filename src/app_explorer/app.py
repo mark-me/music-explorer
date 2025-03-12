@@ -138,6 +138,8 @@ def collection_item(id_release: int):
 
 @app.route("/config")
 def config_page():
+    i = celery_app.control.inspect()
+    dict_tasks = i.active()
     url_callback = f"{config['url']}/receive-token"
     dict_config = {
         "credentials_ok": discogs.check_user_tokens(),
