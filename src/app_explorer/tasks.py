@@ -22,7 +22,7 @@ def discogs_etl(self):
     db.replace_db()
     return {"current": 100, "total": 100, "status": "Task completed!", "result": 42}
 
-@celery_app.task(name="tasks.simulator")
+@celery_app.task(name="tasks.simulator", bind=True)
 def simulate_etl(self):
     task = TaskSimulator(celery_app=self)
     task.start()
