@@ -37,6 +37,7 @@ btn_start_etl.addEventListener('click', () => {
                                 btn_start_etl.classList.remove('btn-secondary');  // Remove the gray background
                                 btn_start_etl.classList.add('btn-primary');  // Add the blue background
                                 btn_start_etl.textContent = "Start";  // Change the button text
+                                loadingCard.style.display = "none";
                             }
                             isFetching = false;  // Set the flag to false after the request has completed
                         });
