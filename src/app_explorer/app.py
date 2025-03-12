@@ -140,10 +140,9 @@ def collection_item(id_release: int):
 def config_page():
     i = celery_app.control.inspect()
     dict_tasks = i.active()
-    url_callback = f"{config['url']}/receive-token"
     dict_config = {
         "credentials_ok": discogs.check_user_tokens(),
-        "url_discogs": discogs.request_user_access(url_callback=url_callback),
+        "url_discogs": discogs.request_user_access(url_callback=f"{config['url']}/receive-token"),
     }
     return render_template("config.html", config=dict_config)
 
