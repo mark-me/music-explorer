@@ -17,14 +17,12 @@ btn_start_etl.addEventListener('click', () => {
                         .then(response => response.json())
                         .then(data => {
                             let currentTime = new Date();
-                            statusDiv.textContent = `${currentTime.toLocaleTimeString('nl-NL', { hour12: false })}: ${data.status}`;  // Update the status DIV
-                            if (data.step === 'Collection items') {
-                                collectionItemDiv.textContent =  `Collection item: ${data.item}`
-                                progressCollectionDiv.innerHTML = `<progress id="collection_item" class="w-100" value="${data.iteration}" max="${data.total}"></progress>`;
-                            }
-                            if (data.step === 'Collection artists') {
-                                collectionArtistDiv.textContent =  `Collection artist data for: ${data.item}`
-                                progressArtistDiv.innerHTML = `<progress id="collection_artist" class="w-100" value="${data.iteration}" max="${data.total}"></progress>`;
+                            statusDiv.textContent = `${currentTime.toLocaleTimeString('nl-NL', { hour12: false })}: ${data.status}`;
+                            if (data.collection_items) {
+                                collectionItemDiv.textContent = `Collection item: ${data.collection_items.item}`
+                                progressCollectionDiv.innerHTML = `<progress id="collection_item" class="w-100" value="${data.collection_items.current}" max="${data.collection_items.total}"></progress>`;
+                                collectionArtistDiv.textContent = `Collection artist data for: ${data.collection_artists.item}`
+                                progressArtistDiv.innerHTML = `<progress id="collection_artist" class="w-100" value="${data.collection_artists.current}" max="${data.collection_artists.total}"></progress>`;
                             }
                             if (data.status === 'SUCCESS') {
                                 clearInterval(intervalId);

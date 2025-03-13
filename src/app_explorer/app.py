@@ -169,13 +169,11 @@ def start_simulate_ETL():
 @app.route("/check_task/<task_id>", methods=["GET"])
 def check_task(task_id):
     task = celery_app.AsyncResult(task_id)
-    task_status = {
-        "status": task.state,
-        "step": task.result["step"],
-        "iteration": task.result["current"],
-        "total": task.result["total"],
-        "item": task.result["item"],
-    }
+    task_status = {"status": task.state}
+    try:
+        task_status.update(task.result)
+    except TypeError:
+        pass
     response = jsonify(task_status)
     return response
 
