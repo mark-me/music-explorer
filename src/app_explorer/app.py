@@ -1,5 +1,6 @@
 import os
 
+import redis
 import yaml
 from flask import Flask, jsonify, redirect, render_template, request, url_for
 
@@ -23,6 +24,25 @@ app = Flask(
 )
 
 discogs = Discogs(file_secrets="/data/secrets.yml", file_db=file_db)  # Setup for discogs extraction
+
+
+def celery_tasks_running() -> str:
+    """Get task id of active task
+
+    Returns:
+        str: Task id
+    """
+    i = celery_app.control.inspect()
+    dict_tasks = i.active()
+    if not dict_tasks:
+        logger.error("Could not inspect Celery: it may be down.")
+        return []
+    lst_tasks = sum(dict_tasks.values(), [])
+    id_task = None
+    for task in lst_tasks:
+        if task["name"] in ["tasks.simulator", "tasks.discogs_etl"]:
+            id_task = task["id"]
+    return id_task
 
 
 @app.route("/manifest.json")
@@ -138,8 +158,9 @@ def collection_item(id_release: int):
 
 @app.route("/config")
 def config_page():
-    i = celery_app.control.inspect()
-    dict_tasks = i.active()
+    id_task = celery_tasks_running()
+    if id_task:
+
     dict_config = {
         "credentials_ok": discogs.check_user_tokens(),
         "url_discogs": discogs.request_user_access(url_callback=f"{config['url']}/receive-token"),
