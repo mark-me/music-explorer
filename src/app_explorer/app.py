@@ -24,6 +24,8 @@ app = Flask(
 
 discogs = Discogs(file_secrets="/data/secrets.yml", file_db=file_db)  # Setup for discogs extraction
 
+# ETL task id
+id_task_etl = None
 
 def celery_tasks_running() -> str:
     """Get task id of active task
@@ -31,17 +33,17 @@ def celery_tasks_running() -> str:
     Returns:
         str: Task id
     """
+    id_task_etl = None
     i = celery_app.control.inspect()
     dict_tasks = i.active()
     if not dict_tasks:
         logger.error("Could not inspect Celery: it may be down.")
         return []
     lst_tasks = sum(dict_tasks.values(), [])
-    id_task = None
     for task in lst_tasks:
         if task["name"] in ["tasks.simulator", "tasks.discogs_etl"]:
-            id_task = task["id"]
-    return id_task
+            id_task_etl = task["id"]
+    return id_task_etl
 
 
 @app.route("/manifest.json")
@@ -181,18 +183,31 @@ def accept_user_token():
 
 @app.route("/discogs_etl")
 def start_ETL():
-    id_task = celery_tasks_running()
-    if not id_task:
+    global id_task_etl
+    id_task_etl = celery_tasks_running()
+    if not id_task_etl:
         task = discogs_etl.delay()
-        return jsonify({"success": True, "task_id": task.id})
+        id_task_etl = task.id
+        return jsonify({"success": True, "task_id": id_task_etl})
     else:
-        return jsonify({"success": True, "task_id": id_task})
+        return jsonify({"success": True, "task_id": id_task_etl})
+
+
+@app.route("/task_etl_id")
+def get_task_ETL_id():
+    global id_task_etl
+    id_task_etl = celery_tasks_running()
+    return jsonify({"success": True, "task_id": id_task_etl})
 
 
 @app.route("/simulate_etl")
 def start_simulate_ETL():
-    task = simulate_etl.delay()
-    return jsonify({"success": True, "task_id": task.id})
+    global id_task_etl
+    id_task_etl = celery_tasks_running()
+    if not id_task_etl:
+        task = simulate_etl.delay()
+        id_task_etl = task.id
+    return redirect(url_for("config_page"))
 
 
 @app.route("/check_task/<task_id>", methods=["GET"])

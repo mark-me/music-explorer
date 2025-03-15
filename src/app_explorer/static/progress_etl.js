@@ -1,5 +1,4 @@
 btn_start_etl.addEventListener('click', showProgress);
-window.onload = showProgress;
 
 function showProgress() {
     btn_start_etl.disabled = true;  // Disable the trigger button
@@ -8,10 +7,14 @@ function showProgress() {
     btn_start_etl.textContent = "Data retrieval in progress...";  // Change the button text
     statusDiv.textContent = "Be patient, it won't be long...";  // Set the initial status
     loadingCard.style.display = "block"
-    fetch('/simulate_etl')
+    fetch('/task_etl_id')
         .then(response => response.json())
         .then(data => {
             let taskId = data.task_id;
+            if (taskId) {
+                statusDiv.textContent = `Started nothing`;
+            }
+              // Set the initial status
             let isFetching = false;  // Add a flag to indicate whether a fetch request is in progress
             let intervalId = setInterval(() => {
                 if (!isFetching) {  // Only send a new request if the previous one has completed
