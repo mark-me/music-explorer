@@ -1,7 +1,8 @@
 import os
 import shutil
 import time
-from pathlib import Path
+
+from .backup_cleaner import BackupCleaner
 
 class ManageDB:
     def __init__(self, file_db: str) -> None:
@@ -32,5 +33,7 @@ class ManageDB:
             file_backup = dir_backup + '/' + self._db_file + '_' + time.strftime("%Y%m%d_%H%M%S") + '.db'
             shutil.copyfile(self._db_path, file_backup)
             # TODO: Add retention policy
+            #backup_cleaner = BackupCleaner(dir_backup=dir_backup)
+            #backup_cleaner.clean_old_backups()
 
 
