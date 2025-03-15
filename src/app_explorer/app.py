@@ -69,7 +69,11 @@ def home():
 
 @app.route("/artists")
 def artists():
-    """Artists"""
+    """Route for artists
+
+    Returns:
+        _type_: Renders the page showing 5 random artists, and the first 10 of all artists
+    """
     db_artists = Artists(file_db=file_db)
     lst_random = db_artists.random(qty_sample=5)
     lst_all = db_artists.all_top_10()
@@ -80,7 +84,11 @@ def artists():
 
 @app.route("/artists_all")
 def artists_all():
-    """Artists"""
+    """Route for all artists
+
+    Returns:
+        _type_: Renders the page showing all artists
+    """
     db_artists = Artists(file_db=file_db)
     lst_artists = db_artists.all()
     return render_template("artists/artists_all.html", all_artists=lst_artists, title="Artists")
@@ -159,6 +167,9 @@ def collection_item(id_release: int):
 @app.route("/config")
 def config_page():
     id_task = celery_tasks_running()
+    if id_task:
+        # TODO trigger url
+        pass
     dict_config = {
         "credentials_ok": discogs.check_user_tokens(),
         "url_discogs": discogs.request_user_access(url_callback=f"{config['url']}/receive-token"),
@@ -175,8 +186,12 @@ def accept_user_token():
 
 @app.route("/discogs_etl")
 def start_ETL():
-    task = discogs_etl.delay()
-    return jsonify({"success": True, "task_id": task.id})
+    id_task = celery_tasks_running()
+    if not id_task:
+        task = discogs_etl.delay()
+        return jsonify({"success": True, "task_id": task.id})
+    else:
+        return jsonify({"success": True, "task_id": id_task})
 
 
 @app.route("/simulate_etl")

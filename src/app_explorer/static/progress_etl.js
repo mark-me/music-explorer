@@ -1,4 +1,7 @@
-btn_start_etl.addEventListener('click', () => {
+btn_start_etl.addEventListener('click', showProgress);
+window.onload = showProgress;
+
+function showProgress() {
     btn_start_etl.disabled = true;  // Disable the trigger button
     btn_start_etl.classList.remove('btn-primary');  // Remove the blue background
     btn_start_etl.classList.add('btn-secondary');  // Add a gray background
@@ -42,4 +45,5 @@ btn_start_etl.addEventListener('click', () => {
                 }
             }, 500);  // Poll every 1/2 second
         });
-});
+
+}
