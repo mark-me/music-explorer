@@ -5,8 +5,7 @@
       <b>Discogs settings</b>
     </div>
     <div class="card-body">
-      Discogs authentication &nbsp;{% if config.credentials_ok %}
-        <i class="fa-solid fa-square-check text-success"></i><br /><br />
+      {% if config.credentials_ok %}
         Retrieve Discogs data &nbsp;
         <button class="btn btn-primary btn-sm" id="btn_start_etl">Start</button>
         <br />
@@ -21,6 +20,7 @@
           </div>
         </div>
       {% else %}
+        Discogs authentication &nbsp;
         <i class="fa-solid fa-triangle-exclamation text-warning"></i><br />
         <a href="{{ config.url_discogs }}" target="_blank" class="btn btn-primary btn-sm">Allow Discogs access</a>
       {% endif %}
