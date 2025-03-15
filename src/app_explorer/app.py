@@ -1,6 +1,5 @@
 import os
 
-import redis
 import yaml
 from flask import Flask, jsonify, redirect, render_template, request, url_for
 
