@@ -13,7 +13,7 @@ function showProgress() {
             let taskId = data.task_id;
             if (taskId) {
                 statusDiv.textContent = `Started nothing`;
-            }
+            } else {
               // Set the initial status
             let isFetching = false;  // Add a flag to indicate whether a fetch request is in progress
             let intervalId = setInterval(() => {
@@ -47,6 +47,7 @@ function showProgress() {
                         });
                 }
             }, 500);  // Poll every 1/2 second
+            }
         });
 
 }
