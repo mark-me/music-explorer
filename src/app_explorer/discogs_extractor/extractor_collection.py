@@ -13,26 +13,23 @@ logger = logging.getLogger(__name__)
 
 
 class ETLCollection(DiscogsETL):
-    def __init__(self, discogs_client: Client, file_db: str, app_celery: Celery):
+    def __init__(self, discogs_client: Client, file_db: str, app_celery: Celery, progress: dict):
         super().__init__(file_db, app_celery=app_celery)
         self.discogs_client = discogs_client
         self.user = discogs_client.identity()
+        self.progress = progress
 
     def process(self):
         """Starting point of all collection"""
         logger.info("Started ETL for collection")
-        self.celery.update_state(
-            state="PROGRESS", meta={"step": "start", "current": 0, "total": 0, "item": "None"}
-        )
         self.collection_value(target_table="collection_value")
         self.collection_items(target_table="collection_items")
-        self.celery.update_state(
-            state="SUCCESS", meta={"step": "overall", "current": 1, "total": 1, "item": "None"}
-        )
 
     def collection_value(self, target_table: str) -> None:
         """Collection value"""
         logger.info("Retrieve collection value")
+        self.progress.update({"collection_value": {"current": 0, "total": 1, "item": ""}})
+        self.celery.update_state(state="PROGRESS", meta=self.progress)
         collection_value = self.user.collection_value
         df_stats = pl.DataFrame(
             [
@@ -46,10 +43,8 @@ class ETLCollection(DiscogsETL):
             ]
         )
         self.db.store_append(df=df_stats, name_table=target_table)
-        self.celery.update_state(
-            state="PROGRESS",
-            meta={"step": "Collection value", "current": 1, "total": 1, "item": "None"},
-        )
+        self.progress.update({"collection_value": {"current": 1, "total": 1, "item": ""}})
+        self.celery.update_state(state="PROGRESS", meta=self.progress)
 
     def collection_items(self, target_table: str) -> None:
         """Process the user's collection items"""
@@ -59,10 +54,16 @@ class ETLCollection(DiscogsETL):
         qty_items = self.user.collection_folders[0].count
         lst_releases = self.user.collection_folders[0].releases
         for i, item in enumerate(lst_releases):
-            self.celery.update_state(
-                state="PROGRESS",
-                meta={"step": "Collection item", "current": i, "total": qty_items, "item": "None"},
+            self.progress.update(
+                {
+                    "collection_items": {
+                        "current": i,
+                        "total": qty_items,
+                        "item": item.data["basic_information"]["title"],
+                    }
+                }
             )
+            self.celery.update_state(state="PROGRESS", meta=self.progress)
             self._collection_item(collection_item=item, target_table=target_table)
 
     def _collection_item(

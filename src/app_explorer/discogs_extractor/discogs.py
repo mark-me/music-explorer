@@ -76,9 +76,19 @@ class Discogs:
         return {"status_code": 200, "message": f"User {user.username} connected."}
 
     def start_ETL(self, app_celery: Celery):
+        progress = {
+            "collection_value": {"current": 1, "total": 1, "item": "None"},
+            "collection_items": {"current": 1, "total": 1, "item": "None"},
+            "collection_artists": {"current": 1, "total": 1, "item": "None"},
+        }
         collection = ETLCollection(
-            discogs_client=self.client_discogs, file_db=self.file_db, app_celery=app_celery
+            discogs_client=self.client_discogs,
+            file_db=self.file_db,
+            app_celery=app_celery,
+            progress=progress,
         )
+        self.celery.update_state(state="PROGRESS")
         collection.process()
         derive = DiscogsDerive(file_db=self.file_db)
         derive.start()
+        self.celery.update_state(state="SUCCESS")

@@ -12,8 +12,8 @@ logger = logging.getLogger(__name__)
 
 
 class ETLMaster(DiscogsETL):
-    def __init__(self, release: models.Release, file_db: str, app_celery: Celery) -> None:
-        super().__init__(file_db, app_celery=app_celery)
+    def __init__(self, release: models.Release, file_db: str, app_celery: Celery, progress: dict) -> None:
+        super().__init__(file_db, app_celery=app_celery, progress=progress)
         self.obj_discogs = release
 
     def process(self) -> None:

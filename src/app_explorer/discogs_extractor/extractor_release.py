@@ -16,10 +16,10 @@ logger = logging.getLogger(__name__)
 class ETLRelease(ETLMaster):
     """A class that processes release related data"""
 
-    def __init__(self, release: models.Release, file_db: str, app_celery: Celery) -> None:
-        super().__init__(release=release, file_db=file_db, app_celery=app_celery)
+    def __init__(self, release: models.Release, file_db: str, app_celery: Celery, progress: dict) -> None:
+        super().__init__(release=release, file_db=file_db, app_celery=app_celery, progress=progress)
         self.obj_discogs = release
-        self.artist_etl = ETLArtist(artists=release.artists, file_db=self.file_db, app_celery=app_celery)
+        self.artist_etl = ETLArtist(artists=release.artists, file_db=self.file_db, app_celery=app_celery, progress=progress)
 
     def process(self) -> None:
         logger.info(f"Extracting info from release {self.obj_discogs.title}")

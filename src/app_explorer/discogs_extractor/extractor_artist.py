@@ -16,8 +16,10 @@ logger = logging.getLogger(__name__)
 class ETLArtist(DiscogsETL):
     """A class that processes artist related data"""
 
-    def __init__(self, artists: models.Artist, file_db: str, app_celery: Celery) -> None:
-        super().__init__(file_db, app_celery=app_celery)
+    def __init__(
+        self, artists: models.Artist, file_db: str, app_celery: Celery, progress: dict
+    ) -> None:
+        super().__init__(file_db, app_celery=app_celery, progress=progress)
         self.obj_discogs = artists
         self.process_masters = True
 
@@ -69,9 +71,18 @@ class ETLArtist(DiscogsETL):
             except JSONDecodeError:
                 logger.error(f"Couldn't process response for masters of artist '{artist.name}'")
                 return
+            self.progress.update(
+                {
+                    "collection_artists": {
+                        "current": page_no,
+                        "total": qty_pages - 1,
+                        "item": artist.name + " - Masters",
+                    }
+                }
+            )
             self.celery.update_state(
                 state="PROGRESS",
-                meta={"step": "Collection artist", "current": page_no, "total": qty_pages - 1, "item": artist.name + " - Masters"},
+                meta=self.progress,
             )
             lst_masters = lst_masters + [master.data for master in page]
         lst_masters = [dict(item, id_artist=artist.id) for item in lst_masters]
