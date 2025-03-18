@@ -77,9 +77,10 @@ class Discogs:
 
     def start_ETL(self, app_celery: Celery):
         progress = {
-            "collection_value": {"current": 1, "total": 1, "item": "None"},
-            "collection_items": {"current": 1, "total": 1, "item": "None"},
-            "collection_artists": {"current": 1, "total": 1, "item": "None"},
+            "collection_value": {"current": 0, "total": 1, "item": "None"},
+            "collection_items": {"current": 0, "total": 1, "item": "None"},
+            "collection_artists": {"current": 0, "total": 1, "item": "None"},
+            "derive": {"current": 0, "total": 1, "item": "None"},
         }
         collection = ETLCollection(
             discogs_client=self.client_discogs,
