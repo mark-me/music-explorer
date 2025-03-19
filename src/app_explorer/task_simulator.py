@@ -5,6 +5,24 @@ import time
 class TaskSimulator:
     def __init__(self, celery_app):
         self.celery = celery_app
+        dict_status = {
+            "collection_value": {"status": "waiting"},
+            "collection_items": {
+                "status": "waiting",
+                "progress_items": {
+                    "collection_items": {"current": 1, "total": 1, "item": "None"},
+                    "collection_artists": {"current": 1, "total": 1, "item": "None"},
+                },
+            },
+            "derive_data": {"status": "waiting", "item": ""},
+            "artist_network": {
+                "status": "waiting",
+                "progress_items": {
+                    "build_network": {"current": 1, "total": 1, "item": "None"},
+                    "extract_network_artists": {"current": 1, "total": 1, "item": "None"},
+                },
+            },
+        }
         self.dict_status = {
             "collection_value": {"current": 1, "total": 1, "item": "None"},
             "collection_items": {"current": 1, "total": 1, "item": "None"},
@@ -20,7 +38,7 @@ class TaskSimulator:
     def start_collection_value(self):
         i = 0
         total = 1
-        self.dict_status.update({"collection_value":{"current": i, "total": total, "item": ""}})
+        self.dict_status.update({"collection_value": {"current": i, "total": total, "item": ""}})
         self.celery.update_state(state="PROGRESS", meta=self.dict_status)
         time.sleep(1)
         i = i + 1
