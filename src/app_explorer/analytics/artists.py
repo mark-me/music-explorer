@@ -218,11 +218,13 @@ class Artists(DBStorage):
             if id_artist in dict_member_of_group:
                 lst_artists[i].update({"member_of_group": dict_member_of_group[id_artist]})
                 lst_artists[i].update({"qty_member_of_group": len(dict_member_of_group[id_artist])})
+            else:
+                lst_artists[i].update({"qty_member_of_group": 0})
             if id_artist in dict_group_members:
                 lst_artists[i].update({"group_members": dict_group_members[id_artist]})
                 lst_artists[i].update({"qty_group_members": len(dict_group_members[id_artist])})
             else:
-                lst_artists[i].update({"qty_artists_related": 0})
+                lst_artists[i].update({"qty_group_members": 0})
         return lst_artists
 
     def _formats(self, str_artist_ids: str) -> dict:
@@ -320,8 +322,9 @@ class Artists(DBStorage):
     def _member_of_group(self, str_artist_ids: str) -> dict:
         sql = f"""
             SELECT
+                ag.id_artist AS id_member,
                 ag.id_group AS id_artist,
-                g.name_artist AS name_group,
+                g.name_artist AS name_artist,
                 ai.url_image,
                 ai.url_image_150,
                 ai.width_image,
@@ -334,25 +337,26 @@ class Artists(DBStorage):
             AND ( ai.type = 'primary' OR ai.type IS NULL )
         """
         lst_groups = self.read_sql(sql=sql).to_dicts()
-        dict_groups = self._dicts_to_dict(key_field="id_artist", lst_dicts=lst_groups)
+        dict_groups = self._dicts_to_dict(key_field="id_member", lst_dicts=lst_groups)
         return dict_groups
 
     def _group_members(self, str_artist_ids: str) -> dict:
         sql = f"""
             SELECT
-                ag.id_artist,
-                g.name_artist AS name_group,
+                am.id_artist AS id_group,
+                am.id_member AS id_artist,
+                m.name_artist AS name_artist,
                 ai.url_image,
                 ai.url_image_150,
                 ai.width_image,
-            FROM artist_groups ag
-            INNER JOIN artist g
-            ON g.id_artist = ag.id_group
+            FROM artist_members am
+            INNER JOIN artist m
+            ON m.id_artist = am.id_member
             LEFT JOIN artist_images ai
-            ON ai.id_artist = ag.id_artist
-            WHERE ( ag.id_group IN ({str_artist_ids}))
+            ON ai.id_artist = m.id_artist
+            WHERE ( am.id_artist IN ({str_artist_ids}))
             AND  ( ai.type = 'primary' OR ai.type IS NULL )
         """
-        lst_groups = self.read_sql(sql=sql).to_dicts()
-        dict_groups = self._dicts_to_dict(key_field="id_artist", lst_dicts=lst_groups)
+        lst_members = self.read_sql(sql=sql).to_dicts()
+        dict_groups = self._dicts_to_dict(key_field="id_group", lst_dicts=lst_members)
         return dict_groups

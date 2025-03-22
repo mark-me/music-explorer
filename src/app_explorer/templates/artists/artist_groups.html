@@ -1,0 +1,16 @@
+{% if artist.qty_member_of_group > 0 %}
+  <div class="accordion-item">
+    <h2 class="accordion-header" id="headingGroups"><button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseGroups" aria-expanded="false" aria-controls="collapseGroups"><b>Member of groups</b></button></h2>
+    <div id="collapseGroups" class="accordion-collapse collapse" aria-labelledby="headingGroups" data-bs-parent="#accordionArtist">
+      <div class="accordion-body">
+        <div class="row">
+          {% for group in artist.member_of_group %}
+            <div class="col-md-4 d-flex justify-content-center">
+              <div class="card-group">{{ card_macro.card_artist(artist=group) }}</div>
+            </div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+  </div>
+{% endif %}
