@@ -100,7 +100,10 @@ class DBStorage:
     def is_value_present(self, name_table: str, name_column: str, value: str):
         is_present = False
         if self.table_exists(name_table=name_table):
-            sql = f"SELECT COUNT(*) AS qty_present FROM {name_table} WHERE {name_column}={value}"
+            if isinstance(value, str):
+                sql = f"SELECT COUNT(*) AS qty_present FROM {name_table} WHERE {name_column}='{value}'"
+            elif isinstance(value, int):
+                sql = f"SELECT COUNT(*) AS qty_present FROM {name_table} WHERE {name_column}={value}"
             df = pl.read_database(sql, connection=self.engine.connect())
             is_present = df.item(0, 0) > 0
         return is_present
