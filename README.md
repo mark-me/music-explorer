@@ -21,6 +21,7 @@ Start rediscovering your music today!
 ### How to start using this
 
 #### Setting up the environment
+
 * Clone this repository
 * I assumed you have python and [pip](https://python.land/virtual-environments/installing-packages-with-pip) installed.
 * Create Python venv
@@ -42,7 +43,7 @@ There are two scenario's to run this project:
    * Run ```hocho start```
    * Navigate to [http://localhost:5000](http://localhost:5000)
 
-  1. Just run the celery worker to be able to debug the project:
-       * Start the celery worker, make sure you keep this command running in a terminal. This allows the script to fire op load jobs:
-         * ```celery --app=app_explorer.celery_config worker --loglevel=info```
-       * Start a debug session with the file ```src/app_explorer/app.py``` from your editor of choice.
+2. Just run the celery worker to be able to debug the project:
+    * Start the celery worker, make sure you keep this command running in a terminal. This allows the script to fire op load jobs:
+       * ```celery --app=app_explorer.celery_config worker --loglevel=info```
+    * Start a debug session with the file ```src/app_explorer/app.py``` from your editor of choice.
