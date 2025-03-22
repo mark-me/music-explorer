@@ -9,18 +9,21 @@ class TaskSimulator:
             "collection_value": {"status": "waiting"},
             "collection_items": {
                 "status": "waiting",
-                "progress_items": {
-                    "collection_items": {"current": 1, "total": 1, "item": "None"},
-                    "collection_artists": {"current": 1, "total": 1, "item": "None"},
-                },
+                "progress_items": [
+                    {"name": "Collection items", "current": 1, "total": 1, "item": ""},
+                    {"name": "Artist data", "current": 1, "total": 1, "item": ""},
+                ],
             },
-            "derive_data": {"status": "waiting", "item": ""},
+            "derive_data": {
+                "status": "waiting",
+                "progress_items": [{"name": "Derive data", "current": 1, "total": 1, "item": ""}],
+            },
             "artist_network": {
                 "status": "waiting",
-                "progress_items": {
-                    "build_network": {"current": 1, "total": 1, "item": "None"},
-                    "extract_network_artists": {"current": 1, "total": 1, "item": "None"},
-                },
+                "progress_items": [
+                    {"name": "Build network", "current": 1, "total": 1, "item": ""},
+                    {"name": "Network artist", "current": 1, "total": 1, "item": ""},
+                ],
             },
         }
         self.dict_status = {
