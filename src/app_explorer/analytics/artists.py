@@ -203,7 +203,8 @@ class Artists(DBStorage):
         dict_formats = self._formats(str_artist_ids=str_artist_ids)
         dict_genres = self._genres(str_artist_ids=str_artist_ids)
         dict_styles = self._styles(str_artist_ids=str_artist_ids)
-        dict_relations = self._related(str_artist_ids=str_artist_ids)
+        dict_member_of_group = self._member_of_group(str_artist_ids=str_artist_ids)
+        dict_group_members = self._group_members(str_artist_ids=str_artist_ids)
 
         # Adding nested information
         for i, artist in enumerate(lst_artists):
@@ -214,9 +215,12 @@ class Artists(DBStorage):
                 lst_artists[i].update({"genres_collection": dict_genres[id_artist]})
             if id_artist in dict_styles:
                 lst_artists[i].update({"styles_collection": dict_styles[id_artist]})
-            if id_artist in dict_relations:
-                lst_artists[i].update({"artists_related": dict_relations[id_artist]})
-                lst_artists[i].update({"qty_artists_related": len(dict_relations[id_artist])})
+            if id_artist in dict_member_of_group:
+                lst_artists[i].update({"member_of_group": dict_member_of_group[id_artist]})
+                lst_artists[i].update({"qty_member_of_group": len(dict_member_of_group[id_artist])})
+            if id_artist in dict_group_members:
+                lst_artists[i].update({"group_members": dict_group_members[id_artist]})
+                lst_artists[i].update({"qty_group_members": len(dict_group_members[id_artist])})
             else:
                 lst_artists[i].update({"qty_artists_related": 0})
         return lst_artists
@@ -308,7 +312,47 @@ class Artists(DBStorage):
         for key, artists in dict_relations.items():
             new_list = []
             for artist in artists:
-                artist['id_artist'] = artist.pop('id_artist_to')
+                artist["id_artist"] = artist.pop("id_artist_to")
                 new_list.append(artist)
             dict_relations.update({key: new_list})
         return dict_relations
+
+    def _member_of_group(self, str_artist_ids: str) -> dict:
+        sql = f"""
+            SELECT
+                ag.id_group AS id_artist,
+                g.name_artist AS name_group,
+                ai.url_image,
+                ai.url_image_150,
+                ai.width_image,
+            FROM artist_groups ag
+            INNER JOIN artist g
+            ON g.id_artist = ag.id_group
+            LEFT JOIN artist_images ai
+            ON ai.id_artist = ag.id_group
+            WHERE ( ag.id_artist IN ({str_artist_ids}))
+            AND ( ai.type = 'primary' OR ai.type IS NULL )
+        """
+        lst_groups = self.read_sql(sql=sql).to_dicts()
+        dict_groups = self._dicts_to_dict(key_field="id_artist", lst_dicts=lst_groups)
+        return dict_groups
+
+    def _group_members(self, str_artist_ids: str) -> dict:
+        sql = f"""
+            SELECT
+                ag.id_artist,
+                g.name_artist AS name_group,
+                ai.url_image,
+                ai.url_image_150,
+                ai.width_image,
+            FROM artist_groups ag
+            INNER JOIN artist g
+            ON g.id_artist = ag.id_group
+            LEFT JOIN artist_images ai
+            ON ai.id_artist = ag.id_artist
+            WHERE ( ag.id_group IN ({str_artist_ids}))
+            AND  ( ai.type = 'primary' OR ai.type IS NULL )
+        """
+        lst_groups = self.read_sql(sql=sql).to_dicts()
+        dict_groups = self._dicts_to_dict(key_field="id_artist", lst_dicts=lst_groups)
+        return dict_groups
