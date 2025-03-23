@@ -205,7 +205,7 @@ class Artists(DBStorage):
         dict_styles = self._styles(str_artist_ids=str_artist_ids)
         dict_member_of_group = self._member_of_group(str_artist_ids=str_artist_ids)
         dict_group_members = self._group_members(str_artist_ids=str_artist_ids)
-        dict_projects = self._side_projects(str_artist_ids=str_artist_ids)
+        dict_offshoots = self._offshoots(str_artist_ids=str_artist_ids)
 
         # Adding nested information
         for i, artist in enumerate(lst_artists):
@@ -226,11 +226,11 @@ class Artists(DBStorage):
                 lst_artists[i].update({"qty_group_members": len(dict_group_members[id_artist])})
             else:
                 lst_artists[i].update({"qty_group_members": 0})
-            if id_artist in dict_projects:
-                lst_artists[i].update({"side_projects": dict_projects[id_artist]})
-                lst_artists[i].update({"qty_side_projects": len(dict_projects[id_artist])})
+            if id_artist in dict_offshoots:
+                lst_artists[i].update({"offshoots": dict_offshoots[id_artist]})
+                lst_artists[i].update({"qty_offshoots": len(dict_offshoots[id_artist])})
             else:
-                lst_artists[i].update({"qty_side_projects": 0})
+                lst_artists[i].update({"qty_offshoots": 0})
         return lst_artists
 
     def _formats(self, str_artist_ids: str) -> dict:
@@ -367,7 +367,7 @@ class Artists(DBStorage):
         dict_groups = self._dicts_to_dict(key_field="id_group", lst_dicts=lst_members)
         return dict_groups
 
-    def _side_projects(self, str_artist_ids: str) -> dict:
+    def _offshoots(self, str_artist_ids: str) -> dict:
         sql = f"""
             SELECT
                 am.id_artist AS id_main,
