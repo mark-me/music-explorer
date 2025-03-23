@@ -369,22 +369,22 @@ class Artists(DBStorage):
 
     def _offshoots(self, str_artist_ids: str) -> dict:
         sql = f"""
-            SELECT
+            SELECT DISTINCT
                 am.id_artist AS id_main,
-                ag.id_group AS id_artist,
-                ag.name_group AS name_artist,
+                gm.id_group AS id_artist,
+                a.name_artist,
                 ai.url_image,
                 ai.url_image_150,
                 ai.width_image,
                 qty_collection_items
             FROM artist_members am
-            INNER JOIN artist_groups ag
-            ON ag.id_artist = am.id_member
+            INNER JOIN group_membership gm
+            ON gm.id_member = am.id_member
             INNER JOIN artist a
-            ON a.id_artist = ag.id_group
+            ON a.id_artist = gm.id_group
             LEFT JOIN artist_images ai
-            ON ai.id_artist = a.id_artist
-            WHERE am.id_artist <> ag.id_group
+            ON ai.id_artist = gm.id_group
+            WHERE am.id_artist <> gm.id_group
             AND ( am.id_artist IN ({str_artist_ids}))
             AND ( ai.type = 'primary' OR ai.type IS NULL )
         """
