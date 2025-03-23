@@ -233,3 +233,59 @@ class DeriveArtist(DBStorage):
 
     def _get_write_attempts(self) -> pl.DataFrame:
         return self.read_table(name_table='artist_write_attempts')
+
+    def create_artist_group_network(self) -> None:
+        self.drop_table(name_table="artist_vertices")
+        sql = """
+            CREATE TABLE artist_vertices AS
+            SELECT
+                id_artist,
+                name_artist,
+                MAX(url_image) AS url_image
+            FROM (
+                SELECT
+                    a.id_artist,
+                    name_artist,
+                    img.url_image,
+                FROM artist a
+                LEFT JOIN artist_images as img
+                ON img.id_artist = a.id_artist
+                WHERE ( img.type = 'primary' OR img.type IS NULL )
+                UNION
+                SELECT
+                    id_member,
+                    name_member,
+                    url_thumbnail
+                FROM artist_members
+                UNION
+                SELECT
+                    id_group,
+                    name_group,
+                    url_thumbnail
+                FROM artist_groups
+            )
+            GROUP BY
+                id_artist,
+                name_artist
+        """
+        self.execute_sql(sql=sql)
+        self.drop_table(name_table="group_membership")
+        sql = """
+            CREATE TABLE group_membership AS
+            SELECT DISTINCT
+                id_group,
+                id_member
+            FROM (
+                SELECT
+                    id_artist as id_group,
+                    id_member
+                FROM artist_members
+                UNION
+                SELECT
+                    id_group,
+                    id_artist
+                FROM artist_groups
+                WHERE id_artist IN (SELECT id_artist FROM artist_vertices)
+            )
+        """
+        self.execute_sql(sql=sql)

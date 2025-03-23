@@ -205,6 +205,7 @@ class Artists(DBStorage):
         dict_styles = self._styles(str_artist_ids=str_artist_ids)
         dict_member_of_group = self._member_of_group(str_artist_ids=str_artist_ids)
         dict_group_members = self._group_members(str_artist_ids=str_artist_ids)
+        dict_projects = self._side_projects(str_artist_ids=str_artist_ids)
 
         # Adding nested information
         for i, artist in enumerate(lst_artists):
@@ -225,6 +226,11 @@ class Artists(DBStorage):
                 lst_artists[i].update({"qty_group_members": len(dict_group_members[id_artist])})
             else:
                 lst_artists[i].update({"qty_group_members": 0})
+            if id_artist in dict_projects:
+                lst_artists[i].update({"side_projects": dict_projects[id_artist]})
+                lst_artists[i].update({"qty_side_projects": len(dict_projects[id_artist])})
+            else:
+                lst_artists[i].update({"qty_side_projects": 0})
         return lst_artists
 
     def _formats(self, str_artist_ids: str) -> dict:
@@ -322,18 +328,18 @@ class Artists(DBStorage):
     def _member_of_group(self, str_artist_ids: str) -> dict:
         sql = f"""
             SELECT
-                ag.id_artist AS id_member,
+                ag.id_member,
                 ag.id_group AS id_artist,
                 g.name_artist AS name_artist,
                 ai.url_image,
                 ai.url_image_150,
                 ai.width_image,
-            FROM artist_groups ag
+            FROM group_membership ag
             INNER JOIN artist g
             ON g.id_artist = ag.id_group
             LEFT JOIN artist_images ai
             ON ai.id_artist = ag.id_group
-            WHERE ( ag.id_artist IN ({str_artist_ids}))
+            WHERE ( ag.id_member IN ({str_artist_ids}))
             AND ( ai.type = 'primary' OR ai.type IS NULL )
         """
         lst_groups = self.read_sql(sql=sql).to_dicts()
@@ -348,7 +354,7 @@ class Artists(DBStorage):
                 m.name_artist AS name_artist,
                 ai.url_image,
                 ai.url_image_150,
-                ai.width_image,
+                ai.width_image
             FROM artist_members am
             INNER JOIN artist m
             ON m.id_artist = am.id_member
@@ -360,3 +366,28 @@ class Artists(DBStorage):
         lst_members = self.read_sql(sql=sql).to_dicts()
         dict_groups = self._dicts_to_dict(key_field="id_group", lst_dicts=lst_members)
         return dict_groups
+
+    def _side_projects(self, str_artist_ids: str) -> dict:
+        sql = f"""
+            SELECT
+                am.id_artist AS id_main,
+                ag.id_group AS id_artist,
+                ag.name_group AS name_artist,
+                ai.url_image,
+                ai.url_image_150,
+                ai.width_image,
+                qty_collection_items
+            FROM artist_members am
+            INNER JOIN artist_groups ag
+            ON ag.id_artist = am.id_member
+            INNER JOIN artist a
+            ON a.id_artist = ag.id_group
+            LEFT JOIN artist_images ai
+            ON ai.id_artist = a.id_artist
+            WHERE am.id_artist <> ag.id_group
+            AND ( am.id_artist IN ({str_artist_ids}))
+            AND ( ai.type = 'primary' OR ai.type IS NULL )
+        """
+        lst_projects = self.read_sql(sql=sql).to_dicts()
+        dict_projects = self._dicts_to_dict(key_field="id_main", lst_dicts=lst_projects)
+        return dict_projects
