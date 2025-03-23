@@ -19,26 +19,27 @@ class DBStorageGraph(DBStorage):
 
     def _load_group_members(self):
         if self._graph_exists(name_graph="snb"):
-            return
+            sql = "DROP PROPERTY GRAPH snb"
+            self.execute_sql(sql=sql)
         sql = """
         CREATE PROPERTY GRAPH snb
         VERTEX TABLES (
-            artist
+            artist_vertices
         )
         EDGE TABLES (
-            artist_members  SOURCE
-                                KEY (id_artist) REFERENCES artist (id_artist)
-                            DESTINATION
-                                KEY (id_member) REFERENCES artist (id_artist)
+            group_memberships   SOURCE
+                                    KEY (id_group) REFERENCES artist_vertices (id_artist)
+                                DESTINATION
+                                    KEY (id_member) REFERENCES artist_vertices (id_artist)
             LABEL member_of
         );
         """
-        self.execute_sql(sql)
+        self.execute_sql(sql=sql)
 
     def group_members(self):
         sql = """
         FROM GRAPH_TABLE (snb
-            MATCH (a:artist)-[k:member_of]->(b:artist)
+            MATCH (a:artist_vertices)-[k:member_of]->(b:artist_vertices)
             COLUMNS (a.name_artist, b.name_artist)
         )
         """
@@ -48,7 +49,7 @@ class DBStorageGraph(DBStorage):
     def connected(self):
         sql = """
         FROM GRAPH_TABLE (snb
-            MATCH p = ANY SHORTEST (a:artist)-[k:member_of]->{1,3}(b:artist)
+            MATCH p = ANY SHORTEST (a:artist_vertices)-[k:member_of]->{1,3}(b:artist_vertices)
             COLUMNS (a.name_artist, b.name_artist, path_length(p))
         )
         """
