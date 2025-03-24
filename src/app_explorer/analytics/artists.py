@@ -25,7 +25,6 @@ class Artists(DBStorage):
             LEFT JOIN collection.main.release_formats rf
             ON rf.id_release = ci.id_release
             WHERE ( img.type = 'primary' OR img.type IS NULL )
-            AND (rf.name_format = 'Vinyl' or rf.name_format IS NULL)
             GROUP BY
                 a.id_artist,
                 a.name_artist,
