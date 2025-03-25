@@ -6,6 +6,7 @@ services:
     restart: unless-stopped
     environment:
       - TZ=Europe/Amsterdam
+      - MUSIC_EXPLORER_URL=https://music-explorer.mr-black.net
     volumes:
       - /data/music-explorer:/data
     ports:
