@@ -167,9 +167,10 @@ def collection_item(id_release: int):
 
 @app.route("/config")
 def config_page():
+    url = os.environ("MUSIC_EXPLORER_URL", config['url'])
     dict_config = {
         "credentials_ok": discogs.check_user_tokens(),
-        "url_discogs": discogs.request_user_access(url_callback=f"{config['url']}/receive-token"),
+        "url_discogs": discogs.request_user_access(url_callback=f"{url}/receive-token"),
     }
     return render_template("config.html", config=dict_config)
 
