@@ -1,4 +1,5 @@
 site_name: Music Explorer Docs
+site_url: https://mark-me.github.io/music-explorer/
 
 theme:
   name: "material"
@@ -7,6 +8,14 @@ plugins:
   - mkdocstrings
   - search
   - mermaid2
+  - panzoom:
+      # images: true
+      # mermaid: true # old config
+      full_screen: true
+      always_show_hint: true
+      key: "alt"
+      include_selectors:
+        - img
 
 nav:
   - Music Explorer Docs: index.md

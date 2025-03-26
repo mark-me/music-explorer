@@ -94,6 +94,7 @@ dependencies = [
     "mkdocs-mermaid2-plugin==1.2.1",
     "setuptools==76.0.0",
     "soupsieve==2.6",
+    "mkdocs-panzoom-plugin==0.1.6"
 ]
 
 [project.optional-dependencies]
