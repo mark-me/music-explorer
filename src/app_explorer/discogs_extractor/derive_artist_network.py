@@ -5,17 +5,30 @@ from db_operations import DBStorage
 
 
 class DeriveArtistNetwork(DBStorage):
+    """Derives and stores artist network information.
+
+    This class handles the creation of artist networks based on collaborations,
+    including vertices, edges, clusters, and community dendrograms.
+    """
     def __init__(self, db_file) -> None:
         super().__init__(db_file)
 
     def process(self) -> None:
+        """Processes artist network data.
+
+        This method creates artist vertices, edges, clusters, and a community dendrogram.
+        """
         self._create_artist_vertices()
         self._create_artist_edges()
         self._create_clusters()
         self._create_community_dendrogram()
 
     def _create_artist_vertices(self) -> None:
-        """Retrieve artists in order to determine where to stop discogs extraction"""
+        """Creates artist vertices table.
+
+        This method creates the 'artist_vertex' table, which stores information about artists,
+        including whether they are part of the user's collection.
+        """
         self.drop_existing_table(name_table="artist_vertex")
         sql_statement = """
             CREATE TABLE artist_vertex AS
@@ -41,7 +54,12 @@ class DeriveArtistNetwork(DBStorage):
         self.execute_sql(sql=sql_statement)
 
     def _create_artist_edges(self) -> None:
-        """Retrieve artist cooperations in order to determine where to stop discogs extraction"""
+        """Creates artist edges table.
+
+        This method creates the 'artist_edge' table, which stores relationships
+        (edges) between artists based on collaborations like group memberships,
+        aliases, and co-appearances on releases.
+        """
         self.drop_existing_table(name_table="artist_edge")
         sql_statement = """
             CREATE TABLE artist_edge AS
@@ -67,7 +85,13 @@ class DeriveArtistNetwork(DBStorage):
         self.execute_sql(sql=sql_statement)
 
     def _extract_artist_to_ignore(self) -> None:
-        """Define which artists to exclude from discogs extraction"""
+        """Identifies and stores artists to ignore during Discogs extraction.
+
+        This method analyzes the artist network and identifies artists who are not
+        connected to the user's collection within a certain degree of separation.
+        These artists are then stored in the 'artist_ignore' table to prevent unnecessary
+        API calls during data extraction.
+        """
         df_vertices = self.read_table(name_table="artist_vertex")
         df_edges = self.read_table(name_table="artist_edge")
         graph = ig.Graph.DataFrame(
@@ -94,7 +118,16 @@ class DeriveArtistNetwork(DBStorage):
         df_ignore = pl.DataFrame({"id_artist": graph.vs[vtx_to_exclude]["name"]})
         self.store_replace(df=df_ignore, name_table="artist_ignore")
 
-    def _get_artist_graph(self) -> None:
+    def _get_artist_graph(self) -> ig.Graph:
+        """Retrieves and creates an artist graph.
+
+        This method retrieves artist and relationship data from the database,
+        constructs an igraph graph, and filters it to include only artists
+        within a certain degree of separation from the user's collection.
+
+        Returns:
+            ig.Graph: The filtered artist graph.
+        """
         lst_edges = self.read_sql(
             sql="SELECT * FROM artist_relations WHERE id_artist_from != id_artist_to"
         ).to_dict(orient="records")
@@ -158,6 +191,18 @@ class DeriveArtistNetwork(DBStorage):
         self.store_replace(df=df_ignore, name_table="artist_ignore")
 
     def _cluster_component(self, graph_component: ig.Graph) -> pl.DataFrame:
+        """Clusters a connected component of the artist graph.
+
+        This method performs community detection on a given graph component using the fastgreedy algorithm.
+        It recursively clusters subgraphs until a certain size limit is reached, assigning community IDs
+        and calculating eigenvalue centrality for each artist.
+
+        Args:
+            graph_component (ig.Graph): A connected component of the artist graph.
+
+        Returns:
+            pl.DataFrame: A DataFrame containing artist information, including community assignments and eigenvalues.
+        """
         idx_community_start = 0
         graph_component.vs["id_community_from"] = idx_community_start
         # Queue for processing graphs, keeping track level in community tree and relationships between branches
@@ -179,12 +224,8 @@ class DeriveArtistNetwork(DBStorage):
             ):  # Only determine communities if the number of vertices is higher than x
                 cluster_hierarchy = graph.community_fastgreedy()  # communities
                 # Setting maximum and minimum of number of clusters
-                qty_clusters = (
-                    15
-                    if cluster_hierarchy.optimal_count > 15
-                    else cluster_hierarchy.optimal_count
-                )
-                qty_clusters = qty_clusters if qty_clusters > 2 else 2
+                qty_clusters = min(cluster_hierarchy.optimal_count, 15)
+                qty_clusters = max(qty_clusters, 2)
                 cluster_communities = cluster_hierarchy.as_clustering(
                     n=qty_clusters
                 )  # Determine communities
@@ -226,6 +267,12 @@ class DeriveArtistNetwork(DBStorage):
         return df_communities
 
     def _create_clusters(self) -> None:
+        """Creates artist community clusters.
+
+        This method clusters artists into communities based on their collaborations,
+        generating a hierarchical structure of communities and storing the results
+        in the 'artist_community_hierarchy' table.
+        """
         graph_all = self._get_artist_graph()
         # Cluster all components
         lst_components = graph_all.decompose()  # Decompose graph
@@ -275,6 +322,12 @@ class DeriveArtistNetwork(DBStorage):
         self.store_replace(df=df_hierarchy, name_table="artist_community_hierarchy")
 
     def _create_community_labels(self) -> None:
+        """Creates community labels for artists.
+
+        This method creates labels for artist communities based on the artists with the highest
+        eigenvalue centrality within each community. It creates labels for communities based on
+        artists in the user's collection and labels for all artists.
+        """
         self.drop_existing_table(name_table="artist_collection_ranked_eigenvalue")
         sql_statement = """
             CREATE TABLE artist_collection_ranked_eigenvalue AS
@@ -316,6 +369,12 @@ class DeriveArtistNetwork(DBStorage):
         self.execute_sql(sql=sql_statement)
 
     def _create_community_dendrogram(self) -> None:
+        """Creates community dendrogram tables.
+
+        This method creates two tables: 'community_dendrogram_vertices' and 'community_dendrogram_edges'.
+        These tables represent the hierarchical structure of artist communities as a dendrogram,
+        with vertices representing communities and edges representing relationships between them.
+        """
         self._create_community_labels()
         self.drop_existing_table(name_table="community_dendrogram_vertices")
         sql_statement = """
@@ -361,9 +420,12 @@ class DeriveArtistNetwork(DBStorage):
         self.execute_sql(sql=sql_statement)
 
     def artists_from_group_and_membership(self) -> None:
-        """Process artist information derived from groups and memberships"""
-        # db_reader = _db_reader.Collection(db_file=self.db_file)
-        # db_writer = _db_writer.Collection(db_file=self.db_file)
+        """Processes artist information derived from groups and memberships.
+
+        This method retrieves artists not yet added to the database from related tables
+        (groups, members, etc.), fetches their details from Discogs, and updates the database.
+        It also tracks write attempts to prevent infinite loops for artists that cannot be retrieved.
+        """
         self._extract_artist_to_ignore()
         qty_artists_not_added = self.read_sql(
             sql="SELECT COUNT(*) as qty FROM vw_artists_not_added;"

@@ -13,20 +13,42 @@ logger = logging.getLogger(__name__)
 
 
 class ETLCollection(DiscogsETL):
+    """Extracts, transforms, and loads Discogs collection data.
+
+    This class handles the ETL process for a user's Discogs collection,
+    including collection value, items, and artists.
+    """
     def __init__(self, discogs_client: Client, file_db: str, app_celery: Celery, progress: dict):
+        """Initializes ETLCollection with Discogs client and database information.
+
+        This method sets up the Discogs client, database connection, Celery app,
+        and progress dictionary for collection data extraction.
+        """
         super().__init__(file_db, app_celery=app_celery)
         self.discogs_client = discogs_client
         self.user = discogs_client.identity()
         self.progress = progress
 
     def process(self):
-        """Starting point of all collection"""
+        """Processes collection value and items.
+
+        This method orchestrates the extraction and loading of collection value
+        and collection items data.
+        """
         logger.info("Started ETL for collection")
         self.collection_value(target_table="collection_value")
         self.collection_items(target_table="collection_items")
 
     def collection_value(self, target_table: str) -> None:
-        """Collection value"""
+        """Extracts and stores the user's collection value.
+
+        This method retrieves the user's collection value statistics, such as
+        minimum, median, and maximum values, and stores them in the specified table.
+
+        Args:
+            target_table (str): The name of the table to store the data in.
+        """
+
         logger.info("Retrieve collection value")
         self.progress.update({"collection_value": {"current": 0, "total": 1, "item": ""}})
         self.celery.update_state(state="PROGRESS", meta=self.progress)
@@ -47,7 +69,14 @@ class ETLCollection(DiscogsETL):
         self.celery.update_state(state="PROGRESS", meta=self.progress)
 
     def collection_items(self, target_table: str) -> None:
-        """Process the user's collection items"""
+        """Extracts and stores the user's collection items.
+
+        This method retrieves the user's collection items, including details like
+        release ID, date added, title, and rating, and stores them in the specified table.
+
+        Args:
+            target_table (str): The name of the table to store the data in.
+        """
         logger.info("Process collection items")
         name_table = "collection_items"
         self.db.drop_table(name_table=name_table)
@@ -69,10 +98,15 @@ class ETLCollection(DiscogsETL):
     def _collection_item(
         self, collection_item: models.CollectionItemInstance, target_table: str
     ) -> None:
-        """Extract data for collection item
+        """Extracts and stores a single collection item.
+
+        This method retrieves details for a specific collection item, such as
+        release ID, date added, title, and rating, and stores them in the specified table.
+        It also triggers the extraction of release details.
 
         Args:
-            collection_item (models.CollectionItemInstance): A Discogs API representation of a collection item
+            collection_item (models.CollectionItemInstance): The collection item object.
+            target_table (str): The name of the table to store the data in.
         """
         data = collection_item.data
         logging.info(f"Extracting collection item {data['basic_information']['title']}")

@@ -14,14 +14,36 @@ logger = logging.getLogger(__name__)
 
 
 class ETLRelease(ETLMaster):
-    """A class that processes release related data"""
+    """Extracts, transforms, and loads Discogs release data.
 
+    This class handles the ETL process for Discogs releases, including
+    information like release details, artists, labels, formats, genres, styles,
+    credits, tracks, track artists, videos, and marketplace stats.
+    """
     def __init__(self, release: models.Release, file_db: str, app_celery: Celery, progress: dict) -> None:
+        """Initializes ETLRelease with release data and database information.
+
+        This method sets up the release object, database connection, Celery app,
+        progress dictionary, and initializes the artist ETL process.
+
+        Args:
+            release (models.Release): The release object to extract data from.
+            file_db (str): The path to the database file.
+            app_celery (Celery): The Celery application instance.
+            progress (dict): A dictionary to track the progress of the extraction.
+        """
         super().__init__(release=release, file_db=file_db, app_celery=app_celery, progress=progress)
         self.obj_discogs = release
         self.artist_etl = ETLArtist(artists=release.artists, file_db=self.file_db, app_celery=app_celery, progress=progress)
 
     def process(self) -> None:
+        """Processes release data and stores it in the database.
+
+        This method extracts and stores various information related to a release,
+        including release details, artists, labels, formats, genres, styles, credits,
+        tracks, track artists, videos, and marketplace stats, only if the release
+        has not been processed before. It also triggers the artist extraction process.
+        """
         logger.info(f"Extracting info from release {self.obj_discogs.title}")
         self.extract_stats(target_table="release_stats")
         exists = self.db.is_value_present(
@@ -41,6 +63,15 @@ class ETLRelease(ETLMaster):
             self.artist_etl.process()
 
     def extract_release(self, target_table: str) -> None:
+        """Extracts and stores basic release information.
+
+        This method retrieves core details of a release, such as title, year,
+        master ID, thumbnail, cover image, country, and Discogs URL, and stores
+        them in the specified table.
+
+        Args:
+            target_table (str): The name of the table to store the data in.
+        """
         data = self.obj_discogs.data
         data.update(
             {
@@ -69,25 +100,42 @@ class ETLRelease(ETLMaster):
             "uri": "url_release",
         }
         if "thumb" in df_release.columns:
-            dict_rename.update({"thumb": "url_thumbnail"})
+            dict_rename["thumb"] = "url_thumbnail"
         df_release = df_release.rename(dict_rename)
         self.db.store_append(df=df_release, name_table=target_table)
 
     def extract_artists(self, target_table: str) -> None:
+        """Extracts and stores artists associated with the release.
+
+        This method retrieves the artists involved in the release,
+        adds release ID and load timestamp, and stores them in the specified table.
+
+        Args:
+            target_table (str): The name of the table to store the data in.
+        """
         lst_artists = []
-        for artist in self.obj_discogs.artists:
-            lst_artists.append(
-                {
-                    "id_artist": artist.id,
-                    "id_release": self.obj_discogs.id,
-                    "dt_loaded": dt.datetime.now(),
-                }
-            )
+        lst_artists.extend(
+            {
+                "id_artist": artist.id,
+                "id_release": self.obj_discogs.id,
+                "dt_loaded": dt.datetime.now(),
+            }
+            for artist in self.obj_discogs.artists
+        )
         df_artists = pl.DataFrame(lst_artists)
         if df_artists.shape[0] > 0:
             self.db.store_append(df=df_artists, name_table=target_table)
 
     def extract_labels(self, target_table: str) -> None:
+        """Extracts and stores labels associated with the release.
+
+        This method retrieves information about the labels involved in the release,
+        including their ID, name, catalog number, adds release ID and load timestamp,
+        and stores them in the specified table.
+
+        Args:
+            target_table (str): The name of the table to store the data in.
+        """
         lst_labels = []
         for label in self.obj_discogs.labels:
             data = label.data
@@ -98,7 +146,7 @@ class ETLRelease(ETLMaster):
                 }
             )
             lst_labels.append(data)
-        if len(lst_labels) > 0:
+        if lst_labels:
             df_labels = pl.DataFrame(lst_labels)
             df_labels = df_labels[["id_release", "id", "name", "catno", "dt_loaded"]]
             df_labels = df_labels.rename(
@@ -110,23 +158,40 @@ class ETLRelease(ETLMaster):
             self.db.store_append(df=df_labels, name_table=target_table)
 
     def extract_formats(self, target_table: str) -> None:
+        """Extracts and stores release formats.
+
+        This method retrieves the formats (e.g., vinyl, CD) in which the release
+        was issued, adds release ID and load timestamp, and stores them in the specified table.
+
+        Args:
+            target_table (str): The name of the table to store the data in.
+        """
         lst_formats = []
         for format in self.obj_discogs.formats:
             format.update({"id_release": self.obj_discogs.id, "dt_loaded": dt.datetime.now()})
             lst_formats.append(format)
-        if len(lst_formats) > 0:
+        if lst_formats:
             df_formats = pl.DataFrame(lst_formats)
             df_formats = df_formats[["id_release", "name", "qty", "dt_loaded"]]
             df_formats = df_formats.rename({"name": "name_format", "qty": "qty_format"})
             self.db.store_append(df=df_formats, name_table=target_table)
 
-    def extract_credits(self, target_table: str) -> pl.DataFrame:
+    def extract_credits(self, target_table: str) -> None:
+        """Extracts and stores release credits.
+
+        This method retrieves details of artists credited in the release,
+        including their roles (e.g., producer, writer), adds release ID and load timestamp,
+        and stores them in the specified table.
+
+        Args:
+            target_table (str): The name of the table to store the data in.
+        """
         lst_artists = []
         for artist in self.obj_discogs.credits:
             data = artist.data
             data.update({"id_release": self.obj_discogs.id, "dt_loaded": dt.datetime.now()})
             lst_artists.append(data)
-        if len(lst_artists) > 0:
+        if lst_artists:
             df_artists = pl.DataFrame(lst_artists)
             df_artists = df_artists[
                 ["id_release", "name", "role", "id", "resource_url", "dt_loaded"]
@@ -140,7 +205,15 @@ class ETLRelease(ETLMaster):
             )
             self.db.store_append(df=df_artists, name_table=target_table)
 
-    def extract_stats(self, target_table: str) -> pl.DataFrame:
+    def extract_stats(self, target_table: str) -> None:
+        """Extracts and stores release marketplace statistics.
+
+        This method retrieves marketplace data for the release, such as the number of items for sale,
+        lowest price, community ratings, and stores them in the specified table.
+
+        Args:
+            target_table (str): The name of the table to store the data in.
+        """
         marketplace = self.obj_discogs.marketplace_stats
         dict_marketplace = marketplace.data
         community = self.obj_discogs.community

@@ -12,7 +12,22 @@ logger = logging.getLogger(__name__)
 
 
 class Discogs:
+    """Handles Discogs API authentication and initiates the ETL process.
+
+    This class manages user authentication with the Discogs API, including
+    checking for existing tokens, requesting user access, and saving user tokens.
+    It also starts the ETL process for extracting and processing Discogs data.
+    """
     def __init__(self, file_secrets: str, file_db: str) -> None:
+        """Initializes Discogs API client and checks for user tokens.
+
+        This method sets up the Discogs API client with consumer key and secret,
+        initializes user secrets, and checks for existing user tokens.
+
+        Args:
+            file_secrets (str): File containing user secrets
+            file_db (str): File location of the duckdb
+        """
         self.file_db = file_db
         self.consumer_key = "zvHFpFQWJrdDfCwoLalG"
         self.consumer_secret = "FzRxDEGBbvWZpAmkQKBYHYeNdIjKxnVO"
@@ -30,7 +45,15 @@ class Discogs:
         )
         self.check_user_tokens()
 
-    def check_user_tokens(self) -> dict:
+    def check_user_tokens(self) -> bool:
+        """Checks for existing user tokens and sets them in the Discogs client.
+
+        This method reads user secrets from the secrets file and, if found,
+        sets the token and secret in the Discogs client.
+
+        Returns:
+            bool: True if user tokens are found and set, False otherwise.
+        """
         result = self.user_secrets_file.read_secrets()
         if result is not None:
             logger.info("Found user token in config file config/secrets.yml")
@@ -41,8 +64,20 @@ class Discogs:
             return False
 
     def request_user_access(self, url_callback: str = None) -> str:
-        """Prompt your user to "accept" the terms of your application. The application
-        will act on behalf of their discogs.com account."""
+        """Requests user access to their Discogs account.
+
+        This method initiates the OAuth flow by requesting an authorization URL
+        from the Discogs API. This URL is then used to redirect the user to
+        Discogs for authentication.
+
+        Args:
+            url_callback (str, optional): The callback URL to redirect to after
+                authentication. Defaults to None.
+
+        Returns:
+            str: The authorization URL.
+        """
+
         logger.info(f"Requesting user access to Discogs account with callback {url_callback}")
         self._user_token, self._user_secret, url = self.client_discogs.get_authorize_url(
             callback_url=url_callback
@@ -50,8 +85,19 @@ class Discogs:
         return url
 
     def save_user_token(self, verification_code: str) -> dict:
-        """If the user accepts, discogs displays a key to the user that is used for
-        verification. The key is required in the 2nd phase of authentication."""
+        """Saves the user token and secret after successful authentication.
+
+        This method receives the verification code from Discogs, exchanges it for
+        an access token and secret, and saves these credentials to the secrets file.
+
+        Args:
+            verification_code (str): The verification code received from Discogs.
+
+        Returns:
+            dict: A dictionary containing the status code and message indicating
+                success or failure of the authentication process.
+        """
+
         oauth_verifier = verification_code
         try:
             logger.info("Receiving confirmation of access to the user's Discogs account")
@@ -76,6 +122,14 @@ class Discogs:
         return {"status_code": 200, "message": f"User {user.username} connected."}
 
     def start_ETL(self, app_celery: Celery):
+        """Starts the ETL process for Discogs data.
+
+        This method initiates the extraction, transformation, and loading of
+        Discogs data, including collection information and derived data.
+
+        Args:
+            app_celery (Celery): Celery application instance for task management.
+        """
         progress = {
             "collection_value": {"current": 0, "total": 1, "item": "None"},
             "collection_items": {"current": 0, "total": 1, "item": "None"},

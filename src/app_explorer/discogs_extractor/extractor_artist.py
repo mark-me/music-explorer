@@ -14,16 +14,37 @@ logger = logging.getLogger(__name__)
 
 
 class ETLArtist(DiscogsETL):
-    """A class that processes artist related data"""
+    """Extracts, transforms, and loads Discogs artist data.
+
+    This class handles the ETL process for Discogs artist information,
+    including details like profile, masters, images, aliases, groups, members, and URLs.
+    """
 
     def __init__(
         self, artists: models.Artist, file_db: str, app_celery: Celery, progress: dict
     ) -> None:
+        """Initializes ETLArtist with artist data and database information.
+
+        This method sets up the artist object, database connection, Celery app,
+        and progress dictionary for artist data extraction.
+
+        Args:
+            artists (models.Artist): The artist object to extract data from.
+            file_db (str): The path to the database file.
+            app_celery (Celery): The Celery application instance.
+            progress (dict): A dictionary to track the progress of the extraction.
+        """
         super().__init__(file_db, app_celery=app_celery, progress=progress)
         self.obj_discogs = artists
         self.process_masters = True
 
     def process(self) -> None:
+        """Processes artist data and stores it in the database.
+
+        This method iterates through a list of artists, checks if they already exist
+        in the database, and if not, extracts and stores their information,
+        including masters, images, aliases, groups, members, and URLs.
+        """
         for artist in self.obj_discogs:
             exists = self.db.is_value_present(
                 name_table="artist", name_column="id_artist", value=artist.id
@@ -41,7 +62,16 @@ class ETLArtist(DiscogsETL):
             else:
                 logger.info(f"Previously processed data for artist '{artist.name}', skipping")
 
-    def artist(self, artist: models.Artist, target_table: str) -> pl.DataFrame:
+    def artist(self, artist: models.Artist, target_table: str) -> None:
+        """Extracts and stores basic artist information.
+
+        This method retrieves the artist's profile and stores it along with their ID and name
+        in the specified table.
+
+        Args:
+            artist (models.Artist): The artist object.
+            target_table (str): The name of the table to store the data in.
+        """
         try:
             profile = artist.profile
         except HTTPError:
@@ -56,6 +86,15 @@ class ETLArtist(DiscogsETL):
         self.db.store_append(df=df, name_table=target_table)
 
     def masters(self, artist: models.Artist, target_table: str) -> None:
+        """Extracts and stores artist's master releases.
+
+        This method retrieves a list of master releases associated with the artist,
+        adds artist ID and load timestamp, and stores them in the specified table.
+
+        Args:
+            artist (models.Artist): The artist object.
+            target_table (str): The name of the table to store the data in.
+        """
         lst_masters = []
         try:
             qty_pages = artist.releases.pages
@@ -76,7 +115,7 @@ class ETLArtist(DiscogsETL):
                     "collection_artists": {
                         "current": page_no,
                         "total": qty_pages - 1,
-                        "item": artist.name + " - Masters",
+                        "item": f"{artist.name} - Masters",
                     }
                 }
             )
@@ -88,7 +127,7 @@ class ETLArtist(DiscogsETL):
         lst_masters = [dict(item, id_artist=artist.id) for item in lst_masters]
         lst_masters = [dict(item, dt_loaded=dt.datetime.now()) for item in lst_masters]
         df = pl.DataFrame(lst_masters)
-        if len(lst_masters) > 0:
+        if lst_masters:
             df = df[
                 [
                     "id_artist",
@@ -109,11 +148,20 @@ class ETLArtist(DiscogsETL):
                 "artist": "name_artist",
             }
             if "thumb" in df.columns:
-                dict_rename.update({"thumb": "url_thumb"})
+                dict_rename["thumb"] = "url_thumb"
             df = df.rename(dict_rename)
             self.db.store_append(df=df, name_table=target_table)
 
     def images(self, artist: models.Artist, target_table: str) -> None:
+        """Extracts and stores artist images.
+
+        This method retrieves the artist's images, adds artist ID and load timestamp,
+        and stores them in the specified table.
+
+        Args:
+            artist (models.Artist): The artist object.
+            target_table (str): The name of the table to store the data in.
+        """
         lst_images = []
         try:
             if artist.images is None:
@@ -125,7 +173,7 @@ class ETLArtist(DiscogsETL):
         for image in artist.images:
             image.update({"id_artist": artist.id, "dt_loaded": dt.datetime.now()})
             lst_images.append(image)
-        if len(lst_images) > 0:
+        if lst_images:
             df = pl.DataFrame(lst_images)
             df = df[["id_artist", "type", "uri", "uri150", "width", "height", "dt_loaded"]]
             df = df.rename(
@@ -139,6 +187,15 @@ class ETLArtist(DiscogsETL):
             self.db.store_append(df=df, name_table=target_table)
 
     def groups(self, artist: models.Artist, target_table: str) -> None:
+        """Extracts and stores artist's groups.
+
+        This method retrieves the groups the artist is a member of, adds artist ID and load timestamp,
+        and stores them in the specified table.
+
+        Args:
+            artist (models.Artist): The artist object.
+            target_table (str): The name of the table to store the data in.
+        """
         lst_groups = []
         try:
             for group in artist.groups:
@@ -148,7 +205,7 @@ class ETLArtist(DiscogsETL):
         except HTTPError:
             logger.warning(f"Group not found for '{artist.name}'")
             return
-        if len(lst_groups) > 0:
+        if lst_groups:
             df = pl.DataFrame(lst_groups)
             dict_rename = {
                 "id": "id_group",
@@ -157,11 +214,20 @@ class ETLArtist(DiscogsETL):
                 "active": "is_active",
             }
             if "thumbnail_url" in df.columns:
-                dict_rename.update({"thumbnail_url": "url_thumbnail"})
+                dict_rename["thumbnail_url"] = "url_thumbnail"
             df = df.rename(dict_rename)
             self.db.store_append(df=df, name_table=target_table)
 
     def aliases(self, artist: models.Artist, target_table: str) -> None:
+        """Extracts and stores artist aliases.
+
+        This method retrieves the artist's aliases, adds artist ID and load timestamp,
+        and stores them in the specified table.
+
+        Args:
+            artist (models.Artist): The artist object.
+            target_table (str): The name of the table to store the data in.
+        """
         lst_aliases = []
         try:
             for alias in artist.aliases:
@@ -171,7 +237,7 @@ class ETLArtist(DiscogsETL):
         except HTTPError:
             logger.error(f"Could not find artist {artist.name} for aliases.")
             return
-        if len(lst_aliases) > 0:
+        if lst_aliases:
             df = pl.DataFrame(lst_aliases)
             dict_rename = {
                 "id": "id_alias",
@@ -179,11 +245,20 @@ class ETLArtist(DiscogsETL):
                 "resource_url": "api_alias",
             }
             if "thumbnail_url" in df.columns:
-                dict_rename.update({"thumbnail_url": "url_thumbnail"})
+                dict_rename["thumbnail_url"] = "url_thumbnail"
             df = df.rename(dict_rename)
             self.db.store_append(df=df, name_table=target_table)
 
     def members(self, artist: models.Artist, target_table: str) -> None:
+        """Extracts and stores artist members.
+
+        This method retrieves the members of the artist, adds artist ID and load timestamp,
+        and stores them in the specified table.
+
+        Args:
+            artist (models.Artist): The artist object.
+            target_table (str): The name of the table to store the data in.
+        """
         lst_members = []
         try:
             for member in artist.members:
@@ -193,7 +268,7 @@ class ETLArtist(DiscogsETL):
         except HTTPError:
             logger.error(f"Could not find artist {artist.name} for members.")
             return
-        if len(lst_members) > 0:
+        if lst_members:
             df = pl.DataFrame(lst_members)
             dict_rename = {
                 "id": "id_member",
@@ -202,12 +277,20 @@ class ETLArtist(DiscogsETL):
                 "active": "is_active",
             }
             if "thumbnail_url" in df.columns:
-                dict_rename.update({"thumbnail_url": "url_thumbnail"})
+                dict_rename["thumbnail_url"] = "url_thumbnail"
             df = df.rename(dict_rename)
             self.db.store_append(df=df, name_table=target_table)
 
     def urls(self, artist: models.Artist, target_table: str) -> None:
-        lst_urls = []
+        """Extracts and stores artist URLs.
+
+        This method retrieves the artist's URLs, adds artist ID and load timestamp,
+        and stores them in the specified table.
+
+        Args:
+            artist (models.Artist): The artist object.
+            target_table (str): The name of the table to store the data in.
+        """
         try:
             if artist.urls is None:
                 logger.warning(f"None URLs found for {artist.name}")
@@ -215,8 +298,9 @@ class ETLArtist(DiscogsETL):
         except HTTPError:
             logger.error(f"Could not find artist {artist.name} for urls.")
             return
-        for url in artist.urls:
-            lst_urls.append({"id_artist": artist.id, "url": url, "dt_loaded": dt.datetime.now()})
-        if len(lst_urls) > 0:
+        if lst_urls := [
+            {"id_artist": artist.id, "url": url, "dt_loaded": dt.datetime.now()}
+            for url in artist.urls
+        ]:
             df = pl.DataFrame(lst_urls)
             self.db.store_append(df=df, name_table=target_table)

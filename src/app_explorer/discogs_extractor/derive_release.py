@@ -4,13 +4,34 @@ from db_operations import DBStorage
 
 
 class DeriveRelease(DBStorage):
-    def __init__(self, file_db) -> None:
+    """Derives and stores release-related information.
+
+    This class handles the derivation and storage of release data, including loading release roles
+    and processing artist information derived from groups and memberships.
+    """
+    def __init__(self, file_db: str) -> None:
+        """Initializes DeriveRelease with database information.
+
+        This method sets up the database connection for release data derivation.
+
+        Args:
+            file_db (str): Path to the database file.
+        """
         super().__init__(file_db)
 
     def process(self) -> None:
+        """Processes release data derivations.
+
+        This method loads release roles and processes artist information derived from groups and memberships.
+        """
         self._load_release_roles()
 
     def _load_release_roles(self) -> None:
+        """Loads release roles into the 'role' table.
+
+        This method creates and populates the 'role' table with distinct roles from release credits,
+        marking specific roles as edges in the artist collaboration network.
+        """
         has_table = self.table_exists(name_table="role")
         if not has_table:
             sql_statement = """
@@ -115,9 +136,12 @@ class DeriveRelease(DBStorage):
         self.execute_sql(sql=sql_statement)
 
     def artists_from_group_and_membership(self) -> None:
-        """Process artist information derived from groups and memberships"""
-        # db_reader = _db_reader.Collection(db_file=self.db_file)
-        # db_writer = _db_writer.Collection(db_file=self.db_file)
+        """Process artist information derived from groups and memberships.
+
+        This method retrieves artists not yet added to the database from related tables
+        (groups, members, etc.), fetches their details from Discogs, and updates the database.
+        It also tracks write attempts to prevent infinite loops for artists that cannot be retrieved.
+        """
         self._extract_artist_to_ignore()
         qty_artists_not_added = self.read_sql(
             sql="SELECT COUNT(*) FROM vw_artists_not_added;"
