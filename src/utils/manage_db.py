@@ -4,12 +4,14 @@ import time
 
 from .backup_cleaner import BackupCleaner
 
+
 class ManageDB:
     """Manages database operations, including copying, replacing, and backing up.
 
     This class provides methods for creating copies of the database for loading data,
     replacing the original database with the loaded copy, and creating backups of the database.
     """
+
     def __init__(self, file_db: str) -> None:
         """Initializes ManageDB with the database file path.
 
@@ -20,7 +22,7 @@ class ManageDB:
         self._db_dir = os.path.dirname(file_db)
         filename, self.__db_ext = os.path.splitext(file_db)
         self._db_file = os.path.basename(filename)
-        self._db_load = f'{filename}_load{self.__db_ext}'
+        self._db_load = f"{filename}_load{self.__db_ext}"
         self._exists = os.path.exists(self._db_path)
 
     def create_load_copy(self) -> str:
@@ -49,17 +51,11 @@ class ManageDB:
         within the database's directory. Old backups are cleaned up based on a retention policy.
         """
         if self._exists:
-            dir_backup = f'{self._db_dir}/backup'
+            dir_backup = f"{self._db_dir}/backup"
             if not os.path.exists(dir_backup):
                 os.makedirs(dir_backup)
-            file_backup = (
-                f'{dir_backup}/{self._db_file}_'
-                + time.strftime("%Y%m%d_%H%M%S")
-                + '.db'
-            )
+            file_backup = f"{dir_backup}/{self._db_file}_" + time.strftime("%Y%m%d_%H%M%S") + ".db"
             shutil.copyfile(self._db_path, file_backup)
             # TODO: Add retention policy
-            #backup_cleaner = BackupCleaner(dir_backup=dir_backup)
-            #backup_cleaner.clean_old_backups()
-
-
+            # backup_cleaner = BackupCleaner(dir_backup=dir_backup)
+            # backup_cleaner.clean_old_backups()
