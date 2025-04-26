@@ -4,7 +4,18 @@ from db_operations import DBStorage
 
 
 class Artists(DBStorage):
+    """Provides methods for accessing and analyzing artist data.
+
+    This class interacts with the database to retrieve and process artist information,
+    including details like names, images, collection items, related artists, and similarity metrics.
+    """
     def __init__(self, file_db, schema="main"):
+        """Initializes the Artists class with database connection details.
+
+        Args:
+            file_db: Path to the database file.
+            schema (str, optional): The database schema to use. Defaults to "main".
+        """
         super().__init__(file_db, schema)
         self.sql_all = """
             SELECT
@@ -35,6 +46,18 @@ class Artists(DBStorage):
         """
 
     def artist(self, id_artist: int) -> dict:
+        """Retrieves a specific artist by ID.
+
+        This method retrieves a single artist from the database based on their ID.
+        It includes nested information like formats, genres, styles, relationships, URLs,
+        and similar artists based on shared genres and styles.
+
+        Args:
+            id_artist (int): The ID of the artist to retrieve.
+
+        Returns:
+            dict: A dictionary containing information about the artist.
+        """
         df = self.read_sql(sql=self.sql_all)
         lst_artists = df.filter(pl.col("id_artist") == id_artist).to_dicts()
         lst_artists = self._add_nested_information(lst_artists=lst_artists)
@@ -49,6 +72,14 @@ class Artists(DBStorage):
         return lst_artists
 
     def all(self) -> list:
+        """Retrieves all artists.
+
+        This method retrieves all artists from the database, ordered alphabetically by name,
+        and includes nested information such as formats, genres, styles, and relationships.
+
+        Returns:
+            list: A list of dictionaries, each containing information about an artist.
+        """
         sql = (
             self.sql_all
             + """
@@ -67,6 +98,14 @@ class Artists(DBStorage):
         return lst_artists
 
     def all_top_10(self) -> list:
+        """Retrieves the top 10 artists.
+
+        This method retrieves the first 10 artists from the database, ordered alphabetically by name,
+        and includes nested information such as formats, genres, styles, and relationships.
+
+        Returns:
+            list: A list of dictionaries, each containing information about an artist.
+        """
         sql = (
             self.sql_all
             + """

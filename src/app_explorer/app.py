@@ -1,3 +1,4 @@
+import contextlib
 import os
 
 import yaml
@@ -18,8 +19,8 @@ file_db = config["db_file"]
 
 app = Flask(
     __name__,
-    template_folder=os.getcwd() + "/src/app_explorer/templates",
-    static_folder=os.getcwd() + "/src/app_explorer/static",
+    template_folder=f"{os.getcwd()}/src/app_explorer/templates",
+    static_folder=f"{os.getcwd()}/src/app_explorer/static",
 )
 
 discogs = Discogs(file_secrets="/data/secrets.yml", file_db=file_db)  # Setup for discogs extraction
@@ -99,10 +100,7 @@ def artists_all():
 def artists_search():
     query = request.args.get("query")
     db_artists = Artists(file_db=file_db)
-    if query:
-        lst_artists = db_artists.search(query)
-    else:
-        lst_artists = db_artists.all()
+    lst_artists = db_artists.search(query) if query else db_artists.all()
     return render_template("artists/artists_search_results.html", artists=lst_artists)
 
 
@@ -150,10 +148,7 @@ def collection_items_all():
 def collection_items_search():
     query = request.args.get("query")
     db_collection = Collection(file_db=file_db)
-    if query:
-        lst_all = db_collection.search(query)
-    else:
-        lst_all = db_collection.all()
+    lst_all = db_collection.search(query) if query else db_collection.all()
     return render_template(
         "collection_items/collection_items_search_results.html", all_items=lst_all
     )
@@ -215,10 +210,8 @@ def start_simulate_ETL():
 def check_task(task_id):
     task = celery_app.AsyncResult(task_id)
     task_status = {"status": task.state}
-    try:
-        task_status.update(task.result)
-    except TypeError:
-        pass
+    with contextlib.suppress(TypeError):
+        task_status |= task.result
     response = jsonify(task_status)
     return response
 
