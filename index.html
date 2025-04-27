@@ -423,13 +423,11 @@
 <p>This is the development documentation for the <a href="https://github.com/mark-me/music-explorer">music-explorer</a> project.</p>
 <p>This project scrapes a user's Discogs account and allows the user to navigate their music collection</p>
 <h2 id="key-components">Key components</h2>
-<p>The project consists of:</p>
-<ul>
-<li><strong><code>app_explorer</code></strong> - a web-app that is the user UI, that consists of:</li>
-<li><a href="DiscogsETL/"><strong><code>discogs_extractor</code></strong></a> - an ETL package that retrieves the Discogs data, stores it in a <a href="https://duckdb.org/">DuckDB</a> database and transforms it.</li>
-<li>a set of analytics classes that retrieves the data from the database for use in the UI</li>
-<li>A set of scripts to deploy all in a Docker environment.</li>
-</ul>
+<p>The project consists of:
+* <strong><code>app_explorer</code></strong> - a web-app that is the user UI, that consists of:
+  * <a href="DiscogsETL/"><strong><code>discogs_extractor</code></strong></a> - an ETL package that retrieves the Discogs data, stores it in a <a href="https://duckdb.org/">DuckDB</a> database and transforms it.
+  * a set of analytics classes that retrieves the data from the database for use in the UI
+* A set of scripts to deploy all in a Docker environment.</p>
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>├──<span class="w"> </span>config
 </span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>├──<span class="w"> </span>docs
 </span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>│<span class="w">   </span>└──<span class="w"> </span>assets
