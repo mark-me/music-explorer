@@ -20,10 +20,19 @@ plugins:
 
 nav:
   - Music Explorer Docs: index.md
+  - Deployment: Deployment.md
+  - Web app UI: UI.md
+  - Analytics: Analytics.md
   - Discogs ETL: DiscogsETL.md
-  - API reference: reference.md
+  - API reference: ApiReference.md
 
 markdown_extensions:
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - pymdownx.highlight:
+      anchor_linenums: true
+      line_spans: __span
+      pygments_lang_class: true
   - pymdownx.superfences:
       custom_fences:
         - name: mermaid
