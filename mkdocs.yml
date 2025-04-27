@@ -9,6 +9,7 @@ theme:
     scheme: slate
     primary: blue grey
   features:
+    - navigation.path
     - navigation.instant
     - navigation.instant.prefetch
     - navigation.instant.progress
