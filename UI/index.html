@@ -8,11 +8,13 @@
       
       
       
-        <link rel="canonical" href="https://mark-me.github.io/music-explorer/DiscogsETL/">
+        <link rel="canonical" href="https://mark-me.github.io/music-explorer/UI/">
       
       
-        <link rel="prev" href="../Analytics/">
+        <link rel="prev" href="..">
       
+      
+        <link rel="next" href="../Analytics/">
       
       
       <link rel="icon" href="../assets/logo.svg">
@@ -20,7 +22,7 @@
     
     
       
-        <title>Discogs ETL - Music Explorer Docs</title>
+        <title>Web app UI - Music Explorer Docs</title>
       
     
     
@@ -71,11 +73,6 @@
     <label class="md-overlay" for="__drawer"></label>
     <div data-md-component="skip">
       
-        
-        <a href="#discogs-etl" class="md-skip">
-          Skip to content
-        </a>
-      
     </div>
     <div data-md-component="announce">
       
@@ -107,7 +104,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Discogs ETL
+              Web app UI
             
           </span>
         </div>
@@ -217,10 +214,17 @@
       
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="../UI/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   <span class="md-ellipsis">
@@ -230,6 +234,7 @@
   
 
       </a>
+      
     </li>
   
 
@@ -259,31 +264,10 @@
       
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  <span class="md-ellipsis">
-    Discogs ETL
-    
-  </span>
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../DiscogsETL/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -293,62 +277,6 @@
   
 
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#data-extraction-and-enrichment-process" class="md-nav__link">
-    <span class="md-ellipsis">
-      Data extraction and enrichment process
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#class-diagram" class="md-nav__link">
-    <span class="md-ellipsis">
-      Class diagram
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#storage-diagram" class="md-nav__link">
-    <span class="md-ellipsis">
-      Storage diagram
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#discogs-authentication-flow" class="md-nav__link">
-    <span class="md-ellipsis">
-      Discogs authentication flow
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -391,52 +319,6 @@
   
   
   
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#data-extraction-and-enrichment-process" class="md-nav__link">
-    <span class="md-ellipsis">
-      Data extraction and enrichment process
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#class-diagram" class="md-nav__link">
-    <span class="md-ellipsis">
-      Class diagram
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#storage-diagram" class="md-nav__link">
-    <span class="md-ellipsis">
-      Storage diagram
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#discogs-authentication-flow" class="md-nav__link">
-    <span class="md-ellipsis">
-      Discogs authentication flow
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
   
 </nav>
                   </div>
@@ -452,146 +334,9 @@
 
 
 
-<h1 id="discogs-etl">Discogs ETL</h1>
-<h2 id="data-extraction-and-enrichment-process">Data extraction and enrichment process</h2>
-<p>To create insights from your music collection, first the data needs to be extracted from Discogs and stored in a database. The first step in this process is allowing the script to extract your data by using an authentication mechanism. Then we kick of the data collection part that is described below in the <em>Discogs ETL</em> section. After this extraction process,</p>
-<pre class="mermaid"><code>flowchart LR
-    Discogs_Auth["`
-        _**Discogs**_
-        Authentication
-    `"]
-    Discogs_ETL["`
-        _**Discogs**_
-        Start
-    `"]
-    ETL_Collection["Collection"]
-    ETL_CollectionItem["Collection Item"]
-    ETL_Release["Release"]
-    ETL_Artist["Artist"]
-    ETL_Artist_Masters["Artist Masters"]
-    Derive_Artist_Group["Is band indicator"]
-    Derive_Artist_Collection["\# Collection items"]
-    Derive_Artist_Relations["Relationships between artists"]
-    Derive_Release_Roles["Artist's relationship to a release"]
-    Discogs_Auth --&gt; Discogs_ETL
-    Discogs_ETL --&gt; ETL_Collection
-    Discogs_ETL --&gt; Derive_Artist_Group
-    subgraph Derive from extracted data
-        direction LR
-        subgraph Artist
-            Derive_Artist_Group --&gt; Thumbnail
-            Thumbnail --&gt; Derive_Artist_Collection
-            Derive_Artist_Collection --&gt; Derive_Artist_Relations
-        end
-        subgraph Release
-            Derive_Artist_Relations --&gt; Derive_Release_Roles
-        end
-        subgraph Artist network
-            Derive_Release_Roles --&gt; Me
-        end
-    end
-    subgraph Discogs ETL
-        direction LR
-        ETL_Collection --&gt; ETL_CollectionItem
-        ETL_CollectionItem --&gt; ETL_Release
-        ETL_Release --&gt; ETL_Artist
-        ETL_Artist --&gt; ETL_Artist_Masters
-        ETL_Artist_Masters --&gt; ETL_Collection
-    end
+  <h1>Web app UI</h1>
 
-</code></pre>
-<h2 id="class-diagram">Class diagram</h2>
-<p>To achieve the extraction and deriving information process described above the following classes are implemented.</p>
-<pre class="mermaid"><code>classDiagram
-    Discogs *-- SecretsYAML
-    Discogs *-- ETLCollection
-    Discogs *-- DiscogsDerive
-    DiscogsDerive *-- DeriveArtist
-    DiscogsDerive *-- DeriveRelease
-    DiscogsDerive *-- DeriveNetwork
-    DBStorage &lt;-- DeriveArtist
-    DBStorage &lt;-- DeriveRelease
-    DBStorage &lt;-- DeriveNetwork
-    ETLCollection *-- ETLRelease
-    ETLRelease *-- ETLArtists
-    DiscogsETL *-- DBStorage
-    DiscogsETL &lt;-- ETLCollection
-    DiscogsETL &lt;-- ETLMaster
-    ETLMaster &lt;-- ETLRelease
-    DiscogsETL &lt;-- ETLArtists
-    note for Discogs "Discogs authentication and kicking off ETL process"
-    note for DiscogsETL "Contains bare bones for any ETL process"
-    note for DiscogsDerive "Kicks off data derivation based on loaded Discogs data"</code></pre>
-<h2 id="storage-diagram">Storage diagram</h2>
-<p>This section describes the data storage in a diagram.</p>
-<pre class="mermaid"><code>erDiagram
 
-    collection_value
-    collection_items ||--o{ master_stats : has
-    collection_items ||--o{ master_styles: has
-    collection_items ||--o{ master_genres : has
-    collection_items ||--o{ master_tracks: has
-    collection_items ||--o{ master_videos: has
-    master_tracks ||--o{ master_track_artists: "performs on"
-    artist ||--o{ artist_images: "depicted in"
-    artist ||--o{ artist_masters: has
-    artist ||--o{ artist_groups : "part of"
-    artist ||--o{ artist_aliases : "aka"
-    artist ||--o{ artist_members : "group members"
-    artist ||--o{ artist_urls : "info on"
-    artist_masters ||--o{ master_stats : has
-    artist_masters ||--o{ master_styles: has
-    artist_masters ||--o{ master_genres : has
-    artist_masters ||--o{ master_tracks: contains
-    artist_masters ||--o{ master_videos: associated</code></pre>
-<pre class="mermaid"><code>erDiagram
-    collection_value
-    collection_items ||--|| release : is
-    release ||--o{ release_credits : has
-    release ||--o{ release_artists : has
-    release ||--o{ release_labels : has
-    release ||--o{ release_formats : has
-    release ||--o{ release_genres : has
-    release ||--o{ release_styles : has
-    release ||--o{ release_tracks : has
-    release ||--o{ release_videos : has
-    role ||--o{ release_credits :role
-    release_tracks ||--o{ release_track_artists : performs
-    artist ||--o{ release_track_artists: "performs on"
-    master ||--|| release: isa
-    master ||--o{ master_styles: has
-    master ||--o{ master_genres : has
-    master ||--o{ master_tracks: has
-    master ||--o{ master_videos: has
-    master_tracks ||--o{ master_track_artists: "performs on"
-    artist ||--o{ master_track_artists: "performs on"
-    artist ||--o{ artist_masters: has
-    artist ||--o{ artist_images: "depicted in"
-    artist ||--o{ artist_groups : "part of"
-    artist ||--o{ artist_aliases : "aka"
-    artist ||--o{ artist_members : "group members"
-    artist ||--o{ artist_urls : "info on"
-    artist ||--o{ artist_relations : "part of"
-    artist ||--o{ artist_vertex : "as"
-    master ||--o{ artist_masters : ""</code></pre>
-<h2 id="discogs-authentication-flow">Discogs authentication flow</h2>
-<pre class="mermaid"><code>sequenceDiagram
-    participant User
-    participant App
-    participant Discogs
-
-    User-&gt;&gt;App: Navigates to /config
-    App-&gt;&gt;App: Renders config.html (credentials_ok=false)
-    User-&gt;&gt;App: Clicks "Allow Discogs access" (/get-user-access)
-    App-&gt;&gt;Discogs: request_user_access(callback_url)
-    Discogs--&gt;&gt;App: Returns authorization URL
-    App-&gt;&gt;User: Redirects to Discogs authorization URL
-    User-&gt;&gt;Discogs: Authorizes App
-    Discogs--&gt;&gt;User: Redirects to App's /receive-token with oauth_verifier
-    User-&gt;&gt;App: Navigates to /receive-token?oauth_verifier=...
-    App-&gt;&gt;Discogs: save_user_token(oauth_verifier)
-    Discogs--&gt;&gt;App: Returns confirmation
-    App-&gt;&gt;User: Redirects to /config (credentials_ok=true)</code></pre>
 
 
 

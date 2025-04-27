@@ -5,11 +5,23 @@
          <lastmod>2025-04-27</lastmod>
     </url>
     <url>
+         <loc>https://mark-me.github.io/music-explorer/Analytics/</loc>
+         <lastmod>2025-04-27</lastmod>
+    </url>
+    <url>
+         <loc>https://mark-me.github.io/music-explorer/ApiReference/</loc>
+         <lastmod>2025-04-27</lastmod>
+    </url>
+    <url>
+         <loc>https://mark-me.github.io/music-explorer/Deployment/</loc>
+         <lastmod>2025-04-27</lastmod>
+    </url>
+    <url>
          <loc>https://mark-me.github.io/music-explorer/DiscogsETL/</loc>
          <lastmod>2025-04-27</lastmod>
     </url>
     <url>
-         <loc>https://mark-me.github.io/music-explorer/reference/</loc>
+         <loc>https://mark-me.github.io/music-explorer/UI/</loc>
          <lastmod>2025-04-27</lastmod>
     </url>
 </urlset>
