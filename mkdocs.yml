@@ -19,10 +19,8 @@ plugins:
 
 nav:
   - Music Explorer Docs: index.md
-  - tutorials.md
-  - How-To Guides: how-to-guides.md
-  - reference.md
-  - explanation.md
+  - Discogs ETL: DiscogsETL.md
+  - API reference: reference.md
 
 markdown_extensions:
   - pymdownx.superfences:
