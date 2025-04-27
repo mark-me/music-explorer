@@ -47,3 +47,7 @@ There are two scenario's to run this project:
     * Start the celery worker, make sure you keep this command running in a terminal. This allows the script to fire op load jobs:
        * ```celery --app=app_explorer.celery_config worker --loglevel=info```
     * Start a debug session with the file ```src/app_explorer/app.py``` from your editor of choice.
+
+## Project documentation
+
+The project's code documentation can be found [here](https://mark-me.github.io/music-explorer/).
