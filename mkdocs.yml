@@ -3,19 +3,19 @@ site_url: https://mark-me.github.io/music-explorer/
 
 theme:
   name: "material"
+  logo: assets/logo.svg
+  favicon: assets/logo.svg
+  palette:
+    scheme: slate
+    primary: blue grey
+  features:
+    - navigation.instant
+    - navigation.instant.prefetch
+    - navigation.instant.progress
 
 plugins:
   - mkdocstrings
   - search
-  - mermaid2
-  - panzoom:
-      # images: true
-      # mermaid: true # old config
-      full_screen: true
-      always_show_hint: true
-      key: "alt"
-      include_selectors:
-        - img
 
 nav:
   - Music Explorer Docs: index.md
@@ -26,8 +26,7 @@ nav:
 
 markdown_extensions:
   - pymdownx.superfences:
-        # make exceptions to highlighting of code:
       custom_fences:
         - name: mermaid
           class: mermaid
-          format: !!python/name:mermaid2.fence_mermaid_custom
+          format: !!python/name:pymdownx.superfences.fence_code_format
