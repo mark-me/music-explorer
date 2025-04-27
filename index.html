@@ -72,7 +72,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#welcome-to-mkdocs" class="md-skip">
+        <a href="#welcome-to-music-explorers-documentation" class="md-skip">
           Skip to content
         </a>
       
@@ -247,18 +247,9 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#commands" class="md-nav__link">
+  <a href="#key-components" class="md-nav__link">
     <span class="md-ellipsis">
-      Commands
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#project-layout" class="md-nav__link">
-    <span class="md-ellipsis">
-      Project layout
+      Key components
     </span>
   </a>
   
@@ -383,18 +374,9 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#commands" class="md-nav__link">
+  <a href="#key-components" class="md-nav__link">
     <span class="md-ellipsis">
-      Commands
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#project-layout" class="md-nav__link">
-    <span class="md-ellipsis">
-      Project layout
+      Key components
     </span>
   </a>
   
@@ -416,21 +398,17 @@
 
 
 
-<h1 id="welcome-to-mkdocs">Welcome to MkDocs</h1>
-<p>For full documentation visit <a href="https://www.mkdocs.org">mkdocs.org</a>.</p>
-<h2 id="commands">Commands</h2>
+<h1 id="welcome-to-music-explorers-documentation">Welcome to Music Explorer's documentation</h1>
+<p>This is the development documentation for the <a href="https://github.com/mark-me/music-explorer">music-explorer</a> project.</p>
+<p>This project scrapes a user's Discogs account and allows the user to navigate their music collection</p>
+<h2 id="key-components">Key components</h2>
+<p>The project consists of:</p>
 <ul>
-<li><code>mkdocs new [dir-name]</code> - Create a new project.</li>
-<li><code>mkdocs serve</code> - Start the live-reloading docs server.</li>
-<li><code>mkdocs build</code> - Build the documentation site.</li>
-<li><code>mkdocs -h</code> - Print help message and exit.</li>
+<li>a web-app that is the user UI</li>
+<li>a ETL process that retrieves the Discogs data, stores it in a <a href="https://duckdb.org/">DuckDB</a> database and transforms it.</li>
+<li>a set of analytics classes that retrieves the data from the database for use in the UI</li>
+<li>a set of scripts to deploy all in a Docker environment.</li>
 </ul>
-<h2 id="project-layout">Project layout</h2>
-<pre><code>mkdocs.yml    # The configuration file.
-docs/
-    index.md  # The documentation homepage.
-    ...       # Other markdown pages, images and other files.
-</code></pre>
 
 
 
