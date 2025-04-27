@@ -333,11 +333,11 @@
   
   
     <li class="md-nav__item">
-      <a href="explanation.md" class="md-nav__link">
+      <a href="DiscogsETL/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
-    None
+    Discogs ETL
     
   </span>
   
@@ -405,7 +405,7 @@
 <p>The project consists of:</p>
 <ul>
 <li>a web-app that is the user UI</li>
-<li>a ETL process that retrieves the Discogs data, stores it in a <a href="https://duckdb.org/">DuckDB</a> database and transforms it.</li>
+<li><a href="DiscogsETL/"><strong><code>discogs_extractor</code></strong></a> an ETL package that retrieves the Discogs data, stores it in a <a href="https://duckdb.org/">DuckDB</a> database and transforms it.</li>
 <li>a set of analytics classes that retrieves the data from the database for use in the UI</li>
 <li>a set of scripts to deploy all in a Docker environment.</li>
 </ul>
