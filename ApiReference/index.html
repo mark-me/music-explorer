@@ -11,6 +11,8 @@
         <link rel="canonical" href="https://mark-me.github.io/music-explorer/ApiReference/">
       
       
+        <link rel="prev" href="../DiscogsETL/">
+      
       
       
       <link rel="icon" href="../assets/logo.svg">
@@ -18,7 +20,7 @@
     
     
       
-        <title>ApiReference - Music Explorer Docs</title>
+        <title>API reference - Music Explorer Docs</title>
       
     
     
@@ -105,7 +107,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              ApiReference
+              API reference
             
           </span>
         </div>
@@ -278,10 +280,29 @@
       
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="../reference.md" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    API reference
+    
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   <span class="md-ellipsis">
@@ -291,6 +312,390 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#src.app_explorer.discogs_extractor.extractor_artist" class="md-nav__link">
+    <span class="md-ellipsis">
+      extractor_artist
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#src.app_explorer.discogs_extractor.extractor_artist.ETLArtist" class="md-nav__link">
+    <span class="md-ellipsis">
+      ETLArtist
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="ETLArtist">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#src.app_explorer.discogs_extractor.extractor_artist.ETLArtist.__init__" class="md-nav__link">
+    <span class="md-ellipsis">
+      __init__
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#src.app_explorer.discogs_extractor.extractor_artist.ETLArtist.aliases" class="md-nav__link">
+    <span class="md-ellipsis">
+      aliases
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#src.app_explorer.discogs_extractor.extractor_artist.ETLArtist.artist" class="md-nav__link">
+    <span class="md-ellipsis">
+      artist
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#src.app_explorer.discogs_extractor.extractor_artist.ETLArtist.groups" class="md-nav__link">
+    <span class="md-ellipsis">
+      groups
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#src.app_explorer.discogs_extractor.extractor_artist.ETLArtist.images" class="md-nav__link">
+    <span class="md-ellipsis">
+      images
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#src.app_explorer.discogs_extractor.extractor_artist.ETLArtist.masters" class="md-nav__link">
+    <span class="md-ellipsis">
+      masters
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#src.app_explorer.discogs_extractor.extractor_artist.ETLArtist.members" class="md-nav__link">
+    <span class="md-ellipsis">
+      members
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#src.app_explorer.discogs_extractor.extractor_artist.ETLArtist.process" class="md-nav__link">
+    <span class="md-ellipsis">
+      process
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#src.app_explorer.discogs_extractor.extractor_artist.ETLArtist.urls" class="md-nav__link">
+    <span class="md-ellipsis">
+      urls
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#src.app_explorer.discogs_extractor.extractor_collection" class="md-nav__link">
+    <span class="md-ellipsis">
+      extractor_collection
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#src.app_explorer.discogs_extractor.extractor_collection.ETLCollection" class="md-nav__link">
+    <span class="md-ellipsis">
+      ETLCollection
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="ETLCollection">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#src.app_explorer.discogs_extractor.extractor_collection.ETLCollection.__init__" class="md-nav__link">
+    <span class="md-ellipsis">
+      __init__
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#src.app_explorer.discogs_extractor.extractor_collection.ETLCollection._collection_item" class="md-nav__link">
+    <span class="md-ellipsis">
+      _collection_item
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#src.app_explorer.discogs_extractor.extractor_collection.ETLCollection.collection_items" class="md-nav__link">
+    <span class="md-ellipsis">
+      collection_items
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#src.app_explorer.discogs_extractor.extractor_collection.ETLCollection.collection_value" class="md-nav__link">
+    <span class="md-ellipsis">
+      collection_value
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#src.app_explorer.discogs_extractor.extractor_collection.ETLCollection.process" class="md-nav__link">
+    <span class="md-ellipsis">
+      process
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#src.app_explorer.discogs_extractor.extractor_master" class="md-nav__link">
+    <span class="md-ellipsis">
+      extractor_master
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#src.app_explorer.discogs_extractor.extractor_master.ETLMaster" class="md-nav__link">
+    <span class="md-ellipsis">
+      ETLMaster
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="ETLMaster">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#src.app_explorer.discogs_extractor.extractor_master.ETLMaster.__init__" class="md-nav__link">
+    <span class="md-ellipsis">
+      __init__
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#src.app_explorer.discogs_extractor.extractor_master.ETLMaster.extract_genres" class="md-nav__link">
+    <span class="md-ellipsis">
+      extract_genres
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#src.app_explorer.discogs_extractor.extractor_master.ETLMaster.extract_stats" class="md-nav__link">
+    <span class="md-ellipsis">
+      extract_stats
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#src.app_explorer.discogs_extractor.extractor_master.ETLMaster.extract_styles" class="md-nav__link">
+    <span class="md-ellipsis">
+      extract_styles
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#src.app_explorer.discogs_extractor.extractor_master.ETLMaster.extract_track_artists" class="md-nav__link">
+    <span class="md-ellipsis">
+      extract_track_artists
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#src.app_explorer.discogs_extractor.extractor_master.ETLMaster.extract_tracks" class="md-nav__link">
+    <span class="md-ellipsis">
+      extract_tracks
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#src.app_explorer.discogs_extractor.extractor_master.ETLMaster.extract_videos" class="md-nav__link">
+    <span class="md-ellipsis">
+      extract_videos
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#src.app_explorer.discogs_extractor.extractor_master.ETLMaster.process" class="md-nav__link">
+    <span class="md-ellipsis">
+      process
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#src.app_explorer.discogs_extractor.extractor_release" class="md-nav__link">
+    <span class="md-ellipsis">
+      extractor_release
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#src.app_explorer.discogs_extractor.extractor_release.ETLRelease" class="md-nav__link">
+    <span class="md-ellipsis">
+      ETLRelease
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="ETLRelease">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#src.app_explorer.discogs_extractor.extractor_release.ETLRelease.__init__" class="md-nav__link">
+    <span class="md-ellipsis">
+      __init__
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#src.app_explorer.discogs_extractor.extractor_release.ETLRelease.extract_artists" class="md-nav__link">
+    <span class="md-ellipsis">
+      extract_artists
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#src.app_explorer.discogs_extractor.extractor_release.ETLRelease.extract_credits" class="md-nav__link">
+    <span class="md-ellipsis">
+      extract_credits
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#src.app_explorer.discogs_extractor.extractor_release.ETLRelease.extract_formats" class="md-nav__link">
+    <span class="md-ellipsis">
+      extract_formats
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#src.app_explorer.discogs_extractor.extractor_release.ETLRelease.extract_labels" class="md-nav__link">
+    <span class="md-ellipsis">
+      extract_labels
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#src.app_explorer.discogs_extractor.extractor_release.ETLRelease.extract_release" class="md-nav__link">
+    <span class="md-ellipsis">
+      extract_release
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#src.app_explorer.discogs_extractor.extractor_release.ETLRelease.extract_stats" class="md-nav__link">
+    <span class="md-ellipsis">
+      extract_stats
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#src.app_explorer.discogs_extractor.extractor_release.ETLRelease.process" class="md-nav__link">
+    <span class="md-ellipsis">
+      process
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -701,7 +1106,7 @@
 
 
 
-  <h1>ApiReference</h1>
+  <h1>API reference</h1>
 
 <p>This part of the project documentation focuses on
 an <strong>information-oriented</strong> approach. Use it as a
