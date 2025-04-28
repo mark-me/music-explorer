@@ -73,6 +73,11 @@
     <label class="md-overlay" for="__drawer"></label>
     <div data-md-component="skip">
       
+        
+        <a href="#web-app" class="md-skip">
+          Skip to content
+        </a>
+      
     </div>
     <div data-md-component="announce">
       
@@ -244,6 +249,20 @@
       <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
       
       
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    Web app UI
+    
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
       
       <a href="./" class="md-nav__link md-nav__link--active">
         
@@ -255,6 +274,43 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#key-components" class="md-nav__link">
+    <span class="md-ellipsis">
+      Key Components
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#sequence-for-the-discogs-etl-process" class="md-nav__link">
+    <span class="md-ellipsis">
+      Sequence for the Discogs ETL process
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
       
     </li>
   
@@ -340,6 +396,34 @@
   
   
   
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#key-components" class="md-nav__link">
+    <span class="md-ellipsis">
+      Key Components
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#sequence-for-the-discogs-etl-process" class="md-nav__link">
+    <span class="md-ellipsis">
+      Sequence for the Discogs ETL process
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
   
 </nav>
                   </div>
@@ -355,9 +439,70 @@
 
 
 
-  <h1>Web app UI</h1>
+<h1 id="web-app">Web App</h1>
+<p>The app is a Flask web application for exploring a music collection. It integrates with Discogs API for data extraction and uses Celery for asynchronous task management. The application allows users to browse their music collection by artists, releases, and individual items. It also provides features for searching, viewing details, and managing Discogs credentials. The application supports offline viewing via a service worker and manifest file.</p>
+<h2 id="key-components">Key Components</h2>
+<ul>
+<li><strong>Flask App (<code>app</code>)</strong>: The core Flask application instance, handling routing and rendering of HTML templates. It defines routes for various pages like home, artists, collection items, configuration, and about.</li>
+<li><strong>Discogs Integration (<code>discogs</code>)</strong>: An instance of the <code>Discogs</code> class, responsible for interacting with the Discogs API. This includes handling user authentication, retrieving data, and managing API credentials.</li>
+<li><strong>Celery Integration (<code>celery_app</code>)</strong>: Used for asynchronous tasks, primarily the Discogs ETL (Extract, Transform, Load) process. Tasks are managed and their status can be checked via specific routes.</li>
+<li><strong>Data Access Objects</strong>: Classes like <code>Artists</code>, <code>Collection</code>, and <code>Release</code> provide an abstraction layer for interacting with the database (DuckDB, based on the <code>file_db</code> configuration). These classes offer methods for retrieving data based on various criteria (e.g., random samples, top 10, searching).</li>
+<li><strong>Routing</strong>: The <code>@app.route</code> decorator defines various URL endpoints and their corresponding handler functions. These routes handle different aspects of the application, such as displaying artists, collection items, search results, and managing the Discogs ETL process.</li>
+<li><strong>Templating</strong>: Uses Jinja2 templates (located in the <code>templates</code> directory) to dynamically generate HTML pages.</li>
+<li><strong>Configuration</strong>: Reads configuration parameters from a YAML file (<code>config/config.yml</code>), including the database file path and application URL.</li>
+<li><strong>Offline Support</strong>: Includes routes and files (<code>manifest.json</code>, <code>service-worker.js</code>, <code>offline.html</code>) to enable Progressive Web App (PWA) functionality, allowing offline access to the application.</li>
+</ul>
+<h2 id="sequence-for-the-discogs-etl-process">Sequence for the Discogs ETL process</h2>
+<pre class="mermaid"><code>sequenceDiagram
+    participant User
+    participant Browser
+    participant App
+    participant Celery
+    participant Discogs
+    participant Database
 
+    User-&gt;&gt;Browser: Navigates to /config
+    Browser-&gt;&gt;App: GET /config
+    App-&gt;&gt;Browser: Render config.html
+    User-&gt;&gt;Browser: Clicks 'Start ETL'
+    Browser-&gt;&gt;App: GET /discogs_etl
+    App-&gt;&gt;Celery: discogs_etl.delay()
+    Celery-&gt;&gt;Discogs: Extracts data
+    Discogs--&gt;&gt;Celery: Returns data
+    Celery-&gt;&gt;Database: Stores data
+    Database--&gt;&gt;Celery: Acknowledges data storage
+    Celery--&gt;&gt;App: Returns task_id
+    App-&gt;&gt;Browser: Returns JSON {success: True, task_id: task_id}</code></pre>
+<h1 id="class-diagram-for-artists-and-collection">Class diagram for Artists and Collection</h1>
+<pre class="mermaid"><code>classDiagram
+    class Artists{
+        -file_db: str
+        +__init__(file_db: str)
+        +random(qty_sample: int): list
+        +all_top_10(): list
+        +all(): list
+        +search(query: str): list
+        +artist(id_artist: int): dict
+    }
+    class Collection{
+        -file_db: str
+        +__init__(file_db: str)
+        +random(qty_sample: int): list
+        +all_top_10(): list
+        +all(): list
+        +search(query: str): list
+        +artist(id_artist: int): list
+    }
+    class Release{
+        -id_release: int
+        -file_db: str
+        +__init__(id_release: int, file_db: str)
+        +data(): dict
+    }
 
+    note for Artists "Manages artist data from the database"
+    note for Collection "Manages collection item data from the database"
+    note for Release "Manages release data from the database"</code></pre>
 
 
 
