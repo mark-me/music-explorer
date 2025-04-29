@@ -273,6 +273,18 @@
         
       
       
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    Analytics
+    
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
       <a href="./" class="md-nav__link md-nav__link--active">
         
   
@@ -283,6 +295,97 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#artist" class="md-nav__link">
+    <span class="md-ellipsis">
+      Artist
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Artist">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#key-components" class="md-nav__link">
+    <span class="md-ellipsis">
+      Key Components
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#collection" class="md-nav__link">
+    <span class="md-ellipsis">
+      Collection
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Collection">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#key-components_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      Key components
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#releases" class="md-nav__link">
+    <span class="md-ellipsis">
+      Releases
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Releases">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#key-components_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      Key components
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
       
     </li>
   
@@ -350,6 +453,86 @@
     
   
   
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#artist" class="md-nav__link">
+    <span class="md-ellipsis">
+      Artist
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Artist">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#key-components" class="md-nav__link">
+    <span class="md-ellipsis">
+      Key Components
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#collection" class="md-nav__link">
+    <span class="md-ellipsis">
+      Collection
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Collection">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#key-components_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      Key components
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#releases" class="md-nav__link">
+    <span class="md-ellipsis">
+      Releases
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Releases">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#key-components_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      Key components
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
 </nav>
                   </div>
                 </div>
@@ -365,6 +548,55 @@
 
 
 <h1 id="analytics">Analytics</h1>
+<h2 id="artist">Artist</h2>
+<p>The <code>Artists</code> class, which is responsible for retrieving and analyzing artist data from a database. It provides various methods to access artist information, including individual artist details, lists of all artists, top artists, random samples, search functionality, and similar artists based on shared genres and styles. The class uses the polars library for data manipulation and inherits from a DBStorage class for database interaction.</p>
+<h3 id="key-components">Key Components</h3>
+<ul>
+<li><strong><code>Artists</code> Class</strong>: The core component of this file. It handles all interactions with the database related to artist data. It inherits from <code>DBStorage</code> to manage database connections and queries.</li>
+<li><strong><code>artist(self, id_artist: int)</code></strong>: Retrieves detailed information for a specific artist by ID. This includes basic information, URLs, and similar artists.</li>
+<li><strong><code>all(self)</code></strong>: Retrieves a list of all artists in the database, ordered alphabetically.</li>
+<li><strong><code>all_top_10(self)</code></strong>: Retrieves the first 10 artists, ordered alphabetically.</li>
+<li><strong><code>top_collected(self)</code></strong>: Retrieves artists sorted by the number of collected items, descending.</li>
+<li><strong><code>random(self, qty_sample: int = 20)</code></strong>: Retrieves a random sample of artists.</li>
+<li><strong><code>search(self, text_search: str)</code></strong>: Searches for artists whose names match the provided search text.</li>
+<li><strong><code>similar_genre_style(self, id_artist: int)</code></strong>: Finds similar artists based on shared genres and styles, using Jaccard similarity.</li>
+<li><strong><code>_add_nested_information(self, lst_artists: list)</code></strong>: A private helper method that enriches artist data with related information like formats, genres, styles, and group memberships.</li>
+<li><strong>Private Helper Methods</strong> (e.g., <code>_formats</code>, <code>_genres</code>, <code>_styles</code>): These methods retrieve specific related data for artists, such as their associated formats, genres, and styles. They are used by <code>_add_nested_information</code> to build a comprehensive artist object.</li>
+<li><strong><code>polars</code> Library</strong>: Used for efficient data manipulation and querying. The Artists class uses polars DataFrames to process and organize the retrieved data.</li>
+<li><strong><code>DBStorage</code> Class</strong>: Although not defined in this file, it's a crucial base class providing database connectivity and query execution functionalities. The <code>Artists</code> class relies on it to interact with the database.</li>
+</ul>
+<h2 id="collection">Collection</h2>
+<p>The <code>Collection</code> class, which is responsible for retrieving and processing data about a user's music collection from a database. It provides methods to access various aspects of the collection, such as all items, a random sample, search results, items by artist, and format counts. The class uses the <code>polars</code> library for data manipulation and inherits from a <code>DBStorage</code> class for database interaction.</p>
+<h3 id="key-components_1">Key components</h3>
+<ul>
+<li><strong><code>Collection</code> Class</strong>: The core component of this file. It handles database queries and data processing related to the music collection. It inherits from <code>DBStorage</code> to manage database connections.</li>
+<li><strong><code>all()</code> Method</strong>: Retrieves all collection items, ordered alphabetically, with nested information about artists, formats, genres, and styles.</li>
+<li><strong><code>all_top_10()</code> Method</strong>: Retrieves the first 10 collection items alphabetically, similar to all() but limited to 10 results.</li>
+<li><strong><code>random()</code> Method</strong>: Retrieves a random sample of collection items with nested information.</li>
+<li><strong><code>search()</code> Method</strong>: Searches for collection items by title, returning matching items with nested information.</li>
+<li><strong><code>artist()</code> Method</strong>: Retrieves collection items by a specific artist ID, including track information.</li>
+<li><strong><code>formats()</code> Method</strong>: Retrieves the counts of different formats in the collection.</li>
+<li>_add_nested_information() Method: A private helper method that enriches collection items with related artists, formats, genres, and styles.</li>
+<li><strong><code>_artists()</code>, <code>_formats()</code>, <code>_genres()</code>, <code>_styles()</code> Methods</strong>: Private helper methods to retrieve specific related information for releases. These methods use SQL queries to fetch data and organize it into dictionaries for easy access.</li>
+<li><strong>Use of <code>polars</code></strong>: The code utilizes the <code>polars</code> library for efficient data manipulation and querying, converting between DataFrames and lists of dictionaries.</li>
+</ul>
+<h2 id="releases">Releases</h2>
+<p>Two classes, <code>Releases</code> and <code>Release</code>, interact with a music database. <code>Releases</code> provides a method to fetch data for a specific release by ID, while <code>Release</code> handles retrieving detailed information about a single release, including its artists, videos, tracks, formats, labels, genres, and styles. Both classes inherit from a DBStorage class (not shown in the provided code), which presumably handles database connection and query execution.</p>
+<h3 id="key-components_2">Key components</h3>
+<ul>
+<li><strong><code>Releases</code> Class</strong>: This class acts as a high-level interface for accessing release data. Its primary function is get_release(id_release), which takes a release ID and returns a dictionary containing comprehensive information about the release.</li>
+<li><strong><code>Release</code> Class</strong>: This class is responsible for retrieving detailed information about a specific release. It uses the provided id_release during initialization and offers several methods to fetch different aspects of the release data:</li>
+<li><strong><code>data()</code></strong>: Returns a comprehensive dictionary containing all details about the release.</li>
+<li><strong><code>release()</code></strong>: Retrieves basic release information (title, year, etc.).</li>
+<li><strong><code>artists()</code></strong>: Retrieves associated artists.</li>
+<li><strong><code>videos()</code></strong>: Retrieves associated videos.</li>
+<li><strong><code>tracks()</code></strong>: Retrieves associated tracks.</li>
+<li><strong><code>formats()</code></strong>: Retrieves release formats (e.g., Vinyl, CD).</li>
+<li><strong><code>labels()</code></strong>: Retrieves associated record labels.</li>
+<li><strong><code>genres()</code></strong>: Retrieves associated genres.</li>
+<li><strong><code>styles()</code></strong>: Retrieves associated styles.</li>
+<li><strong><code>DBStorage</code> Class (External)</strong>: Although not defined in this file, it's a crucial component. Both <code>Releases</code> and <code>Release</code> inherit from it, suggesting it handles database interaction logic. The <code>read_sql()</code> method used within <code>Release</code> likely comes from this parent class.</li>
+</ul>
 
 
 
