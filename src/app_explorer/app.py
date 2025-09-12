@@ -1,5 +1,6 @@
 import contextlib
 import os
+from pathlib import Path
 
 import yaml
 from flask import Flask, jsonify, redirect, render_template, request, url_for
@@ -83,7 +84,10 @@ def home():
 
     This route renders the home page of the application.
     """
-    return render_template("home.html")
+    if Path(file_db).exists():
+        return render_template("home.html")
+    else:
+        return redirect(url_for("config_page"))
 
 
 @app.route("/artists")
@@ -214,7 +218,10 @@ def config_page():
     This route renders the configuration page, allowing the user to manage Discogs credentials
     and initiate the Discogs data extraction process.
     """
-    url = os.environ("MUSIC_EXPLORER_URL", config['url'])
+    try:
+        url = os.environ("MUSIC_EXPLORER_URL", config['url'])
+    except TypeError as e:
+        url = "http://localhost:5000"
     dict_config = {
         "credentials_ok": discogs.check_user_tokens(),
         "url_discogs": discogs.request_user_access(url_callback=f"{url}/receive-token"),
